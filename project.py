@@ -8,6 +8,7 @@ ESCAPE = '\033'
 # Number of the glut window.
 window = 0
 alpha = 0
+transz = 0
 
 # all my classes here, and then the instanciation of my first objects !
 
@@ -66,8 +67,8 @@ class quad(object):
 
 
 
-quads= [ quad("floor", 0.0, 0.0, 0.0, 0., 0., -1., 1., 0., 0., 1.0, 1., 0.),
-        quad("wallTest", 0.3, 0.0, -0.3, 0.3, 0.5, -0.0, 0.6, 0., -0.5, 1.0, 0.5, 0.)#        quad("wallTest", 0.0, 0.0, -0.1, 0.5, 0.4, -0.2, 0.2, 0.3, -0.8, 0.5, 0.5, 0.5),        quad("wallTest", 0.2, 0.0, -0.7, 0.1, 0.6, 0.1, 0.4, 0.7, -0.3, 0.3, 0., 0.8)
+quads= [ quad("floor", -5, 0.0, 5, 0., 0.0, -10., 10., 0.0, 0., 1.0, 1., 0.),
+        #quad("wallTest", 0.3, 0.0, -0.3, 0.3, 0.5, -0.0, 0.6, 0., -0.5, 1.0, 0.5, 0.)#        quad("wallTest", 0.0, 0.0, -0.1, 0.5, 0.4, -0.2, 0.2, 0.3, -0.8, 0.5, 0.5, 0.5),        quad("wallTest", 0.2, 0.0, -0.7, 0.1, 0.6, 0.1, 0.4, 0.7, -0.3, 0.3, 0., 0.8)
         ]
 
 
@@ -112,7 +113,9 @@ def DrawGLScene():
 
     # my rotation of the whole world to know what i'm doing...
     global alpha
+    global transz
     glRotatef(alpha, 0, 1, 0)
+    glTranlatef(0,0,transz)
     for item in quads :
 		item.drawQuad()
 
@@ -127,6 +130,7 @@ def DrawGLScene():
 def keyPressed(*args):
     global window
     global alpha
+    global transz
     # If escape or q is pressed, kill everything.
     if args[0] == ESCAPE or args[0] == 'q':
         sys.exit()
@@ -134,6 +138,11 @@ def keyPressed(*args):
         alpha += -1.
     if args[0] == 'k':
         alpha += 1.
+    # transate z
+    if args[0] == 'r':
+        transz += -1.
+    if args[0]== 'f':
+        transz += 1.
 
 def main():
     global window
