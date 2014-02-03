@@ -1,7 +1,9 @@
 from OpenGL.GL import *
 from OpenGL.GLUT import *
 from OpenGL.GLU import *
-import sys
+import sys, time
+from maths import sin,cos,sqrt,pi
+
 # je rajoute un commentaire
 #hi ?
 ESCAPE = '\033'
@@ -71,9 +73,6 @@ quads= [ quad("floor", -5, 0.0, 5, 0., 0.0, -10., 10., 0.0, 0., 1.0, 1., 0.),
         #quad("wallTest", 0.3, 0.0, -0.3, 0.3, 0.5, -0.0, 0.6, 0., -0.5, 1.0, 0.5, 0.)#        quad("wallTest", 0.0, 0.0, -0.1, 0.5, 0.4, -0.2, 0.2, 0.3, -0.8, 0.5, 0.5, 0.5),        quad("wallTest", 0.2, 0.0, -0.7, 0.1, 0.6, 0.1, 0.4, 0.7, -0.3, 0.3, 0., 0.8)
         ]
 
-getvertices
-quads[0].vertices[0][0] = quads[0].vertices[0][0]*fvshbcqmdjbn
-
 
 # A general OpenGL initialization function.  Sets all of the initial parameters.
 def InitGL(Width, Height):				# We call this right after our OpenGL window is created.
@@ -116,8 +115,11 @@ def DrawGLScene():
     # my rotation of the whole world to know what i'm doing...
     global alpha
     global transz
-    glRotatef(alpha, 0, 1, 0)
+    #glRotatef(alpha, 0, 1, 0)
     glTranlatef(0,0,transz)
+    getvertices
+    quads[0].Ax = quads[0].Ax]*cos(alpha)
+    quads[0].Az = quads[0].Az*sin(alpha)
     for item in quads :
 		item.drawQuad()
 
