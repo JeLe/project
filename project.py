@@ -3,7 +3,7 @@ from OpenGL.GLUT import *
 from OpenGL.GLU import *
 import sys
 # je rajoute un commentaire
-
+#hi ?
 ESCAPE = '\033'
 # Number of the glut window.
 window = 0
