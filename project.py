@@ -71,6 +71,8 @@ quads= [ quad("floor", -5, 0.0, 5, 0., 0.0, -10., 10., 0.0, 0., 1.0, 1., 0.),
         #quad("wallTest", 0.3, 0.0, -0.3, 0.3, 0.5, -0.0, 0.6, 0., -0.5, 1.0, 0.5, 0.)#        quad("wallTest", 0.0, 0.0, -0.1, 0.5, 0.4, -0.2, 0.2, 0.3, -0.8, 0.5, 0.5, 0.5),        quad("wallTest", 0.2, 0.0, -0.7, 0.1, 0.6, 0.1, 0.4, 0.7, -0.3, 0.3, 0., 0.8)
         ]
 
+getvertices
+quads[0].vertices[0][0] = quads[0].vertices[0][0]*fvshbcqmdjbn
 
 
 # A general OpenGL initialization function.  Sets all of the initial parameters.
