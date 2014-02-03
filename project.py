@@ -2,7 +2,7 @@ from OpenGL.GL import *
 from OpenGL.GLUT import *
 from OpenGL.GLU import *
 import sys, time
-from maths import sin,cos,sqrt,pi
+from math import sin,cos,sqrt,pi
 
 # je rajoute un commentaire
 #hi ?
@@ -110,16 +110,16 @@ def DrawGLScene():
     glLoadIdentity()
     
     # push the origin of (x, y, z) to wher you can see it
-    glTranslatef(-0.5, -0.3, -1.0)
+    glTranslatef(0., -3.0, -5.0)
 
     # my rotation of the whole world to know what i'm doing...
     global alpha
     global transz
     #glRotatef(alpha, 0, 1, 0)
-    glTranlatef(0,0,transz)
-    getvertices
-    quads[0].Ax = quads[0].Ax]*cos(alpha)
+    glTranslatef(0,0,transz)
+    quads[0].Ax = quads[0].Ax*cos(alpha)
     quads[0].Az = quads[0].Az*sin(alpha)
+
     for item in quads :
 		item.drawQuad()
 
@@ -132,17 +132,17 @@ def DrawGLScene():
 
 # The function called whenever a key is pressed. Note the use of Python tuples to pass in: (key, x, y)  
 def keyPressed(*args):
-    global window
     global alpha
     global transz
     # If escape or q is pressed, kill everything.
     if args[0] == ESCAPE or args[0] == 'q':
         sys.exit()
     if args[0] == 'm':
-        alpha += -1.
+        alpha += 0.1
+
     if args[0] == 'k':
-        alpha += 1.
-    # transate z
+        alpha += -0.1
+
     if args[0] == 'r':
         transz += -1.
     if args[0]== 'f':
