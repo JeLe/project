@@ -115,10 +115,10 @@ def DrawGLScene():
     # my rotation of the whole world to know what i'm doing...
     global alpha
     global transz
-    #glRotatef(alpha, 0, 1, 0)
+    glRotatef(alpha, 0, 1, 0)
     glTranslatef(0,0,transz)
-    quads[0].Ax = quads[0].Ax*cos(alpha)
-    quads[0].Az = quads[0].Az*sin(alpha)
+    #quads[0].Ax = quads[0].Ax*cos(alpha)
+    #quads[0].Az = quads[0].Az*sin(alpha)
 
     for item in quads :
 		item.drawQuad()
