@@ -14,6 +14,14 @@ alpha =0
 
 #############################
 #this is where you put your dude class
+class bonhomme (object):
+    def __init__(self, Ax, Ay, Az):
+        self.Ax = Ax
+        self.Ay = Ay
+        self.Az = Az
+
+    def getPoints(self):
+        
 
 
 
