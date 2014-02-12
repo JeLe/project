@@ -134,21 +134,21 @@ def rotategood ():
     lspoint = quads[0].getQuadVertices()
     #calculating module et argument pour chaque point 
     
-    modl = sqrt((quads[0].vertices[0][0]**2)+(quads[0].vertices[0][2]**2))
+    modl = hypot(quads[0].vertices[0][0],quads[0].vertices[0][2]
     argus = atan(quads[0].vertices[0][2]/quads[0].vertices[0][0])
     argus = argus+alpha #on ajoute la valeur de alpha qui dépend des touches
     quads[0].Ax = modl*cos(argus)#on reporte sur x et z 
     quads[0].Az = modl*sin(argus)
     
     lspoint = quads[0].getQuadVertices()
-    modl = sqrt((quads[0].vertices[1][0]**2)+(quads[0].vertices[1][2]**2))
+    modl = hypot(quads[0].vertices[1][0],quads[0].vertices[1][2]
     argus = atan(quads[0].vertices[1][2]/quads[0].vertices[1][0])
     argus = argus+alpha
     quads[0].Vx = modl*cos(argus)
     quads[0].Vz = modl*sin(argus)
     
     lspoint = quads[0].getQuadVertices()
-    modl = sqrt((quads[0].vertices[3][0]**2)+(quads[0].vertices[3][2]**2))
+    modl = hypot(quads[0].vertices[3][0],quads[0].vertices[3][2]
     argus = atan(quads[0].vertices[3][2]/quads[0].vertices[3][0])
     argus = argus+alpha
     quads[0].Wx = modl*cos(argus)
