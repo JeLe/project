@@ -71,9 +71,7 @@ class quad(object):
 
 
 
-quads= [ quad("floor", -5, 0.0, 5, 0., 0.0, -10., 10., 0.0, 0., 1.0, 1., 0.),
-        #quad("wallTest", 0.3, 0.0, -0.3, 0.3, 0.5, -0.0, 0.6, 0., -0.5, 1.0, 0.5, 0.)# quad("wallTest", 0.0, 0.0, -0.1, 0.5, 0.4, -0.2, 0.2, 0.3, -0.8, 0.5, 0.5, 0.5), quad("wallTest", 0.2, 0.0, -0.7, 0.1, 0.6, 0.1, 0.4, 0.7, -0.3, 0.3, 0., 0.8)
-        ]
+quads= [ quad("floor", -5, 0.0, 5, 0., 0.0, -10., 10., 0.0, 0., 1.0, 1., 0.)]
 
 
 # A general OpenGL initialization function. Sets all of the initial parameters.
@@ -117,29 +115,29 @@ def DrawGLScene():
     # my rotation of the whole world to know what i'm doing...
     global alpha
     global transz
-    #glRotatef(alpha, 0, 1, 0)
+
     glTranslatef(0,0,transz)
-    #quads[0].Ax = quads[0].Ax*cos(alpha)
-   #quads[0].Az = quads[0].Az*sin(alpha)
+ 
 
     for item in quads :
         item.drawQuad()
 
-
-
-    
     glutSwapBuffers()
+
+
 
 def rotategood ():
     global alpha
+    global modl
+    global argus
 
     lspoint = quads[0].getQuadVertices()
-    #ici on trznsforme en forme expo
-    #for item in lspoint : 
+    #calculating module et argument pour chaque point 
+    
     modl = sqrt((quads[0].vertices[0][0]**2)+(quads[0].vertices[0][2]**2))
     argus = atan(quads[0].vertices[0][2]/quads[0].vertices[0][0])
-    argus = argus+alpha
-    quads[0].Ax = modl*cos(argus)
+    argus = argus+alpha #on ajoute la valeur de alpha qui dépend des touches
+    quads[0].Ax = modl*cos(argus)#on reporte sur x et z 
     quads[0].Az = modl*sin(argus)
     
     lspoint = quads[0].getQuadVertices()
@@ -182,7 +180,7 @@ def main():
     glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH)
     glutInitWindowSize(640, 480)
     glutInitWindowPosition(100, 50)
-    window = glutCreateWindow("Lucile's Dude :)")
+    window = glutCreateWindow("Benkiwi :D")
     InitGL(640, 480)
     
     
