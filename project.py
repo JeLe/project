@@ -110,16 +110,22 @@ def DrawGLScene():
     glLoadIdentity()
     
     # push the origin of (x, y, z) to wher you can see it
-    glTranslatef(0., -3.0, -5.0)
+    glTranslatef(0., -3.0, -15.0)
 
     # my rotation of the whole world to know what i'm doing...
     global alpha
     global transz
     glRotatef(alpha, 0, 1, 0)
-    glTranslatef(0,0,transz)
+
+
+#glTranslatef(0,0,transz)
     #quads[0].Ax = quads[0].Ax*cos(alpha)
     #quads[0].Az = quads[0].Az*sin(alpha)
-
+    glBegin(GL_LINES)
+    glColor3f(0,0,1)
+    glVertex3f(0,0,0)
+    glVertex3f(0,1,0)
+    glEnd()
     for item in quads :
 		item.drawQuad()
 
@@ -138,10 +144,10 @@ def keyPressed(*args):
     if args[0] == ESCAPE or args[0] == 'q':
         sys.exit()
     if args[0] == 'm':
-        alpha += 0.1
+        alpha += 1
 
     if args[0] == 'k':
-        alpha += -0.1
+        alpha += -1
 
     if args[0] == 'r':
         transz += -1.

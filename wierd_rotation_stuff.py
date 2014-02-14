@@ -136,7 +136,8 @@ def rotategood ():
     
     modl = hypot(quads[0].vertices[0][0],quads[0].vertices[0][2])
     argus = atan(quads[0].vertices[0][2]/quads[0].vertices[0][0])
-    argus = argus+alpha #on ajoute la valeur de alpha qui dépend des touches
+    #    argus = argus+alpha #on ajoute la valeur de alpha qui dpend des touches
+    argus = argus+alpha
     quads[0].Ax = modl*cos(argus)#on reporte sur x et z 
     quads[0].Az = modl*sin(argus)
     
