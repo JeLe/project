@@ -13,7 +13,9 @@ alpha =0
 
 
 #############################
-#this is where you put your dude class
+#this is where you put your dude classes
+
+
 class bonhomme (object):
     def __init__(self, Ax, Ay, Az):
         self.Ax = Ax
@@ -21,8 +23,19 @@ class bonhomme (object):
         self.Az = Az
 
     def getPoints(self):
+        unite = 1
+        x = self.Ax
+        y = self.Ay
+        z = self.Az
+        vertexList = [[x, y, z], [x+3*unite, y , z], [x+3*unite, y, z+3*unite],
+                      [x, y, z+3*unite], [x, y+3*unite, z], [x+3*unite, y+3*unite, z],
+                      [x+3*unite, y+3*unite, z+3*unite],[x, y+3*unite, z+3*unite]]
         
-
+    def drawBonhomme(self):
+        glBegin(GL_QUADS)
+        for item in vertexList:
+            glVertex3f(item[0], item[1], item[2])
+        glEnd()
 
 
 # A general OpenGL initialization function.  Sets all of the initial parameters.
@@ -54,13 +67,14 @@ def ReSizeGLScene(Width, Height):
 
 # The main drawing function.
 def DrawGLScene():
-	global texture
+    global texture
     
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)	# Clear The Screen And The Depth Buffer
-	glLoadIdentity()					# Reset The View
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)	# Clear The Screen And The Depth Buffer
+    glLoadIdentity()					# Reset The View
     global alpha
     glTranslatef(0.,0.0,-5.0)			# Move Into The Screen
     glRotatef(alpha*4, 0, 1, 0)
+    MyBonhomme = bonhomme.drawBonhomme()
 
     
     
@@ -68,7 +82,7 @@ def DrawGLScene():
     #this is wherr eyou draw the stuff
   
     
-	glutSwapBuffers()
+    glutSwapBuffers()
 
 
 def keyPressed(*args):
@@ -101,5 +115,6 @@ def main():
 	glutMainLoop()
 
 
+MyBonhomme = bonhomme(0.0,0.0,0.0)
 main()
 
