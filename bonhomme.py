@@ -27,13 +27,14 @@ class bonhomme (object):
         x = self.Ax
         y = self.Ay
         z = self.Az
-        vertexList = [[x, y, z], [x+3*unite, y , z], [x+3*unite, y, z+3*unite],
+        self.vertexList = [[x, y, z], [x+3*unite, y , z], [x+3*unite, y, z+3*unite],
                       [x, y, z+3*unite], [x, y+3*unite, z], [x+3*unite, y+3*unite, z],
                       [x+3*unite, y+3*unite, z+3*unite],[x, y+3*unite, z+3*unite]]
         
     def drawBonhomme(self):
+        self.getPoints()
         glBegin(GL_QUADS)
-        for item in vertexList:
+        for item in self.vertexList:
             glVertex3f(item[0], item[1], item[2])
         glEnd()
 
@@ -72,9 +73,9 @@ def DrawGLScene():
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)	# Clear The Screen And The Depth Buffer
     glLoadIdentity()					# Reset The View
     global alpha
-    glTranslatef(0.,0.0,-5.0)			# Move Into The Screen
+    glTranslatef(0.,0.0,-15.0)			# Move Into The Screen
     glRotatef(alpha*4, 0, 1, 0)
-    MyBonhomme = bonhomme.drawBonhomme()
+    MyBonhomme.drawBonhomme()
 
     
     
