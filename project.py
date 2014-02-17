@@ -17,8 +17,9 @@ transz = 0
 
 class wall (object):
     def __init__(self):
+        #i don't really need any thing to be in my wall yet...
         True
-    
+
     def getWallVertices(self, thingToWall):
         thingToWall.getQuadVertices()
         
@@ -28,6 +29,13 @@ class wall (object):
 #z2-z0, z3-z1
     def checkNotOnWall(self):
         self.equation1 = (self.vertices[2][2]-self.vertices[0][2])/(self.vertices[2][0]-self.vertices[0][0])
+
+################################
+#Jeremie's work :
+#I need to get all te walls into one place, look at them one by one and see if the guy isn't in front of them....
+#then for the "doors" : two poins need to be equal, but that's a little too damn precise, no?
+#is that all ?
+################################
 
 
 class quad(object):
@@ -69,32 +77,28 @@ class quad(object):
 
 
 
-quads= [ quad("floor", -5, 0.0, 5, 0., 0.0, -10., 10., 0.0, 0., 1.0, 1., 0.),
-        #quad("wallTest", 0.3, 0.0, -0.3, 0.3, 0.5, -0.0, 0.6, 0., -0.5, 1.0, 0.5, 0.)#        quad("wallTest", 0.0, 0.0, -0.1, 0.5, 0.4, -0.2, 0.2, 0.3, -0.8, 0.5, 0.5, 0.5),        quad("wallTest", 0.2, 0.0, -0.7, 0.1, 0.6, 0.1, 0.4, 0.7, -0.3, 0.3, 0., 0.8)
-        ]
+floor = quad("floor", -5, 0.0, 5, 0., 0.0, -10., 10., 0.0, 0., 1.0, 1., 0.)
 
 
-# A general OpenGL initialization function.  Sets all of the initial parameters.
-def InitGL(Width, Height):				# We call this right after our OpenGL window is created.
-    glClearColor(0.0, 0.0, 0.0, 0.0)	# This Will Clear The Background Color To Black
-    glClearDepth(1.0)					# Enables Clearing Of The Depth Buffer
-    glDepthFunc(GL_LESS)				# The Type Of Depth Test To Do
-    glEnable(GL_DEPTH_TEST)				# Enables Depth Testing
-    glShadeModel(GL_SMOOTH)				# Enables Smooth Color Shading
+def InitGL(Width, Height):
+    glClearColor(0.0, 0.0, 0.0, 0.0)
+    glClearDepth(1.0)
+    glDepthFunc(GL_LESS)
+    glEnable(GL_DEPTH_TEST)
+    glShadeModel(GL_SMOOTH)
     
     glMatrixMode(GL_PROJECTION)
-    glLoadIdentity()					# Reset The Projection Matrix
-    # Calculate The Aspect Ratio Of The Window
+    glLoadIdentity()
     gluPerspective(45.0, float(Width)/float(Height), 0.1, 100.0)
     
     glMatrixMode(GL_MODELVIEW)
     
-    # The function called when our window is resized (which shouldn't happen if you enable fullscreen, below)
+
 def ReSizeGLScene(Width, Height):
     if Height == 0:						# Prevent A Divide By Zero If The Window Is Too Small 
         Height = 1
 
-    glViewport(0, 0, Width, Height)		# Reset The Current Viewport And Perspective Transformation
+    glViewport(0, 0, Width, Height)
     glMatrixMode(GL_PROJECTION)
     glLoadIdentity()
     gluPerspective(45.0, float(Width)/float(Height), 0.1, 100.0)
@@ -110,42 +114,45 @@ def DrawGLScene():
     glLoadIdentity()
     
     # push the origin of (x, y, z) to wher you can see it
+    #and go a little higher than the origin to be above the floor
+    #without having to rotate the whole thing..
     glTranslatef(0., -3.0, -15.0)
 
-    # my rotation of the whole world to know what i'm doing...
-    global alpha
-    global transz
+    #Here are the movements you do when you move around or for/backwards
+    #Hey Ben, I found out you need to do all your translations first
+    #then you rotations, or you get wierd stuff...
+    global alpha, transz
+    glTranslatef(0,0,transz)
     glRotatef(alpha, 0, 1, 0)
 
 
-#glTranslatef(0,0,transz)
-    #quads[0].Ax = quads[0].Ax*cos(alpha)
-    #quads[0].Az = quads[0].Az*sin(alpha)
+    #the line is the y axis
     glBegin(GL_LINES)
     glColor3f(0,0,1)
     glVertex3f(0,0,0)
     glVertex3f(0,1,0)
     glEnd()
-    for item in quads :
-		item.drawQuad()
 
-
-
-    
+    #and here is the floor :)
+    floor.drawQuad()
+        
+        
+        
+        
     glutSwapBuffers()
+        
+        
 
-
-
-# The function called whenever a key is pressed. Note the use of Python tuples to pass in: (key, x, y)  
 def keyPressed(*args):
     global alpha
     global transz
     # If escape or q is pressed, kill everything.
     if args[0] == ESCAPE or args[0] == 'q':
         sys.exit()
+    
+    
     if args[0] == 'm':
         alpha += 1
-
     if args[0] == 'k':
         alpha += -1
 
@@ -167,7 +174,7 @@ def main():
     
     glutDisplayFunc(DrawGLScene)
     
-    #glutFullScreen()
+    glutFullScreen()
     
     # these are the callbacks to the functions that actually do something...
     glutIdleFunc(DrawGLScene)
