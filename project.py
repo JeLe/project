@@ -144,22 +144,31 @@ def DrawGLScene():
         
 
 def keyPressed(*args):
-    global alpha
+    #global alpha
     global transz
     # If escape or q is pressed, kill everything.
     if args[0] == ESCAPE or args[0] == 'q':
         sys.exit()
     
     
-    if args[0] == 'm':
-        alpha += 1
-    if args[0] == 'k':
-        alpha += -1
+    #if args[0] == 'm':
+     #   alpha += 1
+    #if args[0] == 'k':
+     #   alpha += -1
 
     if args[0] == 'r':
         transz += -1.
     if args[0]== 'f':
         transz += 1.
+        
+def myMouseMove ( x, y):
+    global alpha
+    if x<320:
+        alpha += 1
+    if x>320:
+        alpha += -1
+
+    glutPostRedisplay()
 
 def main():
     global window
@@ -180,7 +189,7 @@ def main():
     glutIdleFunc(DrawGLScene)
     glutReshapeFunc(ReSizeGLScene)
     glutKeyboardFunc(keyPressed)
-    
+    glutPassiveMotionFunc( myMouseMove)
     
     glutMainLoop()
     
