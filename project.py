@@ -163,9 +163,9 @@ def keyPressed(*args):
         
 def myMouseMove ( x, y):
     global alpha
-    if x<320:
+    if x<600:
         alpha += 1
-    if x>320:
+    if x>600:
         alpha += -1
 
     glutPostRedisplay()
@@ -189,6 +189,7 @@ def main():
     glutIdleFunc(DrawGLScene)
     glutReshapeFunc(ReSizeGLScene)
     glutKeyboardFunc(keyPressed)
+    glutMouseFunc( myMouseMove)
     glutPassiveMotionFunc( myMouseMove)
     
     glutMainLoop()
