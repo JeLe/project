@@ -11,6 +11,7 @@ ESCAPE = '\033'
 window = 0
 alpha = 0
 transz = 0
+xold=600
 
 # all my classes here, and then the instanciation of my first objects !
 
@@ -163,10 +164,12 @@ def keyPressed(*args):
         
 def myMouseMove ( x, y):
     global alpha
-    if x<600:
+    global xold
+    if xold<x:
         alpha += 1
-    if x>600:
+    if xold>x:
         alpha += -1
+    xold=x
 
     glutPostRedisplay()
 
