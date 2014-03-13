@@ -4,6 +4,16 @@ from OpenGL.GLU import *
 import sys, time
 from math import sin,cos,sqrt,pi
 
+##########################################
+#to do list for tomorrow !
+#add self.type to all object (static or not)
+#put move method in Dude
+#make draw method function so all objects can use the same one.
+#Put all objects in list
+#make door and wall objetcs common to objects easier to use. If static, they sould only be calculated once and should be in a seperate list
+#wall objects will be made like they are now, excepet add sort of vertices and take only extremes into account. That will lighten the memory use.
+##########################################
+
 # je rajoute un commentaire
 #hi ?
 ESCAPE = '\033'
@@ -186,7 +196,7 @@ def main():
     
     glutDisplayFunc(DrawGLScene)
     
-    glutFullScreen()
+    #glutFullScreen()
     
     # these are the callbacks to the functions that actually do something...
     glutIdleFunc(DrawGLScene)
