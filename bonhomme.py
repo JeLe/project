@@ -2,8 +2,6 @@ from OpenGL.GL import *
 from OpenGL.GLUT import *
 from OpenGL.GLU import *
 import sys
-from Image import *
-import numpy
 
 ESCAPE = '\033'
 
@@ -15,8 +13,7 @@ alpha =0
 #############################
 #this is where you put your dude classes
 
-
-class bonhomme (object):
+class foot (object):
     def __init__(self, Ax, Ay, Az):
         self.Ax = Ax
         self.Ay = Ay
@@ -27,9 +24,20 @@ class bonhomme (object):
         x = self.Ax
         y = self.Ay
         z = self.Az
-        self.vertexList = [[x, y, z], [x+3*unite, y , z], [x+3*unite, y, z+3*unite],
+        self.footVertexList = [[x, y, z], [x+3*unite, y , z], [x+3*unite, y, z+3*unite],
                       [x, y, z+3*unite], [x, y+3*unite, z], [x+3*unite, y+3*unite, z],
                       [x+3*unite, y+3*unite, z+3*unite],[x, y+3*unite, z+3*unite]]
+
+
+class bonhomme (object):
+    def __init__(self, Ax, Ay, Az):
+        self.Ax = Ax
+        self.Ay = Ay
+        self.Az = Az
+
+    def getPoints(self):
+        myFoot = foot(self.Ax, self.Ay, self.Az)
+        myFoot.getPoints()
         
     def drawBonhomme(self):
         self.getPoints()
