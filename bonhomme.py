@@ -7,8 +7,9 @@ ESCAPE = '\033'
 
 # Number of the glut window.
 window = 0
-alpha =0
-
+forward =0
+direction = 0
+alpha = 0
 
 #############################
 #this is where you put your dude classes
@@ -68,7 +69,13 @@ class bonhomme (object):
         glEnd()
 
     def move(self):
-
+        global forward
+        global direction
+        
+        if direction == 0:
+            self.Ax = self.Ax +1
+        if direction == 1:
+            self.Az = self.Az +1
 
 
 # A general OpenGL initialization function.  Sets all of the initial parameters.
@@ -121,13 +128,21 @@ def DrawGLScene():
 def keyPressed(*args):
     global window
     global alpha
+    global direction
+    global forward
     # If escape or q is pressed, kill everything.
     if args[0] == ESCAPE or args[0] == 'q':
         sys.exit()
+    if args[0] == 'o':
+        forward = 1.
+    if args[0] == 'l':
+        forward = -1.
+    if args[0] == 's':
+        forward = 0
     if args[0] == 'm':
-        alpha += -1.
+        direction += -1.
     if args[0] == 'k':
-        alpha += 1.
+        direction += 1.
 
 def main():
 	global window
