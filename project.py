@@ -12,6 +12,7 @@ from math import sin,cos,sqrt,pi
 #Put all objects in list
 #make door and wall objetcs common to objects easier to use. If static, they sould only be calculated once and should be in a seperate list
 #wall objects will be made like they are now, excepet add sort of vertices and take only extremes into account. That will lighten the memory use.
+#cameras move when in corners...
 ##########################################
 
 # je rajoute un commentaire

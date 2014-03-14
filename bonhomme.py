@@ -67,6 +67,9 @@ class bonhomme (object):
             glVertex3f(item[0], item[1], item[2])
         glEnd()
 
+    def move(self):
+
+
 
 # A general OpenGL initialization function.  Sets all of the initial parameters.
 def InitGL(Width, Height):				# We call this right after our OpenGL window is created.
