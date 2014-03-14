@@ -24,9 +24,12 @@ class foot (object):
         x = self.Ax
         y = self.Ay
         z = self.Az
-        self.footVertexList = [[x, y, z], [x+3*unite, y , z], [x+3*unite, y, z+3*unite],
-                      [x, y, z+3*unite], [x, y+3*unite, z], [x+3*unite, y+3*unite, z],
-                      [x+3*unite, y+3*unite, z+3*unite],[x, y+3*unite, z+3*unite]]
+        self.footVertexList = [[x, y, z], [x+3*unite, y , z], [x+3*unite, y, z+3*unite], [x, y, z+3*unite],
+                              [x, y, z], [x+3*unite, y , z], [x+3*unite, y+3*unite , z], [x, y+3*unite, z],
+                              [x, y, z], [x, y+3*unite, z], [x, y+3*unite, z+3*unite], [x, y, z+3*unite],
+                              [x, y, z+3*unite], [x, y+3*unite, z+3*unite], [x+3*unite, y+3*unite, z+3*unite], [x+3*unite, y, z+3*unite],
+                              [x+3*unite, y , z], [x+3*unite, y+3*unite , z], [x+3*unite, y+3*unite , z+3*unite], [x+3*unite, y, z+3*unite],
+                              [x, y+3*unite, z], [x+3*unite, y+3*unite, z], [x+3*unite, y+3*unite, z+3*unite],[x, y+3*unite, z+3*unite]]
 
 
 class bonhomme (object):
@@ -34,6 +37,7 @@ class bonhomme (object):
         self.Ax = Ax
         self.Ay = Ay
         self.Az = Az
+        self.type = "moving"
 
     def getPoints(self):
         myFoot = foot(self.Ax, self.Ay, self.Az)
