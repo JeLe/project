@@ -31,6 +31,21 @@ class foot (object):
                               [x+3*unite, y , z], [x+3*unite, y+3*unite , z], [x+3*unite, y+3*unite , z+3*unite], [x+3*unite, y, z+3*unite],
                               [x, y+3*unite, z], [x+3*unite, y+3*unite, z], [x+3*unite, y+3*unite, z+3*unite],[x, y+3*unite, z+3*unite]]
 
+class jambe (object):
+    def __init__ (self, Ax, Ay, Az):
+        self.Ax = Ax
+        self.Ay = Ay
+        self.Az = Az
+
+    def getPoints(self):
+        unite = 1
+        x = self.Ax
+        y = self.Ay+3*unite
+        z = self.Az
+        self.jambeVertexList = [[x, y, z], [x, y+5*unite, z], [x+3*unite, y+5*unite, z], [x+3*unite, y, z],
+                                [x, y, z], [x, y+5*unite, z], [x, y+5*unite, z+unite], [x, y, z+unite],
+                                [x+3*unite, y, z], [x+3*unite, y+5*unite, z], [x+3*unite, y+5*unite, z+unite], [x+3*unite, y, z+unite],
+                                [x, y, z+unite], [x, y+5*unite, z+unite], [x+3*unite, y+5*unite, z+unite], [x+3*unite, y, z+unite]]
 
 class bonhomme (object):
     def __init__(self, Ax, Ay, Az):
