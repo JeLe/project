@@ -38,8 +38,8 @@ class bonhomme (object):
     def getPoints(self):
         myFoot = foot(self.Ax, self.Ay, self.Az)
         myFoot.getPoints()
-        self.vertexList = []
-        self.vertexList.append(myFoot.footVertexList)
+        self.vertexList = myFoot.footVertexList
+        #self.vertexList.append()
         
     def drawBonhomme(self):
         self.getPoints()
