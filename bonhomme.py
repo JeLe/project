@@ -72,7 +72,7 @@ class bonhomme (object):
         global forward
         global direction
         
-        if direction == 0:
+        if direction == 0 and forward ==1:
             self.Ax = self.Ax +1
         if direction == 1:
             self.Az = self.Az +1
@@ -114,6 +114,7 @@ def DrawGLScene():
     global alpha
     glTranslatef(0.,0.0,-15.0)			# Move Into The Screen
     glRotatef(alpha*4, 0, 1, 0)
+    MyBonhomme.move()
     MyBonhomme.drawBonhomme()
 
     
@@ -135,6 +136,7 @@ def keyPressed(*args):
         sys.exit()
     if args[0] == 'o':
         forward = 1.
+
     if args[0] == 'l':
         forward = -1.
     if args[0] == 's':
@@ -163,6 +165,6 @@ def main():
 	glutMainLoop()
 
 
-MyBonhomme = bonhomme(0.0,0.0,0.0)
+MyBonhomme = bonhomme(-1.0,0.0,0.0)
 main()
 
