@@ -48,6 +48,7 @@ class jambe (object):
                                 [x+3*unite, y, z], [x+3*unite, y+5*unite, z], [x+3*unite, y+5*unite, z+unite], [x+3*unite, y, z+unite],
                                 [x, y, z+unite], [x, y+5*unite, z+unite], [x+3*unite, y+5*unite, z+unite], [x+3*unite, y, z+unite]]
 
+
 class bonhomme (object):
     def __init__(self, Ax, Ay, Az):
         self.Ax = Ax
