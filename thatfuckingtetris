@@ -1,0 +1,46 @@
+from OpenGL.GL import *
+from OpenGL.GLUT import *
+from OpenGL.GLU import *
+import sys
+
+
+
+class carre(object):
+      def __init__(self,x,y):
+           self.x=x
+           self.y=y
+           
+      def position (self,piece):
+            print(self.x)
+      
+      def draw(self):
+
+        glBegin(GL_QUADS)
+        glColor3f(2.0,1.0,0.0)
+        glVertex3f(self.x, self.y, 0)
+        glVertex3f(self.x, self.y+1,0)
+        glVertex3f(self.x+1, self.y+1)
+        glVertex3f(self.x+1, self.y)
+        glEnd()
+
+ 
+
+
+#FABRICATION
+
+moncarre=carre(1,2)
+buffer=[]
+area=[]
+
+for colomn in range(0,20):
+      for line in range(0,10):
+            buffer.append(carre(line,colomn))
+      area.append(buffer)
+
+
+
+
+
+#DESSIN
+
+area[1][1].draw
