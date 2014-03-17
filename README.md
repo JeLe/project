@@ -3,7 +3,7 @@ project
 
 groupe salle
 
-PIERRE C'EST UN BGCOLOR ! (Trop pas d'abord , t'es trop jeune !)
+PIERRE C'EST UN BGCOLOR ! (Trop pas d'abord , t'es trop jeune !) ==> Pierre il a pas mué !
 
 
 This code includes a first "quad" object, 
