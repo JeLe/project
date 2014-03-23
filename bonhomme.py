@@ -7,11 +7,12 @@ ESCAPE = '\033'
 
 # Number of the glut window.
 window = 0
+alpha = 0
 forward =0
 direction = 0
-alpha = 0
 
-#############################
+
+########################################
 #this is where you put your dude classes
 
 class foot (object):
@@ -72,9 +73,10 @@ class bonhomme (object):
     def move(self):
         global forward
         global direction
-        
-        if direction == 0 and forward ==1:
-            self.Ax = self.Ax +1
+        #ok so direction devient le coefi dir de ladroite sur laquelle se deplace le bnhomme, on incremente de ce qu'on veut siur x, on calcule z et voila...
+        #en meme temps, on fait un rotatef de direction, on dessine le monsieur, et on derotatef... comme ca pas besoin de vecteurs ;)
+        if direction == 0 and forward == 1:
+            self.Az = self.Az +.01
         if direction == 1:
             self.Az = self.Az +1
 

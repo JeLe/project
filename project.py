@@ -24,6 +24,80 @@ alpha = 0
 transz = 0
 xold=600
 
+
+forward =0
+direction = 0
+
+
+########################################
+#this is where you put your dude classes
+
+class foot (object):
+    def __init__(self, Ax, Ay, Az):
+        self.Ax = Ax
+        self.Ay = Ay
+        self.Az = Az
+    
+    def getPoints(self):
+        unite = 1
+        x = self.Ax
+        y = self.Ay
+        z = self.Az
+        self.footVertexList = [[x, y, z], [x+3*unite, y , z], [x+3*unite, y, z+3*unite], [x, y, z+3*unite],
+                               [x, y, z], [x+3*unite, y , z], [x+3*unite, y+3*unite , z], [x, y+3*unite, z],
+                               [x, y, z], [x, y+3*unite, z], [x, y+3*unite, z+3*unite], [x, y, z+3*unite],
+                               [x, y, z+3*unite], [x, y+3*unite, z+3*unite], [x+3*unite, y+3*unite, z+3*unite], [x+3*unite, y, z+3*unite],
+                               [x+3*unite, y , z], [x+3*unite, y+3*unite , z], [x+3*unite, y+3*unite , z+3*unite], [x+3*unite, y, z+3*unite],
+                               [x, y+3*unite, z], [x+3*unite, y+3*unite, z], [x+3*unite, y+3*unite, z+3*unite],[x, y+3*unite, z+3*unite]]
+
+class jambe (object):
+    def __init__ (self, Ax, Ay, Az):
+        self.Ax = Ax
+        self.Ay = Ay
+        self.Az = Az
+    
+    def getPoints(self):
+        unite = 1
+        x = self.Ax
+        y = self.Ay+3*unite
+        z = self.Az
+        self.jambeVertexList = [[x, y, z], [x, y+5*unite, z], [x+3*unite, y+5*unite, z], [x+3*unite, y, z],
+                                [x, y, z], [x, y+5*unite, z], [x, y+5*unite, z+unite], [x, y, z+unite],
+                                [x+3*unite, y, z], [x+3*unite, y+5*unite, z], [x+3*unite, y+5*unite, z+unite], [x+3*unite, y, z+unite],
+                                [x, y, z+unite], [x, y+5*unite, z+unite], [x+3*unite, y+5*unite, z+unite], [x+3*unite, y, z+unite]]
+
+
+class bonhomme (object):
+    def __init__(self, Ax, Ay, Az):
+        self.Ax = Ax
+        self.Ay = Ay
+        self.Az = Az
+        self.type = "moving"
+    
+    def getPoints(self):
+        myFoot = foot(self.Ax, self.Ay, self.Az)
+        myFoot.getPoints()
+        self.vertexList = myFoot.footVertexList
+    #self.vertexList.append()
+    
+    def drawBonhomme(self):
+        self.getPoints()
+        glBegin(GL_QUADS)
+        for item in self.vertexList:
+            glColor3f(0.7, 0.4, 0.9)
+            glVertex3f(item[0], item[1], item[2])
+        glEnd()
+    
+    def move(self):
+        global forward
+        global direction
+        #ok so direction devient le coefi dir de ladroite sur laquelle se deplace le bnhomme, on incremente de ce qu'on veut siur x, on calcule z et voila...
+        #en meme temps, on fait un rotatef de direction, on dessine le monsieur, et on derotatef... comme ca pas besoin de vecteurs ;)
+        if direction == 0 and forward == 1:
+            self.Az = self.Az +.1
+        if direction == 1:
+            self.Ax = self.Ax +.1
+
 # all my classes here, and then the instanciation of my first objects !
 
 
@@ -147,8 +221,11 @@ def DrawGLScene():
 
     #and here is the floor :)
     floor.drawQuad()
-        
-        
+    MyBonhomme.move()
+    MyBonhomme.drawBonhomme()
+    
+
+    
         
         
     glutSwapBuffers()
@@ -161,13 +238,27 @@ def keyPressed(*args):
     # If escape or q is pressed, kill everything.
     if args[0] == ESCAPE or args[0] == 'q':
         sys.exit()
+    global alpha
+    global direction
+    global forward
+    #to move the dude...
+    if args[0] == 'o':
+        forward = 1.
     
-    
-    #if args[0] == 'm':
-     #   alpha += 1
-    #if args[0] == 'k':
-     #   alpha += -1
+    if args[0] == 'l':
+        forward = -1.
+    if args[0] == 's':
+        forward = 0
+    if args[0] == 'm':
+        direction += -1.
+    if args[0] == 'k':
+        direction = 1.
 
+
+    if args[0] == 'g':
+        alpha += 1
+    if args[0] == 'd':
+        alpha += -1
     if args[0] == 'r':
         transz += -1.
     if args[0]== 'f':
@@ -209,6 +300,7 @@ def main():
     glutMainLoop()
     
 
+MyBonhomme = bonhomme(-1.0,0.0,0.0)
 
 main()
 
