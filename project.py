@@ -6,9 +6,7 @@ from math import sin,cos,sqrt,pi
 
 ##########################################
 #to do list for tomorrow !
-#add self.type to all object (static or not)
-#put move method in Dude
-#make draw method function so all objects can use the same one.
+#make draw method function so all objects can use the same one. not necessairy for now...
 #Put all objects in list
 #make door and wall objetcs common to objects easier to use. If static, they sould only be calculated once and should be in a seperate list
 #wall objects will be made like they are now, excepet add sort of vertices and take only extremes into account. That will lighten the memory use.
@@ -39,7 +37,7 @@ class foot (object):
         self.Az = Az
     
     def getPoints(self):
-        unite = 1
+        unite = .5
         x = self.Ax
         y = self.Ay
         z = self.Az
@@ -57,7 +55,7 @@ class jambe (object):
         self.Az = Az
     
     def getPoints(self):
-        unite = 1
+        unite = .5
         x = self.Ax
         y = self.Ay+3*unite
         z = self.Az
@@ -93,10 +91,14 @@ class bonhomme (object):
         global direction
         #ok so direction devient le coefi dir de ladroite sur laquelle se deplace le bnhomme, on incremente de ce qu'on veut siur x, on calcule z et voila...
         #en meme temps, on fait un rotatef de direction, on dessine le monsieur, et on derotatef... comme ca pas besoin de vecteurs ;)
-        if direction == 0 and forward == 1:
-            self.Az = self.Az +.1
-        if direction == 1:
-            self.Ax = self.Ax +.1
+        if forward != 0:
+            b= self.Az-direction*self.Ax
+            self.Ax = self.Ax + forward
+            self.Az = (direction*self.Ax)+b
+            
+            forward = 0
+            print (direction)
+
 
 # all my classes here, and then the instanciation of my first objects !
 
@@ -207,7 +209,7 @@ def DrawGLScene():
     #Here are the movements you do when you move around or for/backwards
     #Hey Ben, I found out you need to do all your translations first
     #then you rotations, or you get wierd stuff...
-    global alpha, transz
+    global alpha, transz, direction
     glTranslatef(0,0,transz)
     glRotatef(alpha, 0, 1, 0)
 
@@ -221,12 +223,11 @@ def DrawGLScene():
 
     #and here is the floor :)
     floor.drawQuad()
+
     MyBonhomme.move()
     MyBonhomme.drawBonhomme()
-    
 
     
-        
         
     glutSwapBuffers()
         
@@ -243,16 +244,15 @@ def keyPressed(*args):
     global forward
     #to move the dude...
     if args[0] == 'o':
-        forward = 1.
-    
+        forward = .1
     if args[0] == 'l':
-        forward = -1.
+        forward = -.1
     if args[0] == 's':
         forward = 0
     if args[0] == 'm':
-        direction += -1.
+        direction += .1
     if args[0] == 'k':
-        direction = 1.
+        direction += -.1
 
 
     if args[0] == 'g':
@@ -300,7 +300,7 @@ def main():
     glutMainLoop()
     
 
-MyBonhomme = bonhomme(-1.0,0.0,0.0)
+MyBonhomme = bonhomme(0.0,0.0,0.0)
 
 main()
 
