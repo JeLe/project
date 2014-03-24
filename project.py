@@ -26,10 +26,10 @@ forward = 0
 direction = 0
 
 walls = []
-doors = []
+gates = []
 ########################################
 #this is where you put your dude classes
-
+unite = .5
 class foot (object):
     def __init__(self, Ax, Ay, Az):
         self.Ax = Ax
@@ -37,7 +37,7 @@ class foot (object):
         self.Az = Az
     
     def getPoints(self):
-        unite = .5
+        global unite
         x = self.Ax
         y = self.Ay
         z = self.Az
@@ -56,7 +56,7 @@ class jambe (object):
         self.Az = Az
     
     def getPoints(self):
-        unite = .5
+        global unite
         x = self.Ax
         y = self.Ay+3*unite
         z = self.Az
@@ -73,13 +73,33 @@ class torse (object):
         self.Az = Az
     
     def getPoints(self):
-        unite = .5
+        global unite
         x = self.Ax
         y = self.Ay+8*unite
         z = self.Az
         self.torseVertexList = [[x, y, z], [x, y+5*unite, z], [x+7*unite, y+5*unite, z], [x+7*unite, y, z],
-                                [x, y, z]]
+                                [x, y, z], [x, y+5*unite, z], [x, y+5*unite, z+unite], [x, y, z+unite],
+                                [x+7*unite, y, z], [x+7*unite, y+5*unite, z], [x+7*unite, y+5*unite, z+unite], [x+7*unite, y, z+unite],
+                                [x, y, z+unite], [x, y+5*unite, z+unite], [x+7*unite, y+5*unite, z+unite], [x+7*unite, y, z+unite]]
                                 
+class brazo (object):
+    def __init__ (self, Ax, Ay, Az):
+        self.Ax = Ax
+        self.Ay = Ay
+        self.Az = Az
+
+    def getPoints(self):
+        global unite
+        x = self.Ax
+        y = self.Ay+13*unite
+        z = self.Az
+        self.brazoVertexList = [[x, y, z], [x-unite, y, z], [x-unite, y, z+unite], [x, y, z+unite],
+                                [x, y, z], [x-unite, y, z], [x-unite, y-6*unite, z], [x, y-6*unite, z],
+                                [x-unite, y, z], [x-unite, y, z+unite], [x-unite, y-6*unite, z+unite], [x-unite, y-6*unite, z],
+                                [x, y, z], [x, y, z+unite], [x, y-6*unite, z+unite], [x, y-6*unite, z],
+                                [x, y, z+unite], [x-unite, y, z+unite], [x-unite, y-6*unite, z+unite], [x, y-6*unite, z+unite],
+                                [x, y-6*unite, z], [x-unite, y-6*unite, z], [x-unite, y-6*unite, z+unite], [x, y-6*unite, z+unite]]
+
 
 
 class bonhomme (object):
@@ -90,20 +110,29 @@ class bonhomme (object):
         self.type = "moving"
     
     def getPoints(self):
-        unite = .5
+        global unite
         myFoot = foot(self.Ax, self.Ay, self.Az)
         myFoot.getPoints()
         myFoot2 = foot(self.Ax+4*unite, self.Ay, self.Az)
         myFoot2.getPoints()
-        myJambe = jambe(self.Ax, self.Ay, self.Az)
-        myJambe.getPoints()
-        myJambe2 = jambe(self.Ax+4*unite, self.Ay, self.Az)
-        myJambe2.getPoints()
+        maJambe = jambe(self.Ax, self.Ay, self.Az)
+        maJambe.getPoints()
+        maJambe2 = jambe(self.Ax+4*unite, self.Ay, self.Az)
+        maJambe2.getPoints()
+        myTorse = torse(self.Ax, self.Ay, self.Az)
+        myTorse.getPoints()
+        miBrazo = brazo(self.Ax, self.Ay, self.Az)
+        miBrazo.getPoints()
+        miBrazo2 = brazo(self.Ax+8*unite, self.Ay, self.Az)
+        miBrazo2.getPoints()
         self.vertexList = []
         self.vertexList.append(myFoot.footVertexList)
-        self.vertexList.append(myJambe.jambeVertexList)
+        self.vertexList.append(maJambe.jambeVertexList)
         self.vertexList.append(myFoot2.footVertexList)
-        self.vertexList.append(myJambe2.jambeVertexList)
+        self.vertexList.append(maJambe2.jambeVertexList)
+        self.vertexList.append(myTorse.torseVertexList)
+        self.vertexList.append(miBrazo.brazoVertexList)
+        self.vertexList.append(miBrazo2.brazoVertexList)
     
     def drawBonhomme(self):
         self.getPoints()
