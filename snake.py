@@ -1,3 +1,5 @@
+
+
 from OpenGL.GL import *
 from OpenGL.GLUT import *
 from OpenGL.GLU import *
@@ -16,7 +18,7 @@ c=0
 l=0
 i=0
 j=0
-taille = 4
+taille = 6
 dir = 'm'
 
 
@@ -41,7 +43,7 @@ def move():
 	global i
 	global j
 	global dir
-	
+	global snakeColor
 
 			
 	if dir == 'm' :
@@ -61,25 +63,16 @@ def move():
 		coord.pop(0)
 	
 	coord2=[]
-	for item  in coord:
-		if item in coord2:
-			pass
+	for item  in coord :
+		if item in coord2 :
+			snakeColor = [0.2,1,0.1]
 		else:
 			coord2.append(item)
 
 	print ("coord :",coord)
 	print("coord2                                     :",coord2)
 
-	if coord2 != coord and len(coord2)>=(taille-1) :
-		i = 0
-		j = 0
-		
-		if dir == "m" :
-			dir = "l"
-		else :
-			dir = "m"
-		
-
+	
 	snake.append(carre(i,j,snakeColor))
 	#list(set(snake)) 
 def miam() :
@@ -193,4 +186,3 @@ for l in range(0,8) :
 	
 
 main()	
-
