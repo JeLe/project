@@ -76,7 +76,7 @@ def DrawGLScene():
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)	# Clear The Screen And The Depth Buffer
     glLoadIdentity()	# Reset The View
     global alpha
-    glTranslatef(-5.,-7.0,-15.0)	# Move Into The Screen
+    glTranslatef(-5.,-10.0,-25.0)	# Move Into The Screen
     glRotatef(alpha*4, 0, 1, 0)
  
 

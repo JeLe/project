@@ -11,10 +11,19 @@ from math import sin,cos,sqrt,pi
 #make door and wall objetcs common to objects easier to use. If static, they sould only be calculated once and should be in a seperate list
 #wall objects will be made like they are now, excepet add sort of vertices and take only extremes into account. That will lighten the memory use.
 #cameras move when in corners...
+
+################################
+#Jeremie's work :
+#I need to get all te walls into one place, look at them one by one and see if the guy isn't in front of them....
+#then for the "doors" : two poins need to be equal, but that's a little too damn precise, no?
+#is that all ?
+
 ##########################################
 
-# je rajoute un commentaire
-#hi ?
+
+
+##########################################
+#all global variables
 ESCAPE = '\033'
 # Number of the glut window.
 window = 0
@@ -25,9 +34,15 @@ xold = 600
 forward = 0
 direction = 0
 
+
+#wall and door buffers
 walls = []
 gates = []
+
+
 ########################################
+#ALL THE OBJECT CLASSES
+
 #this is where you put your dude classes
 unite = .5
 class foot (object):
@@ -156,7 +171,7 @@ class bonhomme (object):
             forward = 0
 
 
-
+#END OF DUDE
 
 class wall (object):
     def __init__(self, thingToWall):
@@ -175,17 +190,13 @@ class wall (object):
     def checkNotOnWall(self):
         self.equation1 = (self.vertices[2][2]-self.vertices[0][2])/(self.vertices[2][0]-self.vertices[0][0])
 
-################################
-#Jeremie's work :
-#I need to get all te walls into one place, look at them one by one and see if the guy isn't in front of them....
-#then for the "doors" : two poins need to be equal, but that's a little too damn precise, no?
-#is that all ?
-################################
+#here we will put the gate class
 
 
 class quad(object):
     def __init__(self, name, Ax, Ay, Az, Vx, Vy, Vz, Wx, Wy, Wz, red, green, blue):
         self.name = name
+        #self.type = "static or not??"
         self.Ax = Ax
         self.Ay = Ay
         self.Az = Az
@@ -199,6 +210,7 @@ class quad(object):
         self.green = green
         self.blue = blue
         #I ommited the creation of the vertices here because they might need to be regurlarly updated...
+        #But all statics wont need to be updated !!
         self.wall = wall(self)
 
     def getQuadVertices(self):
@@ -269,7 +281,7 @@ def DrawGLScene():
     #Here are the movements you do when you move around or for/backwards
     #Hey Ben, I found out you need to do all your translations first
     #then you rotations, or you get wierd stuff...
-    global alpha, transz, direction
+    global alpha, transz
     glTranslatef(0,0,transz)
     glRotatef(alpha, 0, 1, 0)
 
@@ -285,6 +297,7 @@ def DrawGLScene():
     floor.drawQuad()
     test.drawQuad()
 
+    #here is the dude !
     MyBonhomme.move()
     MyBonhomme.drawBonhomme()
     
@@ -294,7 +307,6 @@ def DrawGLScene():
         
 
 def keyPressed(*args):
-    #global alpha
     global transz
     global alpha
 
@@ -331,13 +343,19 @@ def specialKeyPressed(key, x, y):
 def myMouseMove (x, y):
     global alpha
     global xold
+    #the mouse is now sensitive ! the faster you go the more you turn ! :)
     if xold<x:
-        alpha += 1
+        diff = x-xold
+        alpha = diff
+
     if xold>x:
-        alpha += -1
-    xold=x
+        diff = xold-x
+        alpha = -diff
+
 
     glutPostRedisplay()
+
+
 
 def main():
     global window
