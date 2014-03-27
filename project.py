@@ -240,34 +240,10 @@ test = quad("test", -10, 0.0, 0, 10., 0.0, 0., 0, 2., 0., 0., 0.4, 0.7)
 
 print (walls[1].vertices)
 
-def InitGL(Width, Height):
-    glClearColor(0.0, 0.0, 0.0, 0.0)
-    glClearDepth(1.0)
-    glDepthFunc(GL_LESS)
-    glEnable(GL_DEPTH_TEST)
-    glShadeModel(GL_SMOOTH)
-    
-    glMatrixMode(GL_PROJECTION)
-    glLoadIdentity()
-    gluPerspective(45.0, float(Width)/float(Height), 0.1, 100.0)
-    
-    glMatrixMode(GL_MODELVIEW)
-    
 
-def ReSizeGLScene(Width, Height):
-    if Height == 0:						# Prevent A Divide By Zero If The Window Is Too Small 
-        Height = 1
+#now our GL functions. DraxFunc is first cause most important
 
-    glViewport(0, 0, Width, Height)
-    glMatrixMode(GL_PROJECTION)
-    glLoadIdentity()
-    gluPerspective(45.0, float(Width)/float(Height), 0.1, 100.0)
-    glMatrixMode(GL_MODELVIEW)
-    
-    
-
-
-# The main drawing function. 
+# The main drawing function.
 def DrawGLScene():
     # Clear The Screen And The Depth Buffer, load the current and only matrix
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
@@ -277,43 +253,43 @@ def DrawGLScene():
     #and go a little higher than the origin to be above the floor
     #without having to rotate the whole thing..
     glTranslatef(0., -3.0, -15.0)
-
+    
     #Here are the movements you do when you move around or for/backwards
     #Hey Ben, I found out you need to do all your translations first
     #then you rotations, or you get wierd stuff...
     global alpha, transz
     glTranslatef(0,0,transz)
     glRotatef(alpha, 0, 1, 0)
-
-
+    
+    
     #the line is the y axis
     glBegin(GL_LINES)
     glColor3f(0,0,1)
     glVertex3f(0,0,0)
     glVertex3f(0,1,0)
     glEnd()
-
+    
     #and here is the floor :)
     floor.drawQuad()
     test.drawQuad()
-
+    
     #here is the dude !
     MyBonhomme.move()
     MyBonhomme.drawBonhomme()
     
-        
+    
     glutSwapBuffers()
-        
-        
+
+
 
 def keyPressed(*args):
     global transz
     global alpha
-
+    
     # If escape or q is pressed, kill everything.
     if args[0] == ESCAPE or args[0] == 'q':
         sys.exit()
-
+    
     #manual rotations and zooms
     if args[0] == 'g':
         alpha += 1
@@ -347,13 +323,41 @@ def myMouseMove (x, y):
     if xold<x:
         diff = x-xold
         alpha = diff
-
+    
     if xold>x:
         diff = xold-x
         alpha = -diff
-
-
+    
+    
     glutPostRedisplay()
+
+
+#these are the inital functions
+def InitGL(Width, Height):
+    glClearColor(0.0, 0.0, 0.0, 0.0)
+    glClearDepth(1.0)
+    glDepthFunc(GL_LESS)
+    glEnable(GL_DEPTH_TEST)
+    glShadeModel(GL_SMOOTH)
+    
+    glMatrixMode(GL_PROJECTION)
+    glLoadIdentity()
+    gluPerspective(45.0, float(Width)/float(Height), 0.1, 100.0)
+    
+    glMatrixMode(GL_MODELVIEW)
+    
+
+def ReSizeGLScene(Width, Height):
+    if Height == 0:						# Prevent A Divide By Zero If The Window Is Too Small 
+        Height = 1
+
+    glViewport(0, 0, Width, Height)
+    glMatrixMode(GL_PROJECTION)
+    glLoadIdentity()
+    gluPerspective(45.0, float(Width)/float(Height), 0.1, 100.0)
+    glMatrixMode(GL_MODELVIEW)
+    
+    
 
 
 
