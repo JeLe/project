@@ -3,16 +3,7 @@ from OpenGL.GLUT import *
 from OpenGL.GLU import *
 import sys, time
 from math import sin,cos,sqrt,pi
-<<<<<<< HEAD
-<<<<<<< HEAD
 
-
-=======
-# do you know work ????
->>>>>>> FETCH_HEAD
-=======
-# do you know work ????
->>>>>>> FETCH_HEAD
 ##########################################
 #to do list for tomorrow !
 #make draw method function so all objects can use the same one. not necessairy for now...
