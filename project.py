@@ -263,7 +263,7 @@ class wall (object):
         thingToWall.getQuadVertices()
         
         self.vertices = []
-        for vertex in thingToWall.vertices:
+        for vertex in thingToWall.vertexList:
             self.vertices.append([vertex[0], 0.1, vertex[2]])
 
 #z2-z0, z3-z1
