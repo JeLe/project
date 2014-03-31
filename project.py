@@ -3,7 +3,12 @@ from OpenGL.GLUT import *
 from OpenGL.GLU import *
 import sys, time
 from math import sin,cos,sqrt,pi
+<<<<<<< HEAD
 
+
+=======
+# do you know work ????
+>>>>>>> FETCH_HEAD
 ##########################################
 #to do list for tomorrow !
 #make draw method function so all objects can use the same one. not necessairy for now...
@@ -115,8 +120,34 @@ class brazo (object):
                                 [x, y, z+unite], [x-unite, y, z+unite], [x-unite, y-6*unite, z+unite], [x, y-6*unite, z+unite],
                                 [x, y-6*unite, z], [x-unite, y-6*unite, z], [x-unite, y-6*unite, z+unite], [x, y-6*unite, z+unite]]
 
+class cou (object):
+    def __init__ (self, Ax, Ay, Az):
+        self.Ax = Ax
+        self.Ay = Ay
+        self.Az = Az
 
+    def getPoints(self):
+        global unite
+        x = self.Ax+3*unite
+        y = self.Ay+13*unite
+        z = self.Az
+        self.couVertexList = [[x, y, z], [x+unite, y, z], [x+unite, y+unite, z], [x, y+unite, z],
+                              [x, y, z], [x, y+unite, z], [x, y+unite, z+unite], [x, y, z+unite],
+                              [x, y, z+unite], [x, y+unite, z+unite], [x+unite, y+unite, z+unite], [x+unite, y, z+unite],
+                              [x+unite, y, z], [x+unite, y+unite, z], [x+unite, y+unite, z+unite], [x+unite, y, z+unite]]
 
+class kopf (object):
+    def __init__ (self, Ax, Ay, Az):
+        self.Ax = Ax
+        self.Ay = Ay
+        self.Az = Az
+
+    def getPoints(self):
+        global unite
+        x = self.Ax+2*unite
+        y = self.Ay+14*unite
+        z = self.Az
+        self.kopfVertexList = [[x, y, z], []
 class bonhomme (object):
     def __init__(self, Ax, Ay, Az):
         self.Ax = Ax
@@ -140,6 +171,8 @@ class bonhomme (object):
         miBrazo.getPoints()
         miBrazo2 = brazo(self.Ax+8*unite, self.Ay, self.Az)
         miBrazo2.getPoints()
+        monCou = cou(self.Ax, self.Ay, self.Az)
+        monCou.getPoints()
         self.vertexList = []
         self.vertexList.append(myFoot.footVertexList)
         self.vertexList.append(maJambe.jambeVertexList)
@@ -148,6 +181,7 @@ class bonhomme (object):
         self.vertexList.append(myTorse.torseVertexList)
         self.vertexList.append(miBrazo.brazoVertexList)
         self.vertexList.append(miBrazo2.brazoVertexList)
+        self.vertexList.append(moncou.couVertexList)
     
     def drawBonhomme(self):
         self.getPoints()
@@ -331,6 +365,29 @@ def myMouseMove (x, y):
     
     glutPostRedisplay()
 
+class gate (object):
+    def __init__ (self):
+        True
+
+    def checkifgate(self):
+        if machine.list[1][0]<mybonhomme.Ax<machine.list[1][0]+1 and machine.list[1][2]<mybonhomme.Az<machine.list[2][2] :
+                print("Youpi")
+        else :
+            print("notyoupi")
+
+#mygate=gate()
+#gates.append(mygate)
+def Mouseclick (button, state, x, y):
+     if button == GLUT_LEFT_BUTTON:
+         print("prout")
+         for element in gates :
+            element.checkifgate()
+def CalculateNormal():
+    U=[MyBonhomme.vertexList[1][0]-MyBonhomme.vertexList[0][0],MyBonhomme.vertexList[1][1]-MyBonhomme.vertexList[0][1],MyBonhomme.vertexList[1][2]-MyBonhomme.vertexList[0][2]]
+    V=[MyBonhomme.vertexList[2][0]-MyBonhomme.vertexList[0][0],MyBonhomme.vertexList[2][1]-MyBonhomme.vertexList[0][1],MyBonhomme.vertexList[2][2]-MyBonhomme.vertexList[0][2]]
+    N=[CalculateNormal.U[1]*CalculateNormal.V[2]-CalculateNormal.U[2]*CalculateNormal.V[1],CalculateNormal.U[2]*CalculateNormal.V[1]-CalculateNormal.U[1]*CalculateNormal.V[2],CalculateNormal.U[0]*CalculateNormal.V[1]-CalculateNormal.U[1]*CalculateNormal.V[0]]
+    print("caca")
+
 
 #these are the inital functions
 def InitGL(Width, Height):
@@ -356,8 +413,6 @@ def ReSizeGLScene(Width, Height):
     glLoadIdentity()
     gluPerspective(45.0, float(Width)/float(Height), 0.1, 100.0)
     glMatrixMode(GL_MODELVIEW)
-    
-    
 
 
 
