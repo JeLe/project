@@ -56,12 +56,12 @@ class foot (object):
         x = self.Ax
         y = self.Ay
         z = self.Az
-        self.footVertexList = [[x, y, z], [x+3*unite, y , z], [x+3*unite, y, z+3*unite], [x, y, z+3*unite],
-                               [x, y, z], [x+3*unite, y , z], [x+3*unite, y+3*unite , z], [x, y+3*unite, z],
-                               [x, y, z], [x, y+3*unite, z], [x, y+3*unite, z+3*unite], [x, y, z+3*unite],
-                               [x, y, z+3*unite], [x, y+3*unite, z+3*unite], [x+3*unite, y+3*unite, z+3*unite], [x+3*unite, y, z+3*unite],
-                               [x+3*unite, y , z], [x+3*unite, y+3*unite , z], [x+3*unite, y+3*unite , z+3*unite], [x+3*unite, y, z+3*unite],
-                               [x, y+3*unite, z], [x+3*unite, y+3*unite, z], [x+3*unite, y+3*unite, z+3*unite],[x, y+3*unite, z+3*unite]]
+        self.footVertexList = [[x, y, z], [x+2*unite, y , z], [x+2*unite, y, z+3*unite], [x, y, z+3*unite],
+                               [x, y, z], [x+2*unite, y , z], [x+2*unite, y+unite , z], [x, y+unite, z],
+                               [x, y, z], [x, y+unite, z], [x, y+unite, z+3*unite], [x, y, z+3*unite],
+                               [x, y, z+3*unite], [x, y+unite, z+3*unite], [x+2*unite, y+unite, z+3*unite], [x+2*unite, y, z+3*unite],
+                               [x+2*unite, y , z], [x+2*unite, y+unite , z], [x+2*unite, y+unite , z+3*unite], [x+2*unite, y, z+3*unite],
+                               [x, y+unite, z], [x+2*unite, y+unite, z], [x+2*unite, y+unite, z+3*unite],[x, y+unite, z+3*unite]]
 
 
 class jambe (object):
@@ -73,12 +73,12 @@ class jambe (object):
     def getPoints(self):
         global unite
         x = self.Ax
-        y = self.Ay+3*unite
+        y = self.Ay+unite
         z = self.Az
-        self.jambeVertexList = [[x, y, z], [x, y+5*unite, z], [x+3*unite, y+5*unite, z], [x+3*unite, y, z],
-                                [x, y, z], [x, y+5*unite, z], [x, y+5*unite, z+unite], [x, y, z+unite],
-                                [x+3*unite, y, z], [x+3*unite, y+5*unite, z], [x+3*unite, y+5*unite, z+unite], [x+3*unite, y, z+unite],
-                                [x, y, z+unite], [x, y+5*unite, z+unite], [x+3*unite, y+5*unite, z+unite], [x+3*unite, y, z+unite]]
+        self.jambeVertexList = [[x, y, z], [x, y+8*unite, z], [x+2*unite, y+8*unite, z], [x+2*unite, y, z],
+                                [x, y, z], [x, y+8*unite, z], [x, y+8*unite, z+2*unite], [x, y, z+2*unite],
+                                [x+2*unite, y, z], [x+2*unite, y+8*unite, z], [x+2*unite, y+8*unite, z+unite], [x+2*unite, y, z+unite],
+                                [x, y, z+2*unite], [x, y+8*unite, z+2*unite], [x+2*unite, y+8*unite, z+2*unite], [x+2*unite, y, z+2*unite]]
 
 
 class torse (object):
@@ -90,12 +90,12 @@ class torse (object):
     def getPoints(self):
         global unite
         x = self.Ax
-        y = self.Ay+8*unite
+        y = self.Ay+9*unite
         z = self.Az
-        self.torseVertexList = [[x, y, z], [x, y+5*unite, z], [x+7*unite, y+5*unite, z], [x+7*unite, y, z],
-                                [x, y, z], [x, y+5*unite, z], [x, y+5*unite, z+unite], [x, y, z+unite],
-                                [x+7*unite, y, z], [x+7*unite, y+5*unite, z], [x+7*unite, y+5*unite, z+unite], [x+7*unite, y, z+unite],
-                                [x, y, z+unite], [x, y+5*unite, z+unite], [x+7*unite, y+5*unite, z+unite], [x+7*unite, y, z+unite]]
+        self.torseVertexList = [[x, y, z], [x, y+7*unite, z], [x+5*unite, y+7*unite, z], [x+5*unite, y, z],
+                                [x, y, z], [x, y+7*unite, z], [x, y+7*unite, z+2*unite], [x, y, z+2*unite],
+                                [x+5*unite, y, z], [x+5*unite, y+7*unite, z], [x+5*unite, y+7*unite, z+2*unite], [x+5*unite, y, z+2*unite],
+                                [x, y, z+2*unite], [x, y+7*unite, z+2*unite], [x+5*unite, y+7*unite, z+2*unite], [x+5*unite, y, z+2*unite]]
                                 
 class brazo (object):
     def __init__ (self, Ax, Ay, Az):
@@ -106,14 +106,14 @@ class brazo (object):
     def getPoints(self):
         global unite
         x = self.Ax
-        y = self.Ay+13*unite
+        y = self.Ay+16*unite
         z = self.Az
-        self.brazoVertexList = [[x, y, z], [x-unite, y, z], [x-unite, y, z+unite], [x, y, z+unite],
-                                [x, y, z], [x-unite, y, z], [x-unite, y-6*unite, z], [x, y-6*unite, z],
-                                [x-unite, y, z], [x-unite, y, z+unite], [x-unite, y-6*unite, z+unite], [x-unite, y-6*unite, z],
-                                [x, y, z], [x, y, z+unite], [x, y-6*unite, z+unite], [x, y-6*unite, z],
-                                [x, y, z+unite], [x-unite, y, z+unite], [x-unite, y-6*unite, z+unite], [x, y-6*unite, z+unite],
-                                [x, y-6*unite, z], [x-unite, y-6*unite, z], [x-unite, y-6*unite, z+unite], [x, y-6*unite, z+unite]]
+        self.brazoVertexList = [[x, y, z+0.5*unite], [x-unite, y, z+0.5*unite], [x-unite, y, z+1.5*unite], [x, y, z+1.5*unite],
+                                [x, y, z+0.5*unite], [x-unite, y, z+0.5*unite], [x-unite, y-9*unite, z+0.5*unite], [x, y-9*unite, z+0.5*unite],
+                                [x-unite, y, z+0.5*unite], [x-unite, y, z+1.5*unite], [x-unite, y-9*unite, z+1.5*unite], [x-unite, y-9*unite, z+0.5*unite],
+                                [x, y, z+0.5*unite], [x, y, z+1.5*unite], [x, y-9*unite, z+1.5*unite], [x, y-9*unite, z+0.5*unite],
+                                [x, y, z+1.5*unite], [x-unite, y, z+1.5*unite], [x-unite, y-9*unite, z+1.5*unite], [x, y-9*unite, z+1.5*unite],
+                                [x, y-9*unite, z+0.5*unite], [x-unite, y-9*unite, z+0.5*unite], [x-unite, y-9*unite, z+1.5*unite], [x, y-9*unite, z+1.5*unite]]
 
 class cou (object):
     def __init__ (self, Ax, Ay, Az):
@@ -123,13 +123,13 @@ class cou (object):
 
     def getPoints(self):
         global unite
-        x = self.Ax+3*unite
-        y = self.Ay+13*unite
+        x = self.Ax+2*unite
+        y = self.Ay+16*unite
         z = self.Az
-        self.couVertexList = [[x, y, z], [x+unite, y, z], [x+unite, y+unite, z], [x, y+unite, z],
-                              [x, y, z], [x, y+unite, z], [x, y+unite, z+unite], [x, y, z+unite],
-                              [x, y, z+unite], [x, y+unite, z+unite], [x+unite, y+unite, z+unite], [x+unite, y, z+unite],
-                              [x+unite, y, z], [x+unite, y+unite, z], [x+unite, y+unite, z+unite], [x+unite, y, z+unite]]
+        self.couVertexList = [[x, y, z+0.5*unite], [x+unite, y, z+0.5*unite], [x+unite, y+unite, z+0.5*unite], [x, y+unite, z+0.5*unite],
+                              [x, y, z+0.5*unite], [x, y+unite, z+0.5*unite], [x, y+unite, z+1.5*unite], [x, y, z+1.5*unite],
+                              [x, y, z+1.5*unite], [x, y+unite, z+1.5*unite], [x+unite, y+unite, z+1.5*unite], [x+unite, y, z+1.5*unite],
+                              [x+unite, y, z+0.5*unite], [x+unite, y+unite, z+0.5*unite], [x+unite, y+unite, z+1.5*unite], [x+unite, y, z+1.5*unite]]
 
 class kopf (object):
     def __init__ (self, Ax, Ay, Az):
@@ -139,10 +139,16 @@ class kopf (object):
 
     def getPoints(self):
         global unite
-        x = self.Ax+2*unite
-        y = self.Ay+14*unite
+        x = self.Ax+unite
+        y = self.Ay+17*unite
         z = self.Az
-        self.kopfVertexList = [[x, y, z], []
+        self.kopfVertexList = [[x, y, z], [x+3*unite, y, z], [x+3*unite, y, z+3*unite], [x, y, z+3*unite],
+                               [x, y, z], [x+3*unite, y, z], [x+3*unite, y+3*unite, z], [x, y+3*unite, z],
+                               [x, y, z], [x, y+3*unite, z], [x, y+3*unite, z+3*unite], [x, y, z+3*unite],
+                               [x, y, z+3*unite], [x+3*unite, y, z+3*unite], [x+3*unite, y+3*unite, z+3*unite], [x, y+3*unite, z+3*unite],
+                               [x+3*unite, y, z], [x+3*unite, y+3*unite, z], [x+3*unite, y+3*unite, z+3*unite], [x+3*unite, y, z+3*unite],
+                               [x, y+3*unite, z], [x+3*unite, y+3*unite, z], [x+3*unite, y+3*unite, z+3*unite], [x, y+3*unite, z+3*unite]]
+                               
 class bonhomme (object):
     def __init__(self, Ax, Ay, Az):
         self.Ax = Ax
@@ -154,20 +160,22 @@ class bonhomme (object):
         global unite
         myFoot = foot(self.Ax, self.Ay, self.Az)
         myFoot.getPoints()
-        myFoot2 = foot(self.Ax+4*unite, self.Ay, self.Az)
+        myFoot2 = foot(self.Ax+3*unite, self.Ay, self.Az)
         myFoot2.getPoints()
         maJambe = jambe(self.Ax, self.Ay, self.Az)
         maJambe.getPoints()
-        maJambe2 = jambe(self.Ax+4*unite, self.Ay, self.Az)
+        maJambe2 = jambe(self.Ax+3*unite, self.Ay, self.Az)
         maJambe2.getPoints()
         myTorse = torse(self.Ax, self.Ay, self.Az)
         myTorse.getPoints()
         miBrazo = brazo(self.Ax, self.Ay, self.Az)
         miBrazo.getPoints()
-        miBrazo2 = brazo(self.Ax+8*unite, self.Ay, self.Az)
+        miBrazo2 = brazo(self.Ax+6*unite, self.Ay, self.Az)
         miBrazo2.getPoints()
         monCou = cou(self.Ax, self.Ay, self.Az)
         monCou.getPoints()
+        meineKopf = kopf(self.Ax, self.Ay, self.Az)
+        meineKopf.getPoints()
         self.vertexList = []
         self.vertexList.append(myFoot.footVertexList)
         self.vertexList.append(maJambe.jambeVertexList)
@@ -176,7 +184,8 @@ class bonhomme (object):
         self.vertexList.append(myTorse.torseVertexList)
         self.vertexList.append(miBrazo.brazoVertexList)
         self.vertexList.append(miBrazo2.brazoVertexList)
-        self.vertexList.append(moncou.couVertexList)
+        self.vertexList.append(monCou.couVertexList)
+        self.vertexList.append(meineKopf.kopfVertexList)
     
     def drawBonhomme(self):
         self.getPoints()
