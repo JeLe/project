@@ -4,8 +4,12 @@ from OpenGL.GLU import *
 import sys, time
 from math import sin,cos,sqrt,pi
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 
+=======
+# do you know work ????
+>>>>>>> FETCH_HEAD
 =======
 # do you know work ????
 >>>>>>> FETCH_HEAD
