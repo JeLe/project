@@ -331,6 +331,29 @@ def myMouseMove (x, y):
     
     glutPostRedisplay()
 
+class gate (object):
+    def __init__ (self):
+        True
+
+    def checkifgate(self):
+        if machine.list[1][0]<mybonhomme.Ax<machine.list[1][0]+1 and machine.list[1][2]<mybonhomme.Az<machine.list[2][2] :
+                print("Youpi")
+        else :
+            print("notyoupi")
+
+#mygate=gate()
+#gates.append(mygate)
+def Mouseclick (button, state, x, y):
+     if button == GLUT_LEFT_BUTTON:
+         print("prout")
+         for element in gates :
+            element.checkifgate()
+def CalculateNormal():
+    U=[MyBonhomme.vertexList[1][0]-MyBonhomme.vertexList[0][0],MyBonhomme.vertexList[1][1]-MyBonhomme.vertexList[0][1],MyBonhomme.vertexList[1][2]-MyBonhomme.vertexList[0][2]]
+    V=[MyBonhomme.vertexList[2][0]-MyBonhomme.vertexList[0][0],MyBonhomme.vertexList[2][1]-MyBonhomme.vertexList[0][1],MyBonhomme.vertexList[2][2]-MyBonhomme.vertexList[0][2]]
+    N=[CalculateNormal.U[1]*CalculateNormal.V[2]-CalculateNormal.U[2]*CalculateNormal.V[1],CalculateNormal.U[2]*CalculateNormal.V[1]-CalculateNormal.U[1]*CalculateNormal.V[2],CalculateNormal.U[0]*CalculateNormal.V[1]-CalculateNormal.U[1]*CalculateNormal.V[0]]
+    print("caca")
+
 
 #these are the inital functions
 def InitGL(Width, Height):
@@ -356,8 +379,6 @@ def ReSizeGLScene(Width, Height):
     glLoadIdentity()
     gluPerspective(45.0, float(Width)/float(Height), 0.1, 100.0)
     glMatrixMode(GL_MODELVIEW)
-    
-    
 
 
 
