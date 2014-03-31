@@ -42,6 +42,8 @@ gates = []
 
 ########################################
 #ALL THE OBJECT CLASSES
+#
+#All main vertex lists must be self.vertexList, except for gates...
 
 #this is where you put your dude classes
 unite = .5
@@ -211,26 +213,6 @@ class bonhomme (object):
 
 #END OF DUDE
 
-class wall (object):
-    def __init__(self, thingToWall):
-        #i don't really need any thing to be in my wall yet...
-        self.getWallVertices(thingToWall)
-        walls.append(self)
-    
-    def getWallVertices(self, thingToWall):
-        thingToWall.getQuadVertices()
-        
-        self.vertices = []
-        for vertex in thingToWall.vertices:
-            self.vertices.append([vertex[0], 0.1, vertex[2]])
-
-#z2-z0, z3-z1
-    def checkNotOnWall(self):
-        self.equation1 = (self.vertices[2][2]-self.vertices[0][2])/(self.vertices[2][0]-self.vertices[0][0])
-
-#here we will put the gate class
-
-
 class quad(object):
     def __init__(self, name, Ax, Ay, Az, Vx, Vy, Vz, Wx, Wy, Wz, red, green, blue):
         self.name = name
@@ -250,19 +232,19 @@ class quad(object):
         #I ommited the creation of the vertices here because they might need to be regurlarly updated...
         #But all statics wont need to be updated !!
         self.wall = wall(self)
-
+    
     def getQuadVertices(self):
-        self.vertices = [[self.Ax, self.Ay, self.Az], [self.Ax+self.Vx, self.Ay+self.Vy, self.Az+self.Vz],[self.Ax+self.Vx+self.Wx, self.Ay+self.Vy+self.Wy, self.Az+self.Vz+self.Wz], [self.Ax+self.Wx, self.Ay+self.Wy, self.Az+self.Wz]]
-
+        self.vertexList = [[self.Ax, self.Ay, self.Az], [self.Ax+self.Vx, self.Ay+self.Vy, self.Az+self.Vz],[self.Ax+self.Vx+self.Wx, self.Ay+self.Vy+self.Wy, self.Az+self.Vz+self.Wz], [self.Ax+self.Wx, self.Ay+self.Wy, self.Az+self.Wz]]
+    
     def drawQuad(self):
         self.getQuadVertices()
         glBegin(GL_QUADS)
         glColor3f(self.red, self.green, self.blue)
-        for vertex in self.vertices:
+        for vertex in self.vertexList:
             glVertex3f(vertex[0], vertex[1], vertex[2])
         glEnd()
-
-#self.wall.getWallVertices(self)
+        
+        #self.wall.getWallVertices(self)
         if self.name != "floor":
             glBegin(GL_QUADS)
             glColor3f(0., 1., 0.)
@@ -270,13 +252,48 @@ class quad(object):
                 glVertex3f(vertex[0], vertex[1], vertex[2])
             glEnd()
 
-#here is where wa instanciate all the objects....
+
+class wall (object):
+    def __init__(self, thingToWall):
+        #i don't really need any thing to be in my wall yet...
+        self.getWallVertices(thingToWall)
+        walls.append(self)
+    
+    def getWallVertices(self, thingToWall):
+        thingToWall.getQuadVertices()
+        
+        self.vertices = []
+        for vertex in thingToWall.vertices:
+            self.vertices.append([vertex[0], 0.1, vertex[2]])
+
+#z2-z0, z3-z1
+    def checkNotOnWall(self):
+        self.equation1 = (self.vertices[2][2]-self.vertices[0][2])/(self.vertices[2][0]-self.vertices[0][0])
+
+#here we will put the gate class
+
+class gate (object):
+    def __init__ (self):
+        True
+    
+    def checkifgate(self):
+        if machine.list[1][0]<mybonhomme.Ax<machine.list[1][0]+1 and machine.list[1][2]<mybonhomme.Az<machine.list[2][2] :
+            print("Youpi")
+        else :
+            print("notyoupi")
+
+#here is where we instanciate all the objects....
 #we now need to get the walls for all the machines and ... youpii
 
 floor = quad("floor", -5, 0.0, 5, 0., 0.0, -10., 10., 0.0, 0., 1.0, 1., 0.)
 test = quad("test", -10, 0.0, 0, 10., 0.0, 0., 0, 2., 0., 0., 0.4, 0.7)
 
-print (walls[1].vertices)
+
+def CalculateNormal():
+    U=[MyBonhomme.vertexList[1][0]-MyBonhomme.vertexList[0][0],MyBonhomme.vertexList[1][1]-MyBonhomme.vertexList[0][1],MyBonhomme.vertexList[1][2]-MyBonhomme.vertexList[0][2]]
+    V=[MyBonhomme.vertexList[2][0]-MyBonhomme.vertexList[0][0],MyBonhomme.vertexList[2][1]-MyBonhomme.vertexList[0][1],MyBonhomme.vertexList[2][2]-MyBonhomme.vertexList[0][2]]
+    N=[CalculateNormal.U[1]*CalculateNormal.V[2]-CalculateNormal.U[2]*CalculateNormal.V[1],CalculateNormal.U[2]*CalculateNormal.V[1]-CalculateNormal.U[1]*CalculateNormal.V[2],CalculateNormal.U[0]*CalculateNormal.V[1]-CalculateNormal.U[1]*CalculateNormal.V[0]]
+    print("caca")
 
 
 #now our GL functions. DraxFunc is first cause most important
@@ -369,28 +386,13 @@ def myMouseMove (x, y):
     
     glutPostRedisplay()
 
-class gate (object):
-    def __init__ (self):
-        True
 
-    def checkifgate(self):
-        if machine.list[1][0]<mybonhomme.Ax<machine.list[1][0]+1 and machine.list[1][2]<mybonhomme.Az<machine.list[2][2] :
-                print("Youpi")
-        else :
-            print("notyoupi")
-
-#mygate=gate()
-#gates.append(mygate)
 def Mouseclick (button, state, x, y):
      if button == GLUT_LEFT_BUTTON:
          print("prout")
          for element in gates :
             element.checkifgate()
-def CalculateNormal():
-    U=[MyBonhomme.vertexList[1][0]-MyBonhomme.vertexList[0][0],MyBonhomme.vertexList[1][1]-MyBonhomme.vertexList[0][1],MyBonhomme.vertexList[1][2]-MyBonhomme.vertexList[0][2]]
-    V=[MyBonhomme.vertexList[2][0]-MyBonhomme.vertexList[0][0],MyBonhomme.vertexList[2][1]-MyBonhomme.vertexList[0][1],MyBonhomme.vertexList[2][2]-MyBonhomme.vertexList[0][2]]
-    N=[CalculateNormal.U[1]*CalculateNormal.V[2]-CalculateNormal.U[2]*CalculateNormal.V[1],CalculateNormal.U[2]*CalculateNormal.V[1]-CalculateNormal.U[1]*CalculateNormal.V[2],CalculateNormal.U[0]*CalculateNormal.V[1]-CalculateNormal.U[1]*CalculateNormal.V[0]]
-    print("caca")
+
 
 
 #these are the inital functions
