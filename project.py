@@ -289,11 +289,19 @@ floor = quad("floor", -5, 0.0, 5, 0., 0.0, -10., 10., 0.0, 0., 1.0, 1., 0.)
 test = quad("test", -10, 0.0, 0, 10., 0.0, 0., 0, 2., 0., 0., 0.4, 0.7)
 
 
-def CalculateNormal():
-    U=[MyBonhomme.vertexList[1][0]-MyBonhomme.vertexList[0][0],MyBonhomme.vertexList[1][1]-MyBonhomme.vertexList[0][1],MyBonhomme.vertexList[1][2]-MyBonhomme.vertexList[0][2]]
-    V=[MyBonhomme.vertexList[2][0]-MyBonhomme.vertexList[0][0],MyBonhomme.vertexList[2][1]-MyBonhomme.vertexList[0][1],MyBonhomme.vertexList[2][2]-MyBonhomme.vertexList[0][2]]
-    N=[CalculateNormal.U[1]*CalculateNormal.V[2]-CalculateNormal.U[2]*CalculateNormal.V[1],CalculateNormal.U[2]*CalculateNormal.V[1]-CalculateNormal.U[1]*CalculateNormal.V[2],CalculateNormal.U[0]*CalculateNormal.V[1]-CalculateNormal.U[1]*CalculateNormal.V[0]]
-    print("caca")
+#Please call your vertex list Vertex.List
+#And in init(if static) or in getVertices (if not static) add this line self.normalList=CalculateNormal(self)
+def CalculateNormal(objectToNormalize) :
+    q=0
+    normalList=[]
+    while q!=len(objectToNormalize.VertexList)-4:
+        U=[objectToNormalize.VertexList[q+1][0]-objectToNormalize.VertexList[q][0],objectToNormalize.VertexList[q+1][1]-objectToNormalize.VertexList[q][1],objectToNormalize.VertexList[q+1][2]-objectToNormalize.VertexList[q][2]]
+        V=[objectToNormalize.VertexList[q+2][0]-objectToNormalize.VertexList[q][0],objectToNormalize.VertexList[q+2][1]-objectToNormalize.VertexList[q][1],objectToNormalize.VertexList[q+2][2]-objectToNormalize.VertexList[q][2]]
+        N=[U[1]*V[2]-U[2]*V[1], U[2]*V[1]-U[1]*V[2], U[0]*V[1]-U[1]*V[0]]
+        normalList.extend(N)
+        q+=4
+        print("caca")
+        return(normalList)
 
 
 #now our GL functions. DraxFunc is first cause most important
