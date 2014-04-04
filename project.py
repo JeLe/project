@@ -3,6 +3,8 @@ from OpenGL.GLUT import *
 from OpenGL.GLU import *
 import sys, time
 from math import sin,cos,sqrt,pi
+import numpy
+
 
 ##########################################
 #to do list for tomorrow !
@@ -27,17 +29,23 @@ from math import sin,cos,sqrt,pi
 ESCAPE = '\033'
 # Number of the glut window.
 window = 0
-alpha = -90
+alpha = 0
 transz = 0
+teta = 0
 xold = 600
 
 forward = 0
 direction = 0
 
+#colors with numpy
+cyan = numpy.array((0., .8, .8, 1.), 'f')
+red = numpy.array((1., 0., 0., 1.), 'f')
+white = numpy.array((1., 1., 1., 1.), 'f')
 
 #wall and door buffers
 walls = []
 gates = []
+drawables = []
 
 
 ########################################
@@ -46,7 +54,7 @@ gates = []
 #All main vertex lists must be self.vertexList, except for gates...
 
 #this is where you put your dude classes
-unite = .5
+unite = .3
 class foot (object):
     def __init__(self, Ax, Ay, Az):
         self.Ax = Ax
@@ -179,23 +187,30 @@ class bonhomme (object):
         meineKopf = kopf(self.Ax, self.Ay, self.Az)
         meineKopf.getPoints()
         self.vertexList = []
-        self.vertexList.append(myFoot.footVertexList)
-        self.vertexList.append(maJambe.jambeVertexList)
-        self.vertexList.append(myFoot2.footVertexList)
-        self.vertexList.append(maJambe2.jambeVertexList)
-        self.vertexList.append(myTorse.torseVertexList)
-        self.vertexList.append(miBrazo.brazoVertexList)
-        self.vertexList.append(miBrazo2.brazoVertexList)
-        self.vertexList.append(monCou.couVertexList)
-        self.vertexList.append(meineKopf.kopfVertexList)
+        self.vertexList.extend(myFoot.footVertexList)
+        self.vertexList.extend(maJambe.jambeVertexList)
+        self.vertexList.extend(myFoot2.footVertexList)
+        self.vertexList.extend(maJambe2.jambeVertexList)
+        self.vertexList.extend(myTorse.torseVertexList)
+        self.vertexList.extend(miBrazo.brazoVertexList)
+        self.vertexList.extend(miBrazo2.brazoVertexList)
+        self.vertexList.extend(monCou.couVertexList)
+        self.vertexList.extend(meineKopf.kopfVertexList)
+        
+        self.normalList=CalculateNormal(self)
     
-    def drawBonhomme(self):
+    def draw(self):
         self.getPoints()
         glBegin(GL_QUADS)
-        for truc in self.vertexList:
-            for item in truc:
-                glColor3f(0.7, 0.4, 0.9)
-                glVertex3f(item[0], item[1], item[2])
+        counter = 0
+        for item in self.vertexList:
+            #this works because we enabled it in init.
+            #so if we need ambient, diffuse and specular lighting I don't know if it's wise...
+            glColor3f(0.7, 0.4, 0.9)
+            #glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, cyan)
+            #glNormal3d(self.normalList[counter][0],self.normalList[++counter][1],self.normalList[++counter][2])
+            glVertex3f(item[0], item[1], item[2])
+        glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, white)
         glEnd()
     
     def move(self):
@@ -212,11 +227,70 @@ class bonhomme (object):
 
 
 #END OF DUDE
+machineUnit = 3
+
+class machine(object):
+    def __init__(self,name,Ax,Ay,Az):
+        self.name=name
+        self.Ax=Ax
+        self.Ay=Ay
+        self.Az=Az
+        self.type = "static"
+        self.getPoints()
+        self.normalList=CalculateNormal(self)
+        print(self.normalList)
+    
+    def getPoints(self):
+        global machineUnit
+        self.vertexList = [[self.Ax+0,self.Ay+0,self.Az+0],[self.Ax+0.5*machineUnit,self.Ay+0,self.Az+0],[self.Ax+0.5*machineUnit,self.Ay+0,self.Az-0.6*machineUnit],[self.Ax+0,self.Ay+0,self.Az-0.6*machineUnit],
+                           
+                           
+                           [self.Ax+0.5*machineUnit,self.Ay+0,self.Az+0],[self.Ax+0.5*machineUnit,self.Ay+0,self.Az-0.6*machineUnit],[self.Ax+0.5*machineUnit,self.Ay+0.6*machineUnit,self.Az-0.6*machineUnit],[self.Ax+0.5*machineUnit,self.Ay+0.6*machineUnit,self.Az+0],
+                           
+                           [self.Ax+0.5*machineUnit,self.Ay+0.6*machineUnit,self.Az+0],[self.Ax+0.6*machineUnit,self.Ay+0.7*machineUnit,self.Az+0],[self.Ax+0.6*machineUnit,self.Ay+0.7*machineUnit,self.Az-0.6*machineUnit],[self.Ax+0.5*machineUnit,self.Ay+0.6*machineUnit,self.Az-0.6*machineUnit],
+                           
+                           [self.Ax+0.6*machineUnit,self.Ay+0.7*machineUnit,self.Az+0],[self.Ax+0.6*machineUnit,self.Ay+0.8*machineUnit,self.Az+0],[self.Ax+0.6*machineUnit,self.Ay+0.8*machineUnit,self.Az-0.6*machineUnit],[self.Ax+0.6*machineUnit,self.Ay+0.7*machineUnit,self.Az-0.6*machineUnit],
+                           
+                           [self.Ax+0.6*machineUnit,self.Ay+0.8*machineUnit,self.Az+0],[self.Ax+0.3*machineUnit,self.Ay+0.9*machineUnit,self.Az+0],[self.Ax+0.3*machineUnit,self.Ay+0.9*machineUnit,self.Az-0.6*machineUnit],[self.Ax+0.6*machineUnit,self.Ay+0.8*machineUnit,self.Az-0.6*machineUnit],
+                           
+                           [self.Ax+0.3*machineUnit,self.Ay+0.9*machineUnit,self.Az+0],[self.Ax+0.3*machineUnit,self.Ay+1.3*machineUnit,self.Az+0],[self.Ax+0.3*machineUnit,self.Ay+1.3*machineUnit,self.Az-0.6*machineUnit],[self.Ax+0.3*machineUnit,self.Ay+0.9*machineUnit,self.Az-0.6*machineUnit],
+                           
+                           [self.Ax+0.3*machineUnit,self.Ay+1.3*machineUnit,self.Az+0],[self.Ax+0.4*machineUnit,self.Ay+1.4*machineUnit,self.Az+0],[self.Ax+0.4*machineUnit,self.Ay+1.4*machineUnit,self.Az-0.6*machineUnit],[self.Ax+0.3*machineUnit,self.Ay+1.3*machineUnit,self.Az-0.6*machineUnit],
+                           
+                           [self.Ax+0.4*machineUnit,self.Ay+1.4*machineUnit,self.Az+0],[self.Ax+0.4*machineUnit,self.Ay+1.6*machineUnit,self.Az+0],[self.Ax+0.4*machineUnit,self.Ay+1.6*machineUnit,self.Az-0.6*machineUnit],[self.Ax+0.4*machineUnit,self.Ay+1.4*machineUnit,self.Az-0.6*machineUnit],
+                           
+                           [self.Ax+0.4*machineUnit,self.Ay+1.6*machineUnit,self.Az+0],[self.Ax+0.4*machineUnit,self.Ay+1.6*machineUnit,self.Az-0.6*machineUnit],[self.Ax+0,self.Ay+1.6*machineUnit,self.Az-0.6*machineUnit],[self.Ax+0,self.Ay+1.6*machineUnit,self.Az+0],
+                           
+                           [self.Ax+0,self.Ay+1.6*machineUnit,self.Az+0],[self.Ax+0,self.Ay+1.6*machineUnit,self.Az-0.6*machineUnit],[self.Ax+0,self.Ay+0,self.Az-0.6*machineUnit],[self.Ax+0,self.Ay+0,self.Az+0],
+                           
+                           #the sides (dark or not, as you want)
+                           [self.Ax+0,self.Ay+0,self.Az+0],[self.Ax+0.3*machineUnit,self.Ay+0,self.Az+0],[self.Ax+0.3*machineUnit,self.Ay+1.6*machineUnit,self.Az+0],[self.Ax+0,self.Ay+1.6*machineUnit,self.Az+0],
+                           
+                           #[self.Ax+0.3,self.Ay+0,self.Az+0],[self.Ax+0.5,self.Ay+0,self.Az+0],[self.Ax+0.5,self.Ay+0.6,self.Az+0],[self.Ax+0,3,self.Ay+0.6,self.Az+0],
+                           
+                           [self.Ax+0.5*machineUnit,self.Ay+0.6*machineUnit,self.Az+0],[self.Ax+0.3*machineUnit,self.Ay+0.6*machineUnit,self.Az+0],[self.Ax+0.3*machineUnit,self.Ay+0.7*machineUnit,self.Az+0],[self.Ax+0.6*machineUnit,self.Ay+0.7*machineUnit,self.Az+0],
+                           
+                           #[self.Ax+0.6*machineUnit,self.Ay+0.7*machineUnit,self.Az+0],[self.Ax+0.3*machineUnit,self.Ay+0.7*machineUnit,self.Az+0],[self.Ax+0.3*machineUnit,self.Ay+0.8*machineUnit,self.Az+0],[self.Ax+0.6*machineUnit,self.Ay+0.9*machineUnit,self.Az+0],
+                           
+                           [self.Ax+0.3*machineUnit,self.Ay+1.3*machineUnit,self.Az+0],[self.Ax+0.4*machineUnit,self.Ay+1.4*machineUnit,self.Az+0],[self.Ax+0.4*machineUnit,self.Ay+1.6*machineUnit,self.Az+0],[self.Ax+0.3*machineUnit,self.Ay+1.3*machineUnit,self.Az+0]]
+    
+    
+    def draw(self):
+        glBegin(GL_QUADS)
+        glColor3f(0.2, 0.4, 0.6)
+        counter = 0
+        for item in self.vertexList:
+            glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, red)
+            #glNormal3d(self.normalList[counter][0],self.normalList[++counter][1],self.normalList[++counter][2])
+            glVertex3f(item[0], item[1], item[2])
+        glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, white)
+        glEnd()
+
 
 class quad(object):
     def __init__(self, name, Ax, Ay, Az, Vx, Vy, Vz, Wx, Wy, Wz, red, green, blue):
         self.name = name
-        #self.type = "static or not??"
+        self.type = "static"
         self.Ax = Ax
         self.Ay = Ay
         self.Az = Az
@@ -233,11 +307,11 @@ class quad(object):
         #But all statics wont need to be updated !!
         self.wall = wall(self)
     
-    def getQuadVertices(self):
+    def getPoints(self):
         self.vertexList = [[self.Ax, self.Ay, self.Az], [self.Ax+self.Vx, self.Ay+self.Vy, self.Az+self.Vz],[self.Ax+self.Vx+self.Wx, self.Ay+self.Vy+self.Wy, self.Az+self.Vz+self.Wz], [self.Ax+self.Wx, self.Ay+self.Wy, self.Az+self.Wz]]
     
-    def drawQuad(self):
-        self.getQuadVertices()
+    def draw(self):
+        self.getPoints()
         glBegin(GL_QUADS)
         glColor3f(self.red, self.green, self.blue)
         for vertex in self.vertexList:
@@ -256,11 +330,11 @@ class quad(object):
 class wall (object):
     def __init__(self, thingToWall):
         #i don't really need any thing to be in my wall yet...
-        self.getWallVertices(thingToWall)
+        self.getPoints(thingToWall)
         walls.append(self)
     
-    def getWallVertices(self, thingToWall):
-        thingToWall.getQuadVertices()
+    def getPoints(self, thingToWall):
+        thingToWall.getPoints()
         
         self.vertices = []
         for vertex in thingToWall.vertexList:
@@ -289,19 +363,19 @@ floor = quad("floor", -5, 0.0, 5, 0., 0.0, -10., 10., 0.0, 0., 1.0, 1., 0.)
 test = quad("test", -10, 0.0, 0, 10., 0.0, 0., 0, 2., 0., 0., 0.4, 0.7)
 
 
-#Please call your vertex list Vertex.List
+
 #And in init(if static) or in getVertices (if not static) add this line self.normalList=CalculateNormal(self)
 def CalculateNormal(objectToNormalize) :
     q=0
     normalList=[]
-    while q!=len(objectToNormalize.VertexList)-4:
-        U=[objectToNormalize.VertexList[q+1][0]-objectToNormalize.VertexList[q][0],objectToNormalize.VertexList[q+1][1]-objectToNormalize.VertexList[q][1],objectToNormalize.VertexList[q+1][2]-objectToNormalize.VertexList[q][2]]
-        V=[objectToNormalize.VertexList[q+2][0]-objectToNormalize.VertexList[q][0],objectToNormalize.VertexList[q+2][1]-objectToNormalize.VertexList[q][1],objectToNormalize.VertexList[q+2][2]-objectToNormalize.VertexList[q][2]]
+    while q!=len(objectToNormalize.vertexList)-4:
+        U=[objectToNormalize.vertexList[q+1][0]-objectToNormalize.vertexList[q][0],objectToNormalize.vertexList[q+1][1]-objectToNormalize.vertexList[q][1],objectToNormalize.vertexList[q+1][2]-objectToNormalize.vertexList[q][2]]
+        V=[objectToNormalize.vertexList[q+2][0]-objectToNormalize.vertexList[q][0],objectToNormalize.vertexList[q+2][1]-objectToNormalize.vertexList[q][1],objectToNormalize.vertexList[q+2][2]-objectToNormalize.vertexList[q][2]]
         N=[U[1]*V[2]-U[2]*V[1], U[2]*V[1]-U[1]*V[2], U[0]*V[1]-U[1]*V[0]]
-        normalList.extend(N)
+        normalList.append(N)
         q+=4
-        print("caca")
-        return(normalList)
+
+    return(normalList)
 
 
 #now our GL functions. DraxFunc is first cause most important
@@ -320,53 +394,75 @@ def DrawGLScene():
     #Here are the movements you do when you move around or for/backwards
     #Hey Ben, I found out you need to do all your translations first
     #then you rotations, or you get wierd stuff...
-    global alpha, transz
+    global alpha, transz, teta
     glTranslatef(0,0,transz)
     glRotatef(alpha, 0, 1, 0)
+    glRotatef(teta, 0, 0, 1)
     
     
-    #the line is the y axis
+    ######################################
+    #here we start the light stuff !!
+    
+    glEnable(GL_LIGHTING)
+    glEnable(GL_LIGHT0)
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, numpy.array((1.0, 1.0, 1.0, 1.0), 'f'))
+    glLightfv(GL_LIGHT0, GL_AMBIENT, numpy.array((0.05, 0.05, 0.05, 1.0), 'f'))
+    
+
+    #glEnable(GL_LIGHT1)
+        
+    lightpos = numpy.array((-5., 5., 5., 0.), 'f')
+    lightdir = numpy.array((1, -0.01, 1), 'f')
+    glLightfv(GL_LIGHT0, GL_POSITION, lightpos)
+    #glLightfv(GL_LIGHT1, GL_SPOT_DIRECTION, lightdir)
+    #glLightfv(GL_LIGHT1, GL_SPOT_CUTOFF, 90)
+
+
+
+    glLightModelfv(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
+    
+    #the line is the lamps stand !
     glBegin(GL_LINES)
     glColor3f(0,0,1)
-    glVertex3f(0,0,0)
-    glVertex3f(0,1,0)
+    glVertex3f(-5,.3,5)
+    glVertex3f(5,.3,5)
     glEnd()
     
     #and here is the floor :)
-    floor.drawQuad()
-    test.drawQuad()
+    floor.draw()
+
     
     #here is the dude !
     MyBonhomme.move()
-    MyBonhomme.drawBonhomme()
-    
+    MyBonhomme.draw()
+    mymachine.draw()
     
     glutSwapBuffers()
 
 
 
 def keyPressed(*args):
-    global transz
-    global alpha
+    global transz, teta
     
     # If escape or q is pressed, kill everything.
     if args[0] == ESCAPE or args[0] == 'q':
         sys.exit()
     
     #manual rotations and zooms
-    if args[0] == 'g':
-        alpha += 1
-    if args[0] == 'd':
-        alpha += -1
-    if args[0] == 'r':
+    #OK THE TETA IS CRAP but can be cool for tests..
+    if args[0] == 'e' and teta<30:
+        teta += 2
+    if args[0] == 'd' and teta>-45:
+        teta += -2
+    if args[0] == 'z':
         transz += -1.
-    if args[0]== 'f':
+    if args[0]== 's':
         transz += 1.
 
 
 def specialKeyPressed(key, x, y):
-    global direction
-    global forward
+    global direction, forward
+
     #to move the dude...
     if key == GLUT_KEY_UP :
         forward = .1
@@ -409,6 +505,8 @@ def InitGL(Width, Height):
     glClearDepth(1.0)
     glDepthFunc(GL_LESS)
     glEnable(GL_DEPTH_TEST)
+    glEnable(GL_COLOR_MATERIAL)
+    glEnable(GL_RESCALE_NORMAL)
     glShadeModel(GL_SMOOTH)
     
     glMatrixMode(GL_PROJECTION)
@@ -443,7 +541,7 @@ def main():
     
     glutDisplayFunc(DrawGLScene)
     
-    #    glutFullScreen()
+    #glutFullScreen()
     
     #these are the callbacks to the functions that actually do something...
     glutIdleFunc(DrawGLScene)
@@ -458,7 +556,8 @@ def main():
     
 
 MyBonhomme = bonhomme(0.0,0.0,0.0)
-
+mymachine = machine("test", 0, 0, 0)
+mymachine.getPoints()
 main()
 
 
