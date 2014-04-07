@@ -243,39 +243,50 @@ class machine(object):
     
     def getPoints(self):
         global machineUnit
-        self.vertexList = [[self.Ax+0,self.Ay+0,self.Az+0],[self.Ax+0.5*machineUnit,self.Ay+0,self.Az+0],[self.Ax+0.5*machineUnit,self.Ay+0,self.Az-0.6*machineUnit],[self.Ax+0,self.Ay+0,self.Az-0.6*machineUnit],
-                           
-                           
-                           [self.Ax+0.5*machineUnit,self.Ay+0,self.Az+0],[self.Ax+0.5*machineUnit,self.Ay+0,self.Az-0.6*machineUnit],[self.Ax+0.5*machineUnit,self.Ay+0.6*machineUnit,self.Az-0.6*machineUnit],[self.Ax+0.5*machineUnit,self.Ay+0.6*machineUnit,self.Az+0],
-                           
-                           [self.Ax+0.5*machineUnit,self.Ay+0.6*machineUnit,self.Az+0],[self.Ax+0.6*machineUnit,self.Ay+0.7*machineUnit,self.Az+0],[self.Ax+0.6*machineUnit,self.Ay+0.7*machineUnit,self.Az-0.6*machineUnit],[self.Ax+0.5*machineUnit,self.Ay+0.6*machineUnit,self.Az-0.6*machineUnit],
-                           
-                           [self.Ax+0.6*machineUnit,self.Ay+0.7*machineUnit,self.Az+0],[self.Ax+0.6*machineUnit,self.Ay+0.8*machineUnit,self.Az+0],[self.Ax+0.6*machineUnit,self.Ay+0.8*machineUnit,self.Az-0.6*machineUnit],[self.Ax+0.6*machineUnit,self.Ay+0.7*machineUnit,self.Az-0.6*machineUnit],
-                           
-                           [self.Ax+0.6*machineUnit,self.Ay+0.8*machineUnit,self.Az+0],[self.Ax+0.3*machineUnit,self.Ay+0.9*machineUnit,self.Az+0],[self.Ax+0.3*machineUnit,self.Ay+0.9*machineUnit,self.Az-0.6*machineUnit],[self.Ax+0.6*machineUnit,self.Ay+0.8*machineUnit,self.Az-0.6*machineUnit],
-                           
-                           [self.Ax+0.3*machineUnit,self.Ay+0.9*machineUnit,self.Az+0],[self.Ax+0.3*machineUnit,self.Ay+1.3*machineUnit,self.Az+0],[self.Ax+0.3*machineUnit,self.Ay+1.3*machineUnit,self.Az-0.6*machineUnit],[self.Ax+0.3*machineUnit,self.Ay+0.9*machineUnit,self.Az-0.6*machineUnit],
-                           
-                           [self.Ax+0.3*machineUnit,self.Ay+1.3*machineUnit,self.Az+0],[self.Ax+0.4*machineUnit,self.Ay+1.4*machineUnit,self.Az+0],[self.Ax+0.4*machineUnit,self.Ay+1.4*machineUnit,self.Az-0.6*machineUnit],[self.Ax+0.3*machineUnit,self.Ay+1.3*machineUnit,self.Az-0.6*machineUnit],
-                           
-                           [self.Ax+0.4*machineUnit,self.Ay+1.4*machineUnit,self.Az+0],[self.Ax+0.4*machineUnit,self.Ay+1.6*machineUnit,self.Az+0],[self.Ax+0.4*machineUnit,self.Ay+1.6*machineUnit,self.Az-0.6*machineUnit],[self.Ax+0.4*machineUnit,self.Ay+1.4*machineUnit,self.Az-0.6*machineUnit],
-                           
-                           [self.Ax+0.4*machineUnit,self.Ay+1.6*machineUnit,self.Az+0],[self.Ax+0.4*machineUnit,self.Ay+1.6*machineUnit,self.Az-0.6*machineUnit],[self.Ax+0,self.Ay+1.6*machineUnit,self.Az-0.6*machineUnit],[self.Ax+0,self.Ay+1.6*machineUnit,self.Az+0],
-                           
-                           [self.Ax+0,self.Ay+1.6*machineUnit,self.Az+0],[self.Ax+0,self.Ay+1.6*machineUnit,self.Az-0.6*machineUnit],[self.Ax+0,self.Ay+0,self.Az-0.6*machineUnit],[self.Ax+0,self.Ay+0,self.Az+0],
-                           
-                           #the sides (dark or not, as you want)
-                           #[self.Ax+0,self.Ay+0,self.Az+0],[self.Ax+0.3*machineUnit,self.Ay+0,self.Az+0],[self.Ax+0.3*machineUnit,self.Ay+1.6*machineUnit,self.Az+0],[self.Ax+0,self.Ay+1.6*machineUnit,self.Az+0],
-                           
-                           #[self.Ax+0.3,self.Ay+0,self.Az+0],[self.Ax+0.5,self.Ay+0,self.Az+0],[self.Ax+0.5,self.Ay+0.6,self.Az+0],[self.Ax+0,3,self.Ay+0.6,self.Az+0],
-                           
-                           #[self.Ax+0.5*machineUnit,self.Ay+0.6*machineUnit,self.Az+0],[self.Ax+0.3*machineUnit,self.Ay+0.6*machineUnit,self.Az+0],[self.Ax+0.3*machineUnit,self.Ay+0.7*machineUnit,self.Az+0],[self.Ax+0.6*machineUnit,self.Ay+0.7*machineUnit,self.Az+0],
-                           
-                           #[self.Ax+0.6*machineUnit,self.Ay+0.7*machineUnit,self.Az+0],[self.Ax+0.3*machineUnit,self.Ay+0.7*machineUnit,self.Az+0],[self.Ax+0.3*machineUnit,self.Ay+0.8*machineUnit,self.Az+0],[self.Ax+0.6*machineUnit,self.Ay+0.9*machineUnit,self.Az+0],
-                           
-                           #[self.Ax+0.3*machineUnit,self.Ay+1.3*machineUnit,self.Az+0],[self.Ax+0.4*machineUnit,self.Ay+1.4*machineUnit,self.Az+0],[self.Ax+0.4*machineUnit,self.Ay+1.6*machineUnit,self.Az+0],[self.Ax+0.3*machineUnit,self.Ay+1.3*machineUnit,self.Az+0]
-                           ]
-    
+            self.vertexList = [[self.Ax+0,self.Ay+0,self.Az+0],[self.Ax+0.5*machineUnit,self.Ay+0,self.Az+0],[self.Ax+0.5*machineUnit,self.Ay+0,self.Az-0.6*machineUnit],[self.Ax+0,self.Ay+0,self.Az-0.6*machineUnit],
+                               
+                               
+                               [self.Ax+0.5*machineUnit,self.Ay+0,self.Az+0],[self.Ax+0.5*machineUnit,self.Ay+0,self.Az-0.6*machineUnit],[self.Ax+0.5*machineUnit,self.Ay+0.6*machineUnit,self.Az-0.6*machineUnit],[self.Ax+0.5*machineUnit,self.Ay+0.6*machineUnit,self.Az+0],
+                               
+                               [self.Ax+0.5*machineUnit,self.Ay+0.6*machineUnit,self.Az+0],[self.Ax+0.6*machineUnit,self.Ay+0.7*machineUnit,self.Az+0],[self.Ax+0.6*machineUnit,self.Ay+0.7*machineUnit,self.Az-0.6*machineUnit],[self.Ax+0.5*machineUnit,self.Ay+0.6*machineUnit,self.Az-0.6*machineUnit],
+                               
+                               [self.Ax+0.6*machineUnit,self.Ay+0.7*machineUnit,self.Az+0],[self.Ax+0.6*machineUnit,self.Ay+0.8*machineUnit,self.Az+0],[self.Ax+0.6*machineUnit,self.Ay+0.8*machineUnit,self.Az-0.6*machineUnit],[self.Ax+0.6*machineUnit,self.Ay+0.7*machineUnit,self.Az-0.6*machineUnit],
+                               
+                               [self.Ax+0.6*machineUnit,self.Ay+0.8*machineUnit,self.Az+0],[self.Ax+0.3*machineUnit,self.Ay+0.9*machineUnit,self.Az+0],[self.Ax+0.3*machineUnit,self.Ay+0.9*machineUnit,self.Az-0.6*machineUnit],[self.Ax+0.6*machineUnit,self.Ay+0.8*machineUnit,self.Az-0.6*machineUnit],
+                               
+                               [self.Ax+0.3*machineUnit,self.Ay+0.9*machineUnit,self.Az+0],[self.Ax+0.3*machineUnit,self.Ay+1.3*machineUnit,self.Az+0],[self.Ax+0.3*machineUnit,self.Ay+1.3*machineUnit,self.Az-0.6*machineUnit],[self.Ax+0.3*machineUnit,self.Ay+0.9*machineUnit,self.Az-0.6*machineUnit],
+                               
+                               [self.Ax+0.3*machineUnit,self.Ay+1.3*machineUnit,self.Az+0],[self.Ax+0.4*machineUnit,self.Ay+1.4*machineUnit,self.Az+0],[self.Ax+0.4*machineUnit,self.Ay+1.4*machineUnit,self.Az-0.6*machineUnit],[self.Ax+0.3*machineUnit,self.Ay+1.3*machineUnit,self.Az-0.6*machineUnit],
+                               
+                               [self.Ax+0.4*machineUnit,self.Ay+1.4*machineUnit,self.Az+0],[self.Ax+0.4*machineUnit,self.Ay+1.6*machineUnit,self.Az+0],[self.Ax+0.4*machineUnit,self.Ay+1.6*machineUnit,self.Az-0.6*machineUnit],[self.Ax+0.4*machineUnit,self.Ay+1.4*machineUnit,self.Az-0.6*machineUnit],
+                               
+                               [self.Ax+0.4*machineUnit,self.Ay+1.6*machineUnit,self.Az+0],[self.Ax+0.4*machineUnit,self.Ay+1.6*machineUnit,self.Az-0.6*machineUnit],[self.Ax+0,self.Ay+1.6*machineUnit,self.Az-0.6*machineUnit],[self.Ax+0,self.Ay+1.6*machineUnit,self.Az+0],
+                               
+                               [self.Ax+0,self.Ay+1.6*machineUnit,self.Az+0],[self.Ax+0,self.Ay+1.6*machineUnit,self.Az-0.6*machineUnit],[self.Ax+0,self.Ay+0,self.Az-0.6*machineUnit],[self.Ax+0,self.Ay+0,self.Az+0],
+                               
+                               #the sides (dark or not, as you want)
+                               [self.Ax+0,self.Ay+0,self.Az+0],[self.Ax+0.3*machineUnit,self.Ay+0,self.Az+0],[self.Ax+0.3*machineUnit,self.Ay+1.6*machineUnit,self.Az+0],[self.Ax+0,self.Ay+1.6*machineUnit,self.Az+0],
+                               
+                               [self.Ax+0.3*machineUnit,self.Ay+0,self.Az+0],[self.Ax+0.5*machineUnit,self.Ay+0,self.Az+0],[self.Ax+0.5*machineUnit,self.Ay+0.6*machineUnit,self.Az+0],[self.Ax+0.3*machineUnit,self.Ay+0.6*machineUnit,self.Az+0],
+                               
+                               [self.Ax+0.5*machineUnit,self.Ay+0.6*machineUnit,self.Az+0],[self.Ax+0.3*machineUnit,self.Ay+0.6*machineUnit,self.Az+0],[self.Ax+0.3*machineUnit,self.Ay+0.7*machineUnit,self.Az+0],[self.Ax+0.6*machineUnit,self.Ay+0.7*machineUnit,self.Az+0],
+                               
+                               [self.Ax+0.6*machineUnit,self.Ay+0.7*machineUnit,self.Az+0],[self.Ax+0.3*machineUnit,self.Ay+0.7*machineUnit,self.Az+0],[self.Ax+0.3*machineUnit,self.Ay+0.9*machineUnit,self.Az+0],[self.Ax+0.6*machineUnit,self.Ay+0.8*machineUnit,self.Az+0],
+                               
+                               [self.Ax+0.3*machineUnit,self.Ay+1.3*machineUnit,self.Az+0],[self.Ax+0.4*machineUnit,self.Ay+1.4*machineUnit,self.Az+0],[self.Ax+0.4*machineUnit,self.Ay+1.6*machineUnit,self.Az+0],[self.Ax+0.3*machineUnit,self.Ay+1.6*machineUnit,self.Az+0],
+                               
+                               
+                               
+                               [self.Ax+0,self.Ay+0,self.Az-0.6*machineUnit],[self.Ax+0.3*machineUnit,self.Ay+0,self.Az-0.6*machineUnit],[self.Ax+0.3*machineUnit,self.Ay+1.6*machineUnit,self.Az-0.6*machineUnit],[self.Ax+0,self.Ay+1.6*machineUnit,self.Az-0.6*machineUnit],
+                               
+                               [self.Ax+0.3*machineUnit,self.Ay+0,self.Az-0.6*machineUnit],[self.Ax+0.5*machineUnit,self.Ay+0,self.Az-0.6*machineUnit],[self.Ax+0.5*machineUnit,self.Ay+0.6*machineUnit,self.Az-0.6*machineUnit],[self.Ax+0.3*machineUnit,self.Ay+0.6*machineUnit,self.Az-0.6*machineUnit],
+                               
+                               [self.Ax+0.5*machineUnit,self.Ay+0.6*machineUnit,self.Az-0.6*machineUnit],[self.Ax+0.3*machineUnit,self.Ay+0.6*machineUnit,self.Az-0.6*machineUnit],[self.Ax+0.3*machineUnit,self.Ay+0.7*machineUnit,self.Az-0.6*machineUnit],[self.Ax+0.6*machineUnit,self.Ay+0.7*machineUnit,self.Az-0.6*machineUnit],
+                               
+                               [self.Ax+0.6*machineUnit,self.Ay+0.7*machineUnit,self.Az-0.6*machineUnit],[self.Ax+0.3*machineUnit,self.Ay+0.7*machineUnit,self.Az-0.6*machineUnit],[self.Ax+0.3*machineUnit,self.Ay+0.9*machineUnit,self.Az-0.6*machineUnit],[self.Ax+0.6*machineUnit,self.Ay+0.8*machineUnit,self.Az-0.6*machineUnit],
+                               
+                               [self.Ax+0.3*machineUnit,self.Ay+1.3*machineUnit,self.Az-0.6*machineUnit],[self.Ax+0.4*machineUnit,self.Ay+1.4*machineUnit,self.Az-0.6*machineUnit],[self.Ax+0.4*machineUnit,self.Ay+1.6*machineUnit,self.Az-0.6*machineUnit],[self.Ax+0.3*machineUnit,self.Ay+1.6*machineUnit,self.Az-0.6*machineUnit]]
+
     
     def draw(self):
         glBegin(GL_QUADS)

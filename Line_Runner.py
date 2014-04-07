@@ -17,13 +17,13 @@ class player (object):
 	self.green = couleur[1]
 	self.blue = couleur[2]
 	self.Ax = Ax
-  self.Ay = Ay
+        self.Ay = Ay
     
     def getvertices(self):
 	self.vertices = [[self.Ax-.7,self.Ay-0.7,0],[self.Ax-.7,self.Ay-.4,0],[self.Ax-.4,self.Ay-.4,0],[self.Ax-.4,self.Ay-.7,0]]
 	
     def drawplayer(self):
-	      glBegin(GL_QUADS)
+        glBegin(GL_QUADS)
         glColor3f(self.red, self.green, self.blue)
         for vertex in self.vertices:
             glVertex3f(vertex[0],vertex[1],vertex[2])
@@ -54,8 +54,8 @@ moncarre = carre (.9,.9,[0.2,0.3,0.5])
 
 
 
-# Fonction d'initialisation pour OpenGL. Paramètres de base.
-def InitGL(Width, Height):				# On appelle cette fonction juste après que la fenetre ait été créée.
+# Fonction d'initialisation pour OpenGL. Parametres de base.
+def InitGL(Width, Height):				# On appelle cette fonction juste apres que la fenetre ait ete creee.
 
     glClearColor(0.0, 0.0, 0.0, 0.0)	# change la couleur de fond de la fenetre
     glClearDepth(1.0)					# Enables Clearing Of The Depth Buffer
@@ -107,7 +107,7 @@ def DrawGLScene():
 def keyPressed(*args):
     global window
     global alpha
-    # Si "Echap" ou "q" est appuyé, ferme le programme.
+    # Si "Echap" ou "q" est appuye, ferme le programme.
     if args[0] == ESCAPE or args[0] == 'q':
         sys.exit()
     if args[0] == 'm':

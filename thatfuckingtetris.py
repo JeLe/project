@@ -104,7 +104,7 @@ def move():
             x-=1
                               
 
-      while y>1 :   #voir pour le while car problème de spawn en bas ...
+      while y>1 :   #voir pour le while car probleme de spawn en bas ...
             y-=1  
 
 #Piece 
