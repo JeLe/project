@@ -52,46 +52,38 @@ class carre (object):
         
 
 #creation d'un player et d'un obstacle en precisant leurs parametres (coordonnees, couleur)        
-monplayer= player (-1.7,-1.2,[0.8,0.2,0.6])    
-moncarre = carre (.9,.9,[0.2,0.3,0.5])
-
+monplayer= player (-1.7,-1.2,[1.,1.,0.0])    
+moncarre = carre (.9,.9,[0.1,0.8,0.5])
 
 
 # Fonction d'initialisation d'OpenGL. Defini les parametres principaux.
-def InitGL(Width, Height):				# On l'appelle juste apres que la fenetre OpenGL ait ete creee.
-
-    glClearColor(0.0, 0.0, 0.0, 0.0)	# permet de changer la couleur de fond de la fenetre
-    glClearDepth(1.0)					# Enables Clearing Of The Depth Buffer
-    glDepthFunc(GL_LESS)				# The Type Of Depth Test To Do
-    glEnable(GL_DEPTH_TEST)				# Enables Depth Testing
-    glShadeModel(GL_SMOOTH)				# Enables Smooth Color Shading
-
+def InitGL(Width, Height):			         	# On l'appelle juste apres que la fenetre OpenGL ait ete creee.
+    glClearColor(0.2, 0.5, 0.8, 0.0)                            # permet de changer la couleur de fond de la fenetre
+    glShadeModel(GL_SMOOTH)                      	# Enables Smooth Color Shading
     glMatrixMode(GL_PROJECTION)
-    glLoadIdentity()					# Reset The Projection Matrix
-    # calcule le ratio de la fenetre
+    glLoadIdentity()					                # Reset The Projection Matrix
     gluPerspective(45.0, float(Width)/float(Height), 0.1, 100.0)
    
     glMatrixMode(GL_MODELVIEW)
 
 
 def ReSizeGLScene(Width, Height):
-    if Height == 0:						# Prevent A Divide By Zero If The Window Is Too Small
+    if Height == 0:						        # Prevent A Divide By Zero If The Window Is Too Small
         Height = 1
     
-    glViewport(0, 0, Width, Height)		# Reset The Current Viewport And Perspective Transformation
+    glViewport(0, 0, Width, Height)		               # Reset The Current Viewport And Perspective Transformation
     glMatrixMode(GL_PROJECTION)
     glLoadIdentity()
     gluPerspective(45.0, float(Width)/float(Height), 0.1, 100.0)
     glMatrixMode(GL_MODELVIEW)
 
-# The main drawing function.
+# Fonction principale pour dessiner les objets a l'ecran.
 def DrawGLScene():
     global texture
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)	# Clear The Screen And The Depth Buffer
+    glClear(GL_COLOR_BUFFER_BIT)	# Clear The Screen Buffer
     glLoadIdentity()					# Reset The View
     global alpha
     glTranslatef(0.,0.0,-5.0)			# Move Into The Screen
-    glRotatef(alpha*4, 0, 1, 0)
     moncarre.getvertices()
     monplayer.getvertices()
     monplayer.drawplayer()
@@ -100,7 +92,7 @@ def DrawGLScene():
 
     
     
-    ###################################
+    ##############################################
   
     
     glutSwapBuffers()
@@ -115,16 +107,13 @@ def keyPressed(*args):
         monplayer.Ay+=0.5
 
 
-
 def main():
     global window
     glutInit(sys.argv)
-    glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH)
+    glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE)
     glutInitWindowSize(640, 480)
     glutInitWindowPosition(0, 0)
     window = glutCreateWindow( "Line_Runner")  #donne un nom a la fenetre
-    
-    
     glutDisplayFunc(DrawGLScene)
     glutIdleFunc(DrawGLScene)
     glutReshapeFunc(ReSizeGLScene)
