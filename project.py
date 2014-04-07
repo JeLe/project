@@ -66,6 +66,7 @@ class foot (object):
         x = self.Ax
         y = self.Ay
         z = self.Az
+
         self.footVertexList = [[x, y, z], [x+2*unite, y , z], [x+2*unite, y, z+3*unite], [x, y, z+3*unite],
                                [x, y, z], [x+2*unite, y , z], [x+2*unite, y+unite , z], [x, y+unite, z],
                                [x, y, z], [x, y+unite, z], [x, y+unite, z+3*unite], [x, y, z+3*unite],
@@ -320,7 +321,7 @@ class quad(object):
         counter = 0
         for vertex in self.wall.vertices:
             #glNormal3f(self.normalList[counter][0],self.normalList[0][1],self.normalList[0][2])
-            glNormal3f(0., 1., 0.)
+            glNormal3f(0., -1., 0.)
             glVertex3f(vertex[0], vertex[1], vertex[2])
         glEnd()
 
