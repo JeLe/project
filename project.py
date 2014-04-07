@@ -9,7 +9,7 @@ import numpy
 ##########################################
 #to do list for tomorrow !
 #make draw method function so all objects can use the same one. not necessairy for now...
-#Put all objects in list
+
 #make door and wall objetcs common to objects easier to use. If static, they sould only be calculated once and should be in a seperate list
 #wall objects will be made like they are now, excepet add sort of vertices and take only extremes into account. That will lighten the memory use.
 #cameras move when in corners...
@@ -45,7 +45,7 @@ white = numpy.array((1., 1., 1., 1.), 'f')
 #wall and door buffers
 walls = []
 gates = []
-drawables = []
+
 
 
 ########################################
@@ -208,9 +208,9 @@ class bonhomme (object):
             #so if we need ambient, diffuse and specular lighting I don't know if it's wise...
             glColor3f(0.7, 0.4, 0.9)
             #glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, cyan)
-            #glNormal3d(self.normalList[counter][0],self.normalList[++counter][1],self.normalList[++counter][2])
+            glNormal3f(self.normalList[counter][0],self.normalList[++counter][1],self.normalList[++counter][2])
             glVertex3f(item[0], item[1], item[2])
-        glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, white)
+        #glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, white)
         glEnd()
     
     def move(self):
@@ -264,15 +264,16 @@ class machine(object):
                            [self.Ax+0,self.Ay+1.6*machineUnit,self.Az+0],[self.Ax+0,self.Ay+1.6*machineUnit,self.Az-0.6*machineUnit],[self.Ax+0,self.Ay+0,self.Az-0.6*machineUnit],[self.Ax+0,self.Ay+0,self.Az+0],
                            
                            #the sides (dark or not, as you want)
-                           [self.Ax+0,self.Ay+0,self.Az+0],[self.Ax+0.3*machineUnit,self.Ay+0,self.Az+0],[self.Ax+0.3*machineUnit,self.Ay+1.6*machineUnit,self.Az+0],[self.Ax+0,self.Ay+1.6*machineUnit,self.Az+0],
+                           #[self.Ax+0,self.Ay+0,self.Az+0],[self.Ax+0.3*machineUnit,self.Ay+0,self.Az+0],[self.Ax+0.3*machineUnit,self.Ay+1.6*machineUnit,self.Az+0],[self.Ax+0,self.Ay+1.6*machineUnit,self.Az+0],
                            
                            #[self.Ax+0.3,self.Ay+0,self.Az+0],[self.Ax+0.5,self.Ay+0,self.Az+0],[self.Ax+0.5,self.Ay+0.6,self.Az+0],[self.Ax+0,3,self.Ay+0.6,self.Az+0],
                            
-                           [self.Ax+0.5*machineUnit,self.Ay+0.6*machineUnit,self.Az+0],[self.Ax+0.3*machineUnit,self.Ay+0.6*machineUnit,self.Az+0],[self.Ax+0.3*machineUnit,self.Ay+0.7*machineUnit,self.Az+0],[self.Ax+0.6*machineUnit,self.Ay+0.7*machineUnit,self.Az+0],
+                           #[self.Ax+0.5*machineUnit,self.Ay+0.6*machineUnit,self.Az+0],[self.Ax+0.3*machineUnit,self.Ay+0.6*machineUnit,self.Az+0],[self.Ax+0.3*machineUnit,self.Ay+0.7*machineUnit,self.Az+0],[self.Ax+0.6*machineUnit,self.Ay+0.7*machineUnit,self.Az+0],
                            
                            #[self.Ax+0.6*machineUnit,self.Ay+0.7*machineUnit,self.Az+0],[self.Ax+0.3*machineUnit,self.Ay+0.7*machineUnit,self.Az+0],[self.Ax+0.3*machineUnit,self.Ay+0.8*machineUnit,self.Az+0],[self.Ax+0.6*machineUnit,self.Ay+0.9*machineUnit,self.Az+0],
                            
-                           [self.Ax+0.3*machineUnit,self.Ay+1.3*machineUnit,self.Az+0],[self.Ax+0.4*machineUnit,self.Ay+1.4*machineUnit,self.Az+0],[self.Ax+0.4*machineUnit,self.Ay+1.6*machineUnit,self.Az+0],[self.Ax+0.3*machineUnit,self.Ay+1.3*machineUnit,self.Az+0]]
+                           #[self.Ax+0.3*machineUnit,self.Ay+1.3*machineUnit,self.Az+0],[self.Ax+0.4*machineUnit,self.Ay+1.4*machineUnit,self.Az+0],[self.Ax+0.4*machineUnit,self.Ay+1.6*machineUnit,self.Az+0],[self.Ax+0.3*machineUnit,self.Ay+1.3*machineUnit,self.Az+0]
+                           ]
     
     
     def draw(self):
@@ -280,10 +281,10 @@ class machine(object):
         glColor3f(0.2, 0.4, 0.6)
         counter = 0
         for item in self.vertexList:
-            glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, red)
-            #glNormal3d(self.normalList[counter][0],self.normalList[++counter][1],self.normalList[++counter][2])
+            #glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, red)
+            glNormal3f(self.normalList[counter][0],self.normalList[++counter][1],self.normalList[++counter][2])
             glVertex3f(item[0], item[1], item[2])
-        glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, white)
+        #glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, white)
         glEnd()
 
 
@@ -303,28 +304,24 @@ class quad(object):
         self.red = red
         self.green = green
         self.blue = blue
-        #I ommited the creation of the vertices here because they might need to be regurlarly updated...
-        #But all statics wont need to be updated !!
+        #we get the vertices here in init because it's static
+        self.getPoints()
+        self.normalList=CalculateNormal(self)
+
         self.wall = wall(self)
     
     def getPoints(self):
         self.vertexList = [[self.Ax, self.Ay, self.Az], [self.Ax+self.Vx, self.Ay+self.Vy, self.Az+self.Vz],[self.Ax+self.Vx+self.Wx, self.Ay+self.Vy+self.Wy, self.Az+self.Vz+self.Wz], [self.Ax+self.Wx, self.Ay+self.Wy, self.Az+self.Wz]]
     
     def draw(self):
-        self.getPoints()
+
         glBegin(GL_QUADS)
         glColor3f(self.red, self.green, self.blue)
-        for vertex in self.vertexList:
+        counter = 0
+        for vertex in self.wall.vertices:
+            glNormal3f(self.normalList[counter][0],self.normalList[0][1],self.normalList[0][2])
             glVertex3f(vertex[0], vertex[1], vertex[2])
         glEnd()
-        
-        #self.wall.getWallVertices(self)
-        if self.name != "floor":
-            glBegin(GL_QUADS)
-            glColor3f(0., 1., 0.)
-            for vertex in self.wall.vertices:
-                glVertex3f(vertex[0], vertex[1], vertex[2])
-            glEnd()
 
 
 class wall (object):
@@ -351,16 +348,10 @@ class gate (object):
         True
     
     def checkifgate(self):
-        if machine.list[1][0]<mybonhomme.Ax<machine.list[1][0]+1 and machine.list[1][2]<mybonhomme.Az<machine.list[2][2] :
+        if machine.list[1][0]<myBonhomme.Ax<machine.list[1][0]+1 and machine.list[1][2]<myBonhomme.Az<machine.list[2][2] :
             print("Youpi")
         else :
             print("notyoupi")
-
-#here is where we instanciate all the objects....
-#we now need to get the walls for all the machines and ... youpii
-
-floor = quad("floor", -5, 0.0, 5, 0., 0.0, -10., 10., 0.0, 0., 1.0, 1., 0.)
-test = quad("test", -10, 0.0, 0, 10., 0.0, 0., 0, 2., 0., 0., 0.4, 0.7)
 
 
 
@@ -403,23 +394,20 @@ def DrawGLScene():
     ######################################
     #here we start the light stuff !!
     
-    glEnable(GL_LIGHTING)
     glEnable(GL_LIGHT0)
-    glLightfv(GL_LIGHT0, GL_DIFFUSE, numpy.array((1.0, 1.0, 1.0, 1.0), 'f'))
-    glLightfv(GL_LIGHT0, GL_AMBIENT, numpy.array((0.05, 0.05, 0.05, 1.0), 'f'))
+    glLightfv(GL_LIGHT0, GL_AMBIENT, numpy.array((0.50, 0.50, 0.50, 0.5), 'f'))
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, numpy.array((1., 0., 0., 1.0), 'f'))
     
 
     #glEnable(GL_LIGHT1)
         
-    lightpos = numpy.array((-5., 5., 5., 0.), 'f')
-    lightdir = numpy.array((1, -0.01, 1), 'f')
+    lightpos = numpy.array((-5., 2., -0.5, 0.), 'f')
+    lightdir = numpy.array((1, 0, 0), 'f')
     glLightfv(GL_LIGHT0, GL_POSITION, lightpos)
-    #glLightfv(GL_LIGHT1, GL_SPOT_DIRECTION, lightdir)
-    #glLightfv(GL_LIGHT1, GL_SPOT_CUTOFF, 90)
+    glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, lightdir)
+    glLightfv(GL_LIGHT0, GL_SPOT_CUTOFF, 90)
 
 
-
-    glLightModelfv(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
     
     #the line is the lamps stand !
     glBegin(GL_LINES)
@@ -428,14 +416,14 @@ def DrawGLScene():
     glVertex3f(5,.3,5)
     glEnd()
     
-    #and here is the floor :)
-    floor.draw()
+    #drawables is the list that has all the object instances we will need to draw.
+    for thing in drawables :
+        if thing.type == "non static":
+            thing.move()
+        thing.draw() #this includes refreshing vertices for non statics
 
-    
-    #here is the dude !
-    MyBonhomme.move()
-    MyBonhomme.draw()
-    mymachine.draw()
+    myBonhomme.move()
+    myBonhomme.draw()
     
     glutSwapBuffers()
 
@@ -508,7 +496,10 @@ def InitGL(Width, Height):
     glEnable(GL_COLOR_MATERIAL)
     glEnable(GL_RESCALE_NORMAL)
     glShadeModel(GL_SMOOTH)
-    
+    glEnable(GL_LIGHTING)
+    glLightModelfv(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE)
+
+
     glMatrixMode(GL_PROJECTION)
     glLoadIdentity()
     gluPerspective(45.0, float(Width)/float(Height), 0.1, 100.0)
@@ -547,17 +538,20 @@ def main():
     glutIdleFunc(DrawGLScene)
     glutReshapeFunc(ReSizeGLScene)
     glutKeyboardFunc(keyPressed)
-    glutSpecialFunc(specialKeyPressed);
+    glutSpecialFunc(specialKeyPressed)
 
     glutMouseFunc( myMouseMove)
     glutPassiveMotionFunc( myMouseMove)
     
     glutMainLoop()
     
+#here is where we instanciate all the objects....
+#must be here or all necessary funcs haven't apeared yet...
+#we now need to get the walls for all the machines and ... youpii
+drawables = [quad("floor", -5, 0.0, 5, 0., 0.0, -10., 10., 0.0, 0., 1.0, 1., 0.), machine("test", 0, 0, 0)]
+myBonhomme = bonhomme(0.0,0.0,0.0)
+print (drawables[0].vertexList)
 
-MyBonhomme = bonhomme(0.0,0.0,0.0)
-mymachine = machine("test", 0, 0, 0)
-mymachine.getPoints()
 main()
 
 
