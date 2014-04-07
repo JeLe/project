@@ -319,7 +319,8 @@ class quad(object):
         glColor3f(self.red, self.green, self.blue)
         counter = 0
         for vertex in self.wall.vertices:
-            glNormal3f(self.normalList[counter][0],self.normalList[0][1],self.normalList[0][2])
+            #glNormal3f(self.normalList[counter][0],self.normalList[0][1],self.normalList[0][2])
+            glNormal3f(0., 1., 0.)
             glVertex3f(vertex[0], vertex[1], vertex[2])
         glEnd()
 
@@ -410,11 +411,11 @@ def DrawGLScene():
 
     
     #the line is the lamps stand !
-    glBegin(GL_LINES)
-    glColor3f(0,0,1)
-    glVertex3f(-5,.3,5)
-    glVertex3f(5,.3,5)
-    glEnd()
+    #    glBegin(GL_LINES)
+    #glColor3f(0,0,1)
+    #glVertex3f(-5,.3,5)
+    #glVertex3f(5,.3,5)
+    #glEnd()
     
     #drawables is the list that has all the object instances we will need to draw.
     for thing in drawables :
