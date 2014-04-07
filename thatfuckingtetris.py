@@ -69,7 +69,7 @@ direct = "f"
 
 
 
-# Number of the glut window.
+# Number of the glut window
 window = 0
 alpha = 0
 cubeColor=[0.7,0.2,0.2]
@@ -94,7 +94,7 @@ def move():
       global x
       global y
       global direct
-      global cubeColor
+      global cubeColor,piece1,piece2,piece3,piece4,piece5,piece6,piece7
       
 
       if direct == 'd' :
@@ -103,10 +103,21 @@ def move():
       if direct == 'q' :
             x-=1
                               
-      if direct == 's':
-            y-=1      
 
-      print(direct)
+      while y>1 :   #voir pour le while car problème de spawn en bas ...
+            y-=1  
+
+#Piece 
+
+
+      piece1 = [carre(x,y,piececolor),carre(x,y-1,piececolor),carre(x+1,y-1,piececolor),carre(x+1,y-2,piececolor)]
+      piece2 = [carre(x,y,piececolor2),carre(x,y-1,piececolor2),carre(x-1,y-1,piececolor2),carre(x-1,y-2,piececolor2)]
+      piece3 = [carre(x,y,piececolor3),carre(x,y-1,piececolor3),carre(x,y-2,piececolor3),carre(x,y-3,piececolor3)]
+      piece4 = [carre(x,y,piececolor4),carre(x+1,y,piececolor4),carre(x,y-1,piececolor4),carre(x+1,y-1,piececolor4)]
+      piece5 = [carre(x,y,piececolor5),carre(x,y-1,piececolor5),carre(x+1,y-1,piececolor5),carre(x,y-2,piececolor5)]
+      piece6 = [carre(x+1,y,piececolor6),carre(x+1,y-1,piececolor6),carre(x+1,y-2,piececolor6),carre(x,y-2,piececolor6)]
+      piece7 = [carre(x,y,piececolor7),carre(x,y-1,piececolor7),carre(x,y-2,piececolor7),carre(x+1,y-2,piececolor7)]
+
 
 #FABRICATION
 #Grille de jeu
@@ -120,21 +131,7 @@ for ligne in range(10):
             machin.append(carre(ligne,colonne,[1.0,1.0,1.0]))
       grille.append(machin)
 
-#Piece 
 
-piece1 = [carre(x,y,piececolor),carre(x,y-1,piececolor),carre(x+1,y-1,piececolor),carre(x+1,y-2,piececolor)]
-
-piece2 = [carre(x,y,piececolor2),carre(x,y-1,piececolor2),carre(x-1,y-1,piececolor2),carre(x-1,y-2,piececolor2)]
-
-piece3 = [carre(x,y,piececolor2),carre(x,y-1,piececolor2),carre(x,y-2,piececolor2),carre(x,y-3,piececolor2)]
-
-piece4 = [carre(x,y,piececolor2),carre(x+1,y,piececolor2),carre(x,y-1,piececolor2),carre(x+1,y-1,piececolor2)]
-
-piece5 = [carre(x,y,piececolor2),carre(x,y-1,piececolor2),carre(x+1,y-1,piececolor2),carre(x,y-2,piececolor2)]
-
-piece6 = [carre(x+1,y,piececolor2),carre(x+1,y-1,piececolor2),carre(x+1,y-2,piececolor2),carre(x,y-2,piececolor2)]
-
-piece7 = [carre(x,y,piececolor2),carre(x,y-1,piececolor2),carre(x,y-2,piececolor2),carre(x+1,y-2,piececolor2)]
 
 
 
@@ -170,6 +167,8 @@ def ReSizeGLScene(Width, Height):
 def DrawGLScene():
     global texture
     global piece1
+    global x
+    global y
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)	# Clear The Screen And The Depth Buffer
     glLoadIdentity()	# Reset The View
     global alpha
