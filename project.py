@@ -238,7 +238,7 @@ class bonhomme (object):
         for item in self.vertexList:
             #this works because we enabled it in init.
             #so if we need ambient, diffuse and specular lighting I don't know if it's wise...
-            glColor3f(0.7, 0.4, 0.9)
+            glColor3f(0.9, 0.9, 0.9)
             #glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, cyan)
             glNormal3f(self.normalList[counter][0],self.normalList[++counter][1],self.normalList[++counter][2])
             glVertex3f(item[0], item[1], item[2])
@@ -322,13 +322,20 @@ class machine(object):
     
     def draw(self):
         glBegin(GL_QUADS)
-        glColor3f(0.2, 0.4, 0.6)
+        glColor3f(1., 1., 1.)
         counter = 0
         for item in self.vertexList:
-            #glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, red)
             glNormal3f(self.normalList[counter][0],self.normalList[++counter][1],self.normalList[++counter][2])
             glVertex3f(item[0], item[1], item[2])
-        #glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, white)
+        glEnd()
+        glBegin(GL_LINES)
+        glColor3f(1., 0., 0.)
+        counter =0
+        for item in self.normalList :
+            counter+=3
+            glVertex3f(item[0], item[1], item[2])
+            glVertex3f(self.vertexList[counter][0], self.vertexList[counter][1], self.vertexList[counter][2])
+
         glEnd()
 
 
@@ -350,7 +357,7 @@ class quad(object):
         self.blue = blue
         #we get the vertices here in init because it's static
         self.getPoints()
-        self.normalList=CalculateNormal(self)
+        self.normalList=getNormals(self.vertexList)
 
         self.wall = wall(self)
     
@@ -385,7 +392,7 @@ def getNormals(vertexList) :
         N=[Ya*Zb-Za*Yb, Za*Xb-Xa*Zb, Xa*Yb-Ya*Xb]
         normalList.append(N)
         counter+=4
-    print(normalList)
+
     return(normalList)
 
 
@@ -421,7 +428,7 @@ def DrawGLScene():
 
     #glEnable(GL_LIGHT1)
         
-    lightpos = numpy.array((-5., 2., -0.5, 0.), 'f')
+    lightpos = numpy.array((-5., 2., -5., 0.), 'f')
     lightdir = numpy.array((1, 0, 0), 'f')
     glLightfv(GL_LIGHT0, GL_POSITION, lightpos)
     glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, lightdir)
@@ -430,11 +437,11 @@ def DrawGLScene():
 
     
     #the line is the lamps stand !
-    #    glBegin(GL_LINES)
-    #glColor3f(0,0,1)
-    #glVertex3f(-5,.3,5)
-    #glVertex3f(5,.3,5)
-    #glEnd()
+    glBegin(GL_LINES)
+    glColor3f(0,0,1)
+    glVertex3f(-5,.3,5)
+    glVertex3f(5,.3,5)
+    glEnd()
     
     #drawables is the list that has all the object instances we will need to draw.
     for thing in drawables :
@@ -462,9 +469,9 @@ def keyPressed(*args):
         teta += 2
     if args[0] == 'd' and teta>-45:
         teta += -2
-    if args[0] == 'z':
+    if args[0] == 's':
         transz += -1.
-    if args[0]== 's':
+    if args[0]== 'z':
         transz += 1.
     if args[0]== 'h':
         snake.main()
@@ -573,7 +580,7 @@ def main():
 #we now need to get the walls for all the machines and ... youpii
 drawables = [quad("floor", -5, 0.0, 5, 0., 0.0, -10., 10., 0.0, 0., 1.0, 1., 0.), machine("test", 0, 0, 0)]
 myBonhomme = bonhomme(0.0,0.0,0.0)
-
+print(drawables[1].normalList)
 
 main()
 
