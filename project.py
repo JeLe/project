@@ -229,7 +229,7 @@ class bonhomme (object):
         self.vertexList.extend(monCou.couVertexList)
         self.vertexList.extend(meineKopf.kopfVertexList)
         
-        self.normalList=CalculateNormal(self)
+        self.normalList = getNormals(self.vertexList)
     
     def draw(self):
         self.getPoints()
@@ -269,7 +269,7 @@ class machine(object):
         self.Az=Az
         self.type = "static"
         self.getPoints()
-        self.normalList=CalculateNormal(self)
+        self.normalList = getNormals(self.vertexList)
         self.myWall = wall(self)
         self.myGate = gate()
     
@@ -372,16 +372,20 @@ class quad(object):
 
 
 #And in init(if static) or in getVertices (if not static) add this line self.normalList=CalculateNormal(self)
-def CalculateNormal(objectToNormalize) :
-    q=0
+def getNormals(vertexList) :
     normalList=[]
-    while q!=len(objectToNormalize.vertexList)-4:
-        U=[objectToNormalize.vertexList[q+1][0]-objectToNormalize.vertexList[q][0],objectToNormalize.vertexList[q+1][1]-objectToNormalize.vertexList[q][1],objectToNormalize.vertexList[q+1][2]-objectToNormalize.vertexList[q][2]]
-        V=[objectToNormalize.vertexList[q+2][0]-objectToNormalize.vertexList[q][0],objectToNormalize.vertexList[q+2][1]-objectToNormalize.vertexList[q][1],objectToNormalize.vertexList[q+2][2]-objectToNormalize.vertexList[q][2]]
-        N=[U[1]*V[2]-U[2]*V[1], U[2]*V[1]-U[1]*V[2], U[0]*V[1]-U[1]*V[0]]
+    counter=0
+    while counter!=len(vertexList):
+        Xa=vertexList[counter+3][0]-vertexList[counter][0]
+        Xb=vertexList[counter+1][0]-vertexList[counter][0]
+        Ya=vertexList[counter+3][1]-vertexList[counter][1]
+        Yb=vertexList[counter+1][1]-vertexList[counter][1]
+        Za=vertexList[counter+3][2]-vertexList[counter][2]
+        Zb=vertexList[counter+1][2]-vertexList[counter][2]
+        N=[Ya*Zb-Za*Yb, Za*Xb-Xa*Zb, Xa*Yb-Ya*Xb]
         normalList.append(N)
-        q+=4
-
+        counter+=4
+    print(normalList)
     return(normalList)
 
 
