@@ -4,7 +4,7 @@ from OpenGL.GLU import *
 import sys, time
 from math import sin,cos,sqrt,pi
 import numpy
-
+import snake
 
 ##########################################
 #to do list for tomorrow !
@@ -52,6 +52,37 @@ gates = []
 #ALL THE OBJECT CLASSES
 #
 #All main vertex lists must be self.vertexList, except for gates...
+
+
+class wall (object):
+    def __init__(self, thingToWall):
+        #i don't really need any thing to be in my wall yet...
+        self.getPoints(thingToWall)
+        walls.append(self)
+    
+    def getPoints(self, thingToWall):
+        thingToWall.getPoints()
+        
+        self.vertices = []
+        for vertex in thingToWall.vertexList:
+            self.vertices.append([vertex[0], 0.1, vertex[2]])
+    
+    #z2-z0, z3-z1
+    def checkNotOnWall(self):
+        self.equation1 = (self.vertices[2][2]-self.vertices[0][2])/(self.vertices[2][0]-self.vertices[0][0])
+
+#here we will put the gate class
+
+class gate (object):
+    def __init__ (self):
+        True
+    
+    def checkifgate(self):
+        if machine.list[1][0]<myBonhomme.Ax<machine.list[1][0]+1 and machine.list[1][2]<myBonhomme.Az<machine.list[2][2] :
+            print("Youpi")
+        else :
+            print("notyoupi")
+
 
 #this is where you put your dude classes
 unite = .3
@@ -239,11 +270,12 @@ class machine(object):
         self.type = "static"
         self.getPoints()
         self.normalList=CalculateNormal(self)
-        print(self.normalList)
+        self.myWall = wall(self)
+        self.myGate = gate()
     
     def getPoints(self):
         global machineUnit
-            self.vertexList = [[self.Ax+0,self.Ay+0,self.Az+0],[self.Ax+0.5*machineUnit,self.Ay+0,self.Az+0],[self.Ax+0.5*machineUnit,self.Ay+0,self.Az-0.6*machineUnit],[self.Ax+0,self.Ay+0,self.Az-0.6*machineUnit],
+        self.vertexList = [[self.Ax+0,self.Ay+0,self.Az+0],[self.Ax+0.5*machineUnit,self.Ay+0,self.Az+0],[self.Ax+0.5*machineUnit,self.Ay+0,self.Az-0.6*machineUnit],[self.Ax+0,self.Ay+0,self.Az-0.6*machineUnit],
                                
                                
                                [self.Ax+0.5*machineUnit,self.Ay+0,self.Az+0],[self.Ax+0.5*machineUnit,self.Ay+0,self.Az-0.6*machineUnit],[self.Ax+0.5*machineUnit,self.Ay+0.6*machineUnit,self.Az-0.6*machineUnit],[self.Ax+0.5*machineUnit,self.Ay+0.6*machineUnit,self.Az+0],
@@ -336,35 +368,6 @@ class quad(object):
             glVertex3f(vertex[0], vertex[1], vertex[2])
         glEnd()
 
-
-class wall (object):
-    def __init__(self, thingToWall):
-        #i don't really need any thing to be in my wall yet...
-        self.getPoints(thingToWall)
-        walls.append(self)
-    
-    def getPoints(self, thingToWall):
-        thingToWall.getPoints()
-        
-        self.vertices = []
-        for vertex in thingToWall.vertexList:
-            self.vertices.append([vertex[0], 0.1, vertex[2]])
-
-#z2-z0, z3-z1
-    def checkNotOnWall(self):
-        self.equation1 = (self.vertices[2][2]-self.vertices[0][2])/(self.vertices[2][0]-self.vertices[0][0])
-
-#here we will put the gate class
-
-class gate (object):
-    def __init__ (self):
-        True
-    
-    def checkifgate(self):
-        if machine.list[1][0]<myBonhomme.Ax<machine.list[1][0]+1 and machine.list[1][2]<myBonhomme.Az<machine.list[2][2] :
-            print("Youpi")
-        else :
-            print("notyoupi")
 
 
 
@@ -459,6 +462,9 @@ def keyPressed(*args):
         transz += -1.
     if args[0]== 's':
         transz += 1.
+    if args[0]== 'h':
+        snake.main()
+
 
 
 def specialKeyPressed(key, x, y):
@@ -563,7 +569,7 @@ def main():
 #we now need to get the walls for all the machines and ... youpii
 drawables = [quad("floor", -5, 0.0, 5, 0., 0.0, -10., 10., 0.0, 0., 1.0, 1., 0.), machine("test", 0, 0, 0)]
 myBonhomme = bonhomme(0.0,0.0,0.0)
-print (drawables[0].vertexList)
+
 
 main()
 

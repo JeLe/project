@@ -69,8 +69,7 @@ def move():
 		else:
 			coord2.append(item)
 
-	print ("coord :",coord)
-	print("coord2                                     :",coord2)
+
 
 	
 	snake.append(carre(i,j,snakeColor))
@@ -79,7 +78,7 @@ def miam() :
 	
 	global food
 	food = carre(0,-1,[1.,1.,0.])
-	print(" ")
+
 
 def InitGL(Width, Height):				
 	glClearColor(0.0, 0.0, 0.0, 0.0)	
@@ -160,7 +159,7 @@ def keyPressed(key, x, y):
 			
 def main():
 	global window
-	
+	move();miam()
 	glutInit(sys.argv)
 	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH)
 	
@@ -178,11 +177,10 @@ def main():
 	glutMainLoop()
 
 
-move()
-miam()
+
 for l in range(0,8) :
 	for c in range(0,16) :
 		grid.append(carre(c,0-l,[0.1,0.15,0.53]))  #random.random()
 	
 
-main()	
+
