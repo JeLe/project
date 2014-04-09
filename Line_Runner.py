@@ -24,7 +24,7 @@ class player (object):
     def getvertices(self):
         self.vertices = [[self.Ax-.7,self.Ay-0.7,0],[self.Ax-.7,self.Ay-.4,0],[self.Ax-.4,self.Ay-.4,0],[self.Ax-.4,self.Ay-.7,0]]
     def drawplayer(self):
-	glBegin(GL_QUADS)
+        glBegin(GL_QUADS)
         glColor3f(self.red, self.green, self.blue)
         for vertex in self.vertices:
             glVertex3f(vertex[0],vertex[1],vertex[2])
@@ -40,7 +40,7 @@ class carre (object):
         self.Ay = Ay
     def getvertices(self):
         self.Ax -= .01
-	self.vertices = [[self.Ax,self.Ay,0],[self.Ax,self.Ay+0.5,0],[self.Ax+0.5,self.Ay+0.5,0],[self.Ax+0.5,self.Ay,0]]
+        self.vertices = [[self.Ax,self.Ay,0],[self.Ax,self.Ay+0.5,0],[self.Ax+0.5,self.Ay+0.5,0],[self.Ax+0.5,self.Ay,0]]
       
     def drawcarre(self):
         glBegin(GL_QUADS)
@@ -64,18 +64,18 @@ def InitGL(Width, Height):			         	# On l'appelle juste apres que la fenetre
     gluPerspective(45.0, float(Width)/float(Height), 0.1, 100.0)
    
     glMatrixMode(GL_MODELVIEW)
-
-
+    
+    
 def ReSizeGLScene(Width, Height):
     if Height == 0:						        # Prevent A Divide By Zero If The Window Is Too Small
         Height = 1
-    
+        
     glViewport(0, 0, Width, Height)		               # Reset The Current Viewport And Perspective Transformation
     glMatrixMode(GL_PROJECTION)
     glLoadIdentity()
     gluPerspective(45.0, float(Width)/float(Height), 0.1, 100.0)
     glMatrixMode(GL_MODELVIEW)
-
+    
 # Fonction principale pour dessiner les objets a l'ecran.
 def DrawGLScene():
     global texture

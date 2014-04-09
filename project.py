@@ -75,8 +75,9 @@ class wall (object):
 
 class gate (object):
     def __init__ (self):
-        True
-    
+        self.vertexList = "prout here is what we need to find out !"
+        gates.append(self)
+
     def checkifgate(self):
         if machine.list[1][0]<myBonhomme.Ax<machine.list[1][0]+1 and machine.list[1][2]<myBonhomme.Az<machine.list[2][2] :
             print("Youpi")
@@ -251,11 +252,11 @@ class bonhomme (object):
         #ok so direction devient le coefi dir de ladroite sur laquelle se deplace le bnhomme, on incremente de ce qu'on veut siur x, on calcule z et voila...
         #pb : on voit pas quand il tourne...
         if forward != 0:
-            b= self.Az-direction*self.Ax
-            self.Ax = self.Ax + forward
-            self.Az = (direction*self.Ax)+b
-            
+            self.Az += .1*forward
             forward = 0
+        if direction != 0:
+            self.Ax += .1*direction
+            direction = 0
 
 
 #END OF DUDE
@@ -483,13 +484,13 @@ def specialKeyPressed(key, x, y):
 
     #to move the dude...
     if key == GLUT_KEY_UP :
-        forward = .1
+        forward = 1
     if key == GLUT_KEY_DOWN:
-        forward = -.1
+        forward = -1
     if key == GLUT_KEY_LEFT:
-        direction += .1
+        direction = -1
     if key == GLUT_KEY_RIGHT:
-        direction += -.1
+        direction = 1
 
 
 
