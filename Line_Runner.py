@@ -22,7 +22,7 @@ class player (object):
         self.Ay = Ay
     
     def getvertices(self):
-        self.vertices = [[self.Ax-.7,self.Ay-0.7,0],[self.Ax-.7,self.Ay-.4,0],[self.Ax-.4,self.Ay-.4,0],[self.Ax-.4,self.Ay-.7,0]]
+        self.vertices = [[self.Ax,self.Ay,0],[self.Ax,self.Ay+.3,0],[self.Ax+0.3,self.Ay+.3,0],[self.Ax+.3,self.Ay,0]]
         
     def drawplayer(self):
         glBegin(GL_QUADS)
@@ -87,9 +87,7 @@ def DrawGLScene():
     monplayer.drawplayer()
     moncarre.drawcarre()
     
-    if -2.3 < moncarre.Ax < -2.00 and moncarre.Ay<=monplayer.Ay:#(monplayer.Ay<=moncarre.Ay<=monplayer.Ay+0.3 or monplayer.Ay<=moncarre.Ay+0.3<=monplayer.Ay+0.3):
-        print(monplayer.Ay)
-        print(moncarre.Ay)
+    if monplayer.Ax < moncarre.Ax < monplayer.Ax+0.3 and (monplayer.Ay<=moncarre.Ay<=monplayer.Ay+0.3 or monplayer.Ay<=moncarre.Ay+0.3<=monplayer.Ay+0.3):
         sys.exit()
         
         ##############################################
