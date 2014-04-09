@@ -15,14 +15,15 @@ alpha =0
 #creation de l'objet 'player' (ce sera le personnage/le 'truc' qui devra eviter les obstacles dans le jeu)
 class player (object):
     def __init__ (self, Ax, Ay, couleur):
-	self.red = couleur[0]
-	self.green = couleur[1]
-	self.blue = couleur[2]
-	self.Ax = Ax
+        self.red = couleur[0]
+        self.green = couleur[1]
+        self.blue = couleur[2]
+        self.Ax = Ax
         self.Ay = Ay
     
     def getvertices(self):
         self.vertices = [[self.Ax-.7,self.Ay-0.7,0],[self.Ax-.7,self.Ay-.4,0],[self.Ax-.4,self.Ay-.4,0],[self.Ax-.4,self.Ay-.7,0]]
+        
     def drawplayer(self):
         glBegin(GL_QUADS)
         glColor3f(self.red, self.green, self.blue)
@@ -50,11 +51,9 @@ class carre (object):
         glEnd()
        
 #creation d'un player et d'un obstacle en precisant leurs parametres (coordonnees, couleur)        
-monplayer= player (-1.7,-0.9,[1.,1.,0.0])    
+monplayer= player (-1.7,-0.9,[1.,1.,0.0])
 moncarre = carre (0.9,0.9,[0.1,0.8,0.5])
-if monplayer.Ax==moncarre.Ax and monplayer.Ay<=moncarre.Ay<=monplayer.Ay+0.3 or \
-  monplayer.Ay<=moncarre.Ay+0.3<=monplayer.Ay+0.3:
-    sys.exit() 
+
 # Fonction d'initialisation d'OpenGL. Defini les parametres principaux.
 def InitGL(Width, Height):			         	# On l'appelle juste apres que la fenetre OpenGL ait ete creee.
     glClearColor(0.2, 0.5, 0.8, 0.0)                            # permet de changer la couleur de fond de la fenetre
@@ -88,26 +87,29 @@ def DrawGLScene():
     monplayer.drawplayer()
     moncarre.drawcarre()
     
-
-    
-    ##############################################
-  
+    if -2.3 < moncarre.Ax < -2.00 and moncarre.Ay<=monplayer.Ay:#(monplayer.Ay<=moncarre.Ay<=monplayer.Ay+0.3 or monplayer.Ay<=moncarre.Ay+0.3<=monplayer.Ay+0.3):
+        print(monplayer.Ay)
+        print(moncarre.Ay)
+        sys.exit()
+        
+        ##############################################
+        
     
     glutSwapBuffers()
     
-
     
     
-#on defini ici les touches et les actions correspondantes
+    
+    #on defini ici les touches et les actions correspondantes
 def keyPressed(*args):
     global window
     global alpha
     if args[0] == ESCAPE or args[0] == 'q': # Si on appuie sur 'q' ou 'echap', ferme le programme
         sys.exit()
     if args[0] == 'z':
-        monplayer.Ay+=0.3
-    if args[0] == 'd': 
-	monplayer.Ay-=0.3
+        monplayer.Ay+=0.1
+    if args[0] == 's':
+	monplayer.Ay-=0.1
 
 
 def main():
