@@ -6,25 +6,14 @@ from math import sin,cos,sqrt,pi
 import numpy
 import snake
 
-##########################################
-#to do list for tomorrow !
-#make draw method function so all objects can use the same one. not necessairy for now...
+
 
 #make door and wall objetcs common to objects easier to use. If static, they sould only be calculated once and should be in a seperate list
 #wall objects will be made like they are now, excepet add sort of vertices and take only extremes into account. That will lighten the memory use.
-#cameras move when in corners...
-
-################################
-#Jeremie's work :
-#I need to get all te walls into one place, look at them one by one and see if the guy isn't in front of them....
-#then for the "doors" : two poins need to be equal, but that's a little too damn precise, no?
-#is that all ?
-
-##########################################
 
 
 
-##########################################
+
 #all global variables
 ESCAPE = '\033'
 # Number of the glut window.
@@ -50,39 +39,53 @@ gates = []
 
 ########################################
 #ALL THE OBJECT CLASSES
-#
-#All main vertex lists must be self.vertexList, except for gates...
+
+#All main vertex lists must be self.vertexList, except for gates and wall, et encore :)...
 
 
 class wall (object):
     def __init__(self, thingToWall):
-        #i don't really need any thing to be in my wall yet...
+        self.getPoints(thingToWall)
         self.getPoints(thingToWall)
         walls.append(self)
-    
-    def getPoints(self, thingToWall):
-        thingToWall.getPoints()
-        
-        self.vertices = []
-        for vertex in thingToWall.vertexList:
-            self.vertices.append([vertex[0], 0.1, vertex[2]])
-    
-    #z2-z0, z3-z1
-    def checkNotOnWall(self):
-        self.equation1 = (self.vertices[2][2]-self.vertices[0][2])/(self.vertices[2][0]-self.vertices[0][0])
 
-#here we will put the gate class
+
+    def getPoints(self, thingToWall):
+        xmin = thingToWall.vertexList[0][0]
+        zmin = thingToWall.vertexList[0][2]
+        xmax = thingToWall.vertexList[0][0]
+        zmax = thingToWall.vertexList[0][2]
+        for thing in thingToWall.vertexList :
+            if thing[0] < xmin:
+                xmin = thing[0]
+            if thing[2] < zmin:
+                zmin = thing[2]
+            if thing[0] > xmax:
+                xmax = thing[0]
+            if thing[2] > zmax:
+                zmax = thing[2]
+        
+        
+        self.vertexList = [[xmin,0, zmax], [xmax, 0, zmax], [xmax, 0, zmin], [xmin,0, zmin]]
+    
+    def checkNotOnWall(self):
+        if self.vertexList[0][0]<=myBonhomme.Ax<=self.vertexList[1][0] and self.vertexList[2][2]<=myBonhomme.Az<=self.vertexList[0][2] : #this condition is kinda crappy..
+            print("We don't need no education!")
+            return 1 #returns 1...
+        else :
+            return 0
+
 
 class gate (object):
-    def __init__ (self):
-        self.vertexList = "prout here is what we need to find out !"
+    def __init__ (self, list):
+        self.vertexList = [[0, 0, 5], [5, 0, 5], [5, 0, 0], [0, 0, 0]] #how we generate this list is the whole problem !!
         gates.append(self)
 
     def checkifgate(self):
-        if machine.list[1][0]<myBonhomme.Ax<machine.list[1][0]+1 and machine.list[1][2]<myBonhomme.Az<machine.list[2][2] :
+        if self.vertexList[0][0]<myBonhomme.Ax<self.vertexList[1][0] and self.vertexList[2][2]<myBonhomme.Az<self.vertexList[0][2] :
             print("Youpi")
         else :
-            print("notyoupi")
+            print(myBonhomme.Ax, myBonhomme.Az)
 
 
 #this is where you put your dude classes
@@ -251,12 +254,18 @@ class bonhomme (object):
         global direction
         #ok so direction devient le coefi dir de ladroite sur laquelle se deplace le bnhomme, on incremente de ce qu'on veut siur x, on calcule z et voila...
         #pb : on voit pas quand il tourne...
+        oldX = self.Ax
+        oldZ = self.Az
         if forward != 0:
             self.Az += .1*forward
             forward = 0
         if direction != 0:
             self.Ax += .1*direction
             direction = 0
+        for item in walls:
+            if item.checkNotOnWall()==1: #one means it's on the wall !!!
+                self.Ax = oldX
+                self.Az = oldZ
 
 
 #END OF DUDE
@@ -272,7 +281,7 @@ class machine(object):
         self.getPoints()
         self.normalList = getNormals(self.vertexList)
         self.myWall = wall(self)
-        self.myGate = gate()
+        self.myGate = gate(self.vertexList)
     
     def getPoints(self):
         global machineUnit
@@ -360,7 +369,7 @@ class quad(object):
         self.getPoints()
         self.normalList=getNormals(self.vertexList)
 
-        self.wall = wall(self)
+#    self.wall = wall(self)
     
     def getPoints(self):
         self.vertexList = [[self.Ax, self.Ay, self.Az], [self.Ax+self.Vx, self.Ay+self.Vy, self.Az+self.Vz],[self.Ax+self.Vx+self.Wx, self.Ay+self.Vy+self.Wy, self.Az+self.Vz+self.Wz], [self.Ax+self.Wx, self.Ay+self.Wy, self.Az+self.Wz]]
@@ -370,8 +379,8 @@ class quad(object):
         glBegin(GL_QUADS)
         glColor3f(self.red, self.green, self.blue)
         counter = 0
-        for vertex in self.wall.vertices:
-            #glNormal3f(self.normalList[counter][0],self.normalList[0][1],self.normalList[0][2])
+        for vertex in self.vertexList:
+
             glNormal3f(0., -1., 0.)
             glVertex3f(vertex[0], vertex[1], vertex[2])
         glEnd()
@@ -511,10 +520,20 @@ def myMouseMove (x, y):
 
 
 def Mouseclick (button, state, x, y):
-     if button == GLUT_LEFT_BUTTON:
-         print("prout")
-         for element in gates :
+    #state is to do stuff while you are only pressed down a,d haven't released the mouse button yet for example (down gives state 0..)
+    if GLUT_LEFT_BUTTON == button and state==0:
+
+        for element in gates :
             element.checkifgate()
+        
+    if GLUT_RIGHT_BUTTON == button and state == 0 :
+        print ("right_click")
+            
+
+    #     if button == GLUT_LEFT_BUTTON:
+    #    print("prout")
+    #    for element in gates :
+#       element.checkifgate()
 
 
 
@@ -571,7 +590,7 @@ def main():
     glutKeyboardFunc(keyPressed)
     glutSpecialFunc(specialKeyPressed)
 
-    glutMouseFunc( myMouseMove)
+    glutMouseFunc(Mouseclick)
     glutPassiveMotionFunc( myMouseMove)
     
     glutMainLoop()
@@ -581,7 +600,9 @@ def main():
 #we now need to get the walls for all the machines and ... youpii
 drawables = [quad("floor", -5, 0.0, 5, 0., 0.0, -10., 10., 0.0, 0., 1.0, 1., 0.), machine("test", 0, 0, 0)]
 myBonhomme = bonhomme(0.0,0.0,0.0)
-print(drawables[1].normalList)
+
+print (walls[0].vertexList)
+
 
 main()
 
