@@ -75,6 +75,7 @@ window = 0
 alpha = 0
 cubeColor=[0.7,0.2,0.2]
 
+
 class carre(object):
 
       def __init__(self,x,y,couleur):
@@ -108,37 +109,35 @@ piecerandom=[piece1,piece2,piece3,piece4,piece5,piece6,piece7]
 pieceR = random.choice(piecerandom)
 
 def move():
-      threading.Timer(0.8, move).start()
-      global x
-      global y
-      global direct
-      global cubeColor,pieceR
-      
-      if y>3 :
-            if direct == 'd' :
-                  x+=1          
+    threading.Timer(0.8, move).start()
+    global x
+    global y
+    global direct
+    global cubeColor,pieceR
+    
 
-            if direct == 'q' :
-                  x-=1                       
+    if y>3 :
+        if direct == 'd' :
+            x+=1
+        if direct == 'q' :
+            x-=1
      
-            if y<=12 :
-                  y-=1
-
-      if y<=3 :
-            y=3
+        if y<=12 :
+            y-=1
+    if y<=3 :
+        y=3
       
       
-      piece1 = [carre(x,y,piececolor),carre(x,y-1,piececolor),carre(x+1,y-1,piececolor),carre(x+1,y-2,piececolor)]
-      piece2 = [carre(x,y,piececolor2),carre(x,y-1,piececolor2),carre(x-1,y-1,piececolor2),carre(x-1,y-2,piececolor2)]
-      piece3 = [carre(x,y,piececolor3),carre(x,y-1,piececolor3),carre(x,y-2,piececolor3),carre(x,y-3,piececolor3)]
-      piece4 = [carre(x,y,piececolor4),carre(x+1,y,piececolor4),carre(x,y-1,piececolor4),carre(x+1,y-1,piececolor4)]
-      piece5 = [carre(x,y,piececolor5),carre(x,y-1,piececolor5),carre(x+1,y-1,piececolor5),carre(x,y-2,piececolor5)]
-      piece6 = [carre(x+1,y,piececolor6),carre(x+1,y-1,piececolor6),carre(x+1,y-2,piececolor6),carre(x,y-2,piececolor6)]
-      piece7 = [carre(x,y,piececolor7),carre(x,y-1,piececolor7),carre(x,y-2,piececolor7),carre(x+1,y-2,piececolor7)]
+    piece1 = [carre(x,y,piececolor),carre(x,y-1,piececolor),carre(x+1,y-1,piececolor),carre(x+1,y-2,piececolor)]
+    piece2 = [carre(x,y,piececolor2),carre(x,y-1,piececolor2),carre(x-1,y-1,piececolor2),carre(x-1,y-2,piececolor2)]
+    piece3 = [carre(x,y,piececolor3),carre(x,y-1,piececolor3),carre(x,y-2,piececolor3),carre(x,y-3,piececolor3)]
+    piece4 = [carre(x,y,piececolor4),carre(x+1,y,piececolor4),carre(x,y-1,piececolor4),carre(x+1,y-1,piececolor4)]
+    piece5 = [carre(x,y,piececolor5),carre(x,y-1,piececolor5),carre(x+1,y-1,piececolor5),carre(x,y-2,piececolor5)]
+    piece6 = [carre(x+1,y,piececolor6),carre(x+1,y-1,piececolor6),carre(x+1,y-2,piececolor6),carre(x,y-2,piececolor6)]
+    piece7 = [carre(x,y,piececolor7),carre(x,y-1,piececolor7),carre(x,y-2,piececolor7),carre(x+1,y-2,piececolor7)]
+    piecerandom=[piece1,piece2,piece3,piece4,piece5,piece6,piece7]
 
-      piecerandom=[piece1,piece2,piece3,piece4,piece5,piece6,piece7]
-
-      pieceR = random.choice(piecerandom)
+    pieceR = random.choice(piecerandom)
 
 
 
@@ -189,6 +188,7 @@ def ReSizeGLScene(Width, Height):
 # Fonction de dessin principale
 
 def DrawGLScene():
+
     global texture
     global piece1,piece2,piece3,piece4,piece5,piece6,piece7,piecerandom,pieceR
     global x
@@ -219,11 +219,11 @@ def DrawGLScene():
 
 def keyPressed(key, x, y):
     global window
-    global direct
+    global direct, stop
 
     # Si t ou echap presse, tout effacer
     if key == ESCAPE or key == 't':
-          sys.exit()
+        sys.exit()
 
     if key == 'd':
           direct = 'd'
@@ -239,21 +239,22 @@ def keyPressed(key, x, y):
 
 
 def main():
-      global window
-      glutInit(sys.argv)
-      glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH)
+    global window
+    glutInit(sys.argv)
+    glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH)
+    glutInitWindowSize(640, 480)
+    glutInitWindowPosition(0, 0)
+    window = glutCreateWindow("Bonjour Bob !")
+    
 
-      glutInitWindowSize(640, 480)
-      glutInitWindowPosition(0, 0)
-      window = glutCreateWindow("Bonjour Bob !")
+    glutDisplayFunc(DrawGLScene)
+    glutIdleFunc(DrawGLScene)
+    glutReshapeFunc(ReSizeGLScene)
     
-    
-      glutDisplayFunc(DrawGLScene)
-      glutIdleFunc(DrawGLScene)
-      glutReshapeFunc(ReSizeGLScene)
-      glutKeyboardFunc(keyPressed)
-      
-      InitGL(640, 480)
-      glutMainLoop()
+    glutKeyboardFunc(keyPressed)
+    InitGL(640, 480)
+    glutMainLoop()
+
+
 move()
 main()
