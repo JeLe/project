@@ -1,25 +1,4 @@
 
-from OpenGL.GL import *
-from OpenGL.GLUT import *
-from OpenGL.GLU import *
-import sys,threading,random
-
-ESCAPE = '\033'
-
-x=4
-y=12
-
-piececolor=[0,1,0]
-piececolor2=[1,0,0]
-piececolor3=[0,0,1]
-piececolor4=[1,1,0]
-piececolor5=[1,0,1]
-piececolor6=[0,1,1]
-piececolor7=[1,0.2,0.4]
-
-direct = "f"
-
-
 
 #piece1 =[[[0,1,0,0],[0,1,1,0],[0,0,1,0],[0,0,0,0]],[[0,0,0,0],[0,0,1,1],[0,1,1,0],[0,0,0,0]],[[0,1,0,0],[0,1,1,0],[0,0,1,0],[0,0,0,0]],[[0,0,0,0],[0,0,1,1],[0,1,1,0],[0,0,0,0]]]  
 
@@ -68,12 +47,31 @@ direct = "f"
 # O
 # O O
 
+#alors j'ai mis tout ca ici parce que pour lire c'est plus pratique :)
+
+from OpenGL.GL import *
+from OpenGL.GLUT import *
+from OpenGL.GLU import *
+import sys,threading,random
+
+ESCAPE = '\033'
+
+x=4
+y=12
+
+piececolor=[0,1,0]
+piececolor2=[1,0,0]
+piececolor3=[0,0,1]
+piececolor4=[1,1,0]
+piececolor5=[1,0,1]
+piececolor6=[0,1,1]
+piececolor7=[1,0.2,0.4]
+
+direct = "f"
 
 
 # Number of the glut window
 window = 0
-alpha = 0
-cubeColor=[0.7,0.2,0.2]
 
 
 class carre(object):
@@ -91,29 +89,47 @@ class carre(object):
                   glVertex3f(vertex[0],vertex[1],vertex[2])
             glEnd()
 
-#Piece 
+#Les pieces. J'en ai fait des objets, c'est plus pratique a utiliser, et ce sera beacoup plus simple d'ajouter les rotation.
+#comme tu l'avais tres bien fait, une piece, c'est une liste de carrés. Mais pour bouger tous les carrés en meme temps, i faut qu'ils partent tous du meme point, et ce point on doit y avoir acces facilement. Alors ce point c'est maintenant ton instance de ton objetc (appelons le mapiece) comme ceci : mapiece.Ax, meme principe pour le y...
 
 
-piece1 = [carre(x,y,piececolor),carre(x,y-1,piececolor),carre(x+1,y-1,piececolor),carre(x+1,y-2,piececolor)]
-piece2 = [carre(x,y,piececolor2),carre(x,y-1,piececolor2),carre(x-1,y-1,piececolor2),carre(x-1,y-2,piececolor2)]
-piece3 = [carre(x,y,piececolor3),carre(x,y-1,piececolor3),carre(x,y-2,piececolor3),carre(x,y-3,piececolor3)]
-piece4 = [carre(x,y,piececolor4),carre(x+1,y,piececolor4),carre(x,y-1,piececolor4),carre(x+1,y-1,piececolor4)]
-piece5 = [carre(x,y,piececolor5),carre(x,y-1,piececolor5),carre(x+1,y-1,piececolor5),carre(x,y-2,piececolor5)]
-piece6 = [carre(x+1,y,piececolor6),carre(x+1,y-1,piececolor6),carre(x+1,y-2,piececolor6),carre(x,y-2,piececolor6)]
-piece7 = [carre(x,y,piececolor7),carre(x,y-1,piececolor7),carre(x,y-2,piececolor7),carre(x+1,y-2,piececolor7)]
+class piece1(object):
+    def __init__(self):
+        self.x = 4
+        self.y = 12
+        self.color =[0,1,0]  # green
+        self.list = [carre(self.x,self.y,self.color),carre(self.x,self.y-1,self.color),carre(self.x+1,self.y-1,self.color),carre(self.x+1,self.y-2,self.color)]
+    
+    def down(self):
+        self.y -= 1
+
+    def move(self):
+        if direct = "d":
+            self.y -= 1
+
+
+
+piece2 = [carre(x,y,piececolor2),carre(x,y-1,piececolor2),carre(x-1,y-1,piececolor2),carre(x-1,y-2,piececolor2)] #red
+piece3 = [carre(x,y,piececolor3),carre(x,y-1,piececolor3),carre(x,y-2,piececolor3),carre(x,y-3,piececolor3)] #line
+piece4 = [carre(x,y,piececolor4),carre(x+1,y,piececolor4),carre(x,y-1,piececolor4),carre(x+1,y-1,piececolor4)] #square
+piece5 = [carre(x,y,piececolor5),carre(x,y-1,piececolor5),carre(x+1,y-1,piececolor5),carre(x,y-2,piececolor5)] #t
+piece6 = [carre(x+1,y,piececolor6),carre(x+1,y-1,piececolor6),carre(x+1,y-2,piececolor6),carre(x,y-2,piececolor6)] #anti - L
+piece7 = [carre(x,y,piececolor7),carre(x,y-1,piececolor7),carre(x,y-2,piececolor7),carre(x+1,y-2,piececolor7)] # L
+
 
 #newspiece=
 
-piecerandom=[piece1,piece2,piece3,piece4,piece5,piece6,piece7]
+piecerandom=[piece7]
 
 pieceR = random.choice(piecerandom)
 
 def move():
+    #ne sert que a faire descendre la piece...
     threading.Timer(0.8, move).start()
     global x
     global y
     global direct
-    global cubeColor,pieceR
+    global pieceR
     
 
     if y>3 :
@@ -126,16 +142,7 @@ def move():
             y-=1
     if y<=3 :
         y=3
-      
-      
-    piece1 = [carre(x,y,piececolor),carre(x,y-1,piececolor),carre(x+1,y-1,piececolor),carre(x+1,y-2,piececolor)]
-    piece2 = [carre(x,y,piececolor2),carre(x,y-1,piececolor2),carre(x-1,y-1,piececolor2),carre(x-1,y-2,piececolor2)]
-    piece3 = [carre(x,y,piececolor3),carre(x,y-1,piececolor3),carre(x,y-2,piececolor3),carre(x,y-3,piececolor3)]
-    piece4 = [carre(x,y,piececolor4),carre(x+1,y,piececolor4),carre(x,y-1,piececolor4),carre(x+1,y-1,piececolor4)]
-    piece5 = [carre(x,y,piececolor5),carre(x,y-1,piececolor5),carre(x+1,y-1,piececolor5),carre(x,y-2,piececolor5)]
-    piece6 = [carre(x+1,y,piececolor6),carre(x+1,y-1,piececolor6),carre(x+1,y-2,piececolor6),carre(x,y-2,piececolor6)]
-    piece7 = [carre(x,y,piececolor7),carre(x,y-1,piececolor7),carre(x,y-2,piececolor7),carre(x+1,y-2,piececolor7)]
-    piecerandom=[piece1,piece2,piece3,piece4,piece5,piece6,piece7]
+
 
     pieceR = random.choice(piecerandom)
 
@@ -188,19 +195,15 @@ def ReSizeGLScene(Width, Height):
 # Fonction de dessin principale
 
 def DrawGLScene():
-
-    global texture
     global piece1,piece2,piece3,piece4,piece5,piece6,piece7,piecerandom,pieceR
     global x
     global y
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)	# Clear The Screen And The Depth Buffer
     glLoadIdentity()	# Reset The View
-    global alpha
     glTranslatef(-5.,-7.0,-15.0)	# Move Into The Screen
-    glRotatef(alpha*4, 0, 1, 0)
 
 
-#DESSIN
+    #DESSIN
 
     for item in  pieceR :
           item.draw()
@@ -208,10 +211,6 @@ def DrawGLScene():
     for item in grille :
           for trucs in item :
                 trucs.draw()
-    
-    
-    ##############################################
-    #C'est ici qu'on ecrit pour dessiner les trucs
   
     
     glutSwapBuffers()
