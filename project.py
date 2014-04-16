@@ -605,14 +605,3 @@ print (walls[0].vertexList)
 
 
 main()
-
-
-
-
-
-
-
-
-
-
-		
