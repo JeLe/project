@@ -310,14 +310,14 @@ class bonhomme (object):
 machineUnit = 3
 
 class machine(object):
-    def __init__(self,name,Ax,Ay,Az,Dx,Dy,Dz):
+    def __init__(self,name,Ax,Ay,Az,Vx,Vy,Vz):
         self.name=name
         self.Ax=Ax
         self.Ay=Ay
         self.Az=Az
-        self.Dx=Dx
-        self.Dy=Dy
-        self.Dz=Dz
+        self.Vx=Vx
+        self.Vy=Vy
+        self.Vz=Vz
         self.type = "static"
         self.getPoints()
         self.normalList = getNormals(self.vertexList)
@@ -328,8 +328,11 @@ class machine(object):
         global machineUnit
         #alors au final j'avais raconte n'importe quoi, pour que ca marche vraiment, il faut deux vecteurs!! Alors pour simplifier la tache, on va reutiliser la premiere classe de Graal Corp, la classe quad !
         #je fais donc un quad, avec le point et les deux vecteurs que il faudra maintenant donner a la creation de ta machine.
-        self.start = quad("machine first", self.Ax, self.Ay, self.Az, self.Ax+0.5*machineUnit*self.Dx, self.Ay, self.Az+0.5*machineUnit*self.Dz, self.Ax-0.6*machineUnit*self.Dy, self.Ay, self.Az-0.6*machineUnit*self.Ax, 0., 1.0, 1., 0.).vertexList #mais je n'en garde que la liste de vertexs. De cette liste, qui represente les points de ton premier carre (celui du dessous), je vais recuperer les quatres points A, B, C, D, qui vont servir a redessiner tous les autres :)
+        self.start = quad("machine first", self.Ax, self.Ay, self.Az, 0.5*machineUnit*self.Vx, self.Ay, 0.5*machineUnit*self.Vz, -0.6*machineUnit*self.Vz, self.Ay, -0.6*machineUnit*self.Vx, 1., 1., 0.).vertexList #mais je n'en garde que la liste de vertexs. De cette liste, qui represente les points de ton premier carre (celui du dessous), je vais recuperer les quatres points A, B, C, D, qui vont servir a redessiner tous les autres :)
         #de plus, la carrosserie est en acier inoxidable, mais en vrai, pour faire le vecteurW de pour la classe quad, j'ai inverse le *self.Ax et le * self.Az dans les coordonnees, parce que en gros, si c'est pas l'un c'est l'autre, je t'expliquerai ca plus mieux un jour ou je ne prends pas l'avion !
+        #alors decollage a 10:20, on est audessus de la mer a 10:30 ! # 3 minutes pour traverser la manche??? #11 :00 , re audessus de la mer ? y'a top de nuages on dirait qu'on survole le pole nord ( les pauvres anglzais !! hihi :) # ah non en fait on peut toujours s'ecraser sur un patelin...  ! 11:06 ohhhh des montagnes, avec des lacs et un tout petit peu de glace.. et la mer derriere ?? 11:11  :on viens de passer un estuaire... Et cette machine est tres galere !! mais c'est bon y'a du sprite !!!! et y'a plein d'eoliennes dans les montagnes.
+        #11:20 deuxieme estuaire, avec une grosse ville et une petite lagune.. 11:23 les montagnes ont grandi et veilent aller se beigner !!
+        print(self.start)
         self.Ax = self.start[0][0]
         self.Ay = self.start[0][1]
         self.Az = self.start[0][2]
@@ -348,50 +351,63 @@ class machine(object):
         
         
         self.vertexList = [[self.Ax,self.Ay,self.Az],[self.Bx,self.By,self.Bz], [self.Cx,self.Cy,self.Cz], [self.Dx,self.Dy,self.Dz],
-                           #[self.Ax+0.5*machineUnit*self.Dx,self.Ay+0+self.Dy,self.Az+0+self.Dz],[self.Ax+0.5*machineUnit*self.Dx,self.Ay+0+self.Dy,self.Az-0.6*machineUnit],[self.Ax+0,self.Ay+self.Dy,self.Az-0.6*machineUnit],
                            
+                           #et maintenat qu'on a les quatres points de la base de la machine qui sont calcules avec des vecteurs, on calcule les autres points a partir de ceux la, et avec les vecteurs de temps en temps ausssi! Les vecteurs ne servent a rien uniquement quand il n'y a que y qui change : quand on va vers le haut quoi !
+                           [self.Bx, self.By+0, self.Bz+0 ],[self.Cx, self.Cy+0, self.Cz],[self.Cx, self.Cy+0.6*machineUnit, self.Cz],[self.Bx, self.By+0.6*machineUnit, self.Bz],
                            
-                           [self.Ax+0.5*machineUnit*self.Dx, self.Ay+0+self.Dy, self.Az+0+self.Dz],[self.Ax+0.5*machineUnit*self.Dx,self.Ay+0+self.Dy,self.Az-0.6*machineUnit],[self.Ax+0.5*machineUnit*self.Dx,self.Ay+0.6*machineUnit*self.Dy,self.Az-0.6*machineUnit],[self.Ax+0.5*machineUnit+self.Dx,self.Ay+0.6*machineUnit+self.Dy+0.6,self.Az+0+self.Dz]]#,
+                           [self.Bx, self.By+0.6*machineUnit, self.Bz],[self.Cx, self.Cy+0.6*machineUnit, self.Cz],[self.Cx+0.1*machineUnit*self.Vx, self.Cy+0.7*machineUnit, self.Cz+0.1*machineUnit*self.Vz],[self.Bx+0.1*machineUnit*self.Vx, self.By+0.7*machineUnit, self.Bz+0.1*machineUnit*self.Vz],
+                           #11:30, il s comencent deja a servir les repas, ahlala, et y'a plein de nuages, c'est tres joli mais en plus je crois qu'on est re audessus de la mer... et je commence le 3e album du jour vert de la journeee.
+                           # et a chaque carre, on repart avec les coords de celui d'avant ! et j'aimerai pas etre sur la mer sous les nuages la tout de suite, qu'est ce qu'il doit faire froid !!
+                           [self.Bx+0.1*machineUnit*self.Vx, self.By+0.7*machineUnit, self.Bz+0.1*machineUnit*self.Vz],[self.Cx+0.1*machineUnit*self.Vx, self.Cy+0.7*machineUnit, self.Cz+0.1*machineUnit*self.Vz],[self.Cx+0.1*machineUnit*self.Vx, self.Cy+0.8*machineUnit, self.Cz+0.1*machineUnit*self.Vz],[self.Bx+0.1*machineUnit*self.Vx, self.By+0.8*machineUnit, self.Bz+0.1*machineUnit*self.Vz],
+                           # pff, le paysage est vraiment ennuyeux, je vais pouvoir me concentrer ! (il doit etre a peu pres midi, midi et quart...
+                           #je viens de trouver le bug dans mes vecteurs, il est 12:40, on arrive je pense sur le groenland, ca on vient de toucher TERRE ! (a la cristophe colomb) et qyue y'a de la glace partout, c'est rigolo ! (et je viens de voir sur l'ecran de gens devant que dehors il fait -54... Farenheit!! (ca fait -47 celsius)la neige est belle !Bon, a mes vecteurs.. Mais il y a un enorme trou dans une montagne ! ce doit etre un volcan !!
+                           #j'en ai marre cette machine ne fonctionne pas du tout, et les montagnes enneigees me donnent envie d'aller faire du ski !
+                           #une heure et demie, ca y est ca marche, et ben, c'est pas splendide les vecteurs ! et c'est nul les gens derriee avaeint le soleil dans la tete, du coup je ne peux plus regarder la mer... Parce que c'est grand la mer en fait... (on a passe la petite peninsule du groenland il y a 15mn..
+                           # bon je vais essayer de finir la machine dans la demi heure...
+                           #plutot 3/4 d'heure...
+                           [self.Bx+0.1*machineUnit*self.Vx, self.By+0.8*machineUnit, self.Bz+0.1*machineUnit*self.Vz],[self.Cx+0.1*machineUnit*self.Vx, self.Cy+0.8*machineUnit, self.Cz+0.1*machineUnit*self.Vz],[self.Cx-0.1*machineUnit*self.Vx, self.Cy+0.9*machineUnit, self.Cz-0.1*machineUnit*self.Vz], [self.Bx-0.1*machineUnit*self.Vx, self.By+0.9*machineUnit, self.Bz-0.1*machineUnit*self.Vz],
                            
-                           #  [self.Ax+0.5*machineUnit+self.Dx,self.Ay+0.6*machineUnit+self.Dy+0.6,self.Az+0+self.Dz],[self.Ax+0.6*machineUnit+self.Dx+0.1,self.Ay+0.7*machineUnit+self.Dy+0.7,self.Az+0+self.Dz],[self.Ax+0.6*machineUnit+self.Dx+0.1,self.Ay+0.7*machineUnit+self.Dy+0.7,self.Az-0.6*machineUnit+self.Dz-0.6],[self.Ax+0.5*machineUnit+self.Dx,self.Ay+0.6*machineUnit+self.Dy+0.6,self.Az-0.6*machineUnit+self.Dz-0.6],
+                           [self.Bx-0.1*machineUnit*self.Vx, self.By+0.9*machineUnit, self.Bz-0.1*machineUnit*self.Vz],[self.Cx-0.1*machineUnit*self.Vx, self.Cy+0.9*machineUnit, self.Cz-0.1*machineUnit*self.Vz],[self.Cx-0.1*machineUnit*self.Vx, self.Cy+1.3*machineUnit, self.Cz-0.1*machineUnit*self.Vz],[self.Bx-0.1*machineUnit*self.Vx, self.By+1.3*machineUnit, self.Bz-0.1*machineUnit*self.Vz],
                            
-                           #[self.Ax+0.6*machineUnit+self.Dx+0.1,self.Ay+0.7*machineUnit+self.Dy+0.7,self.Az+0+self.Dz],[self.Ax+0.6*machineUnit+self.Dx+0.1,self.Ay+0.8*machineUnit+self.Dy+0.8,self.Az+0+self.Dz],[self.Ax+0.6*machineUnit+self.Dx+0.1,self.Ay+0.8*machineUnit+self.Dy+0.8,self.Az-0.6*machineUnit+self.Dz-0.6],[self.Ax+0.6*machineUnit+self.Dx+0.1,self.Ay+0.7*machineUnit+self.Dy+0.7,self.Az-0.6*machineUnit+self.Dz-0.6],
+                           [self.Bx-0.1*machineUnit*self.Vx, self.By+1.3*machineUnit, self.Bz-0.1*machineUnit*self.Vz],[self.Cx-0.1*machineUnit*self.Vx, self.Cy+1.3*machineUnit, self.Cz-0.1*machineUnit*self.Vz], [self.Cx, self.Cy+1.4*machineUnit, self.Cz],[self.Bx, self.By+1.4*machineUnit, self.Bz],
                            
-                           # [self.Ax+0.6*machineUnit+self.Dx+0.1,self.Ay+0.8*machineUnit+self.Dy+0.8,self.Az+0+self.Dz],[self.Ax+0.3*machineUnit+self.Dx-0.2,self.Ay+0.9*machineUnit+self.Dy+0.9,self.Az+0+self.Dz],[self.Ax+0.3*machineUnit+self.Dx-0.2,self.Ay+0.9*machineUnit+self.Dy+0.9,self.Az-0.6*machineUnit+self.Dz-0.6],[self.Ax+0.6*machineUnit+self.Dx+0.1,self.Ay+0.8*machineUnit+self.Dy+0.8,self.Az-0.6*machineUnit+self.Dz-0.6],
+                           [self.Bx, self.By+1.4*machineUnit, self.Bz],[self.Cx, self.Cy+1.4*machineUnit, self.Cz],[self.Cx, self.Cy+1.6*machineUnit, self.Cz],[self.Bx, self.By+1.6*machineUnit, self.Bz],
                            
-                           #[self.Ax+0.3*machineUnit+self.Dx-0.2,self.Ay+0.9*machineUnit+self.Dx+0.9,self.Az+0+self.Dz],[self.Ax+0.3*machineUnit+self.Dx-0.2,self.Ay+1.3*machineUnit+self.Dy+1.3,self.Az+0+self.Dz],[self.Ax+0.3*machineUnit+self.Dx-0.2,self.Ay+1.3*machineUnit+self.Dy+1.3,self.Az-0.6*machineUnit+self.Dz-0.6],[self.Ax+0.3*machineUnit+self.Dx-0.2,self.Ay+0.9*machineUnit+self.Dy+0.9,self.Az-0.6*machineUnit+self.Dz-0.6],
+                           [self.Ax,self.Ay+1.6*machineUnit,self.Az],[self.Bx,self.By+1.6*machineUnit,self.Bz], [self.Cx,self.Cy+1.6*machineUnit,self.Cz], [self.Dx,self.Dy+1.6*machineUnit,self.Dz],
                            
-                           #[self.Ax+0.3*machineUnit+self.Dx-0.2,self.Ay+1.3*machineUnit+self.Dy+1.3,self.Az+0+self.Dz],[self.Ax+0.4*machineUnit+self.Dx-0.1,self.Ay+1.4*machineUnit+self.Dy+1.4,self.Az+0+self.Dz],[self.Ax+0.4*machineUnit+self.Dx-0.1,self.Ay+1.4*machineUnit+self.Dy+1.4,self.Az-0.6*machineUnit+self.Dz-0.6],[self.Ax+0.3*machineUnit+self.Dx-0.2,self.Ay+1.3*machineUnit+self.Dy+1.3,self.Az-0.6*machineUnit+self.Dz-0.6],
-                           
-                           # [self.Ax+0.4*machineUnit+self.Dx-0.1,self.Ay+1.4*machineUnit+self.Dy+1.4,self.Az+0+self.Dz],[self.Ax+0.4*machineUnit+self.Dx-0.1,self.Ay+1.6*machineUnit+self.Dy+1.6,self.Az+0+self.Dz],[self.Ax+0.4*machineUnit+self.Dx-0.1,self.Ay+1.6*machineUnit+self.Dy+1.6,self.Az-0.6*machineUnit+self.Dz-0.6],[self.Ax+0.4*machineUnit+self.Dx-0.1,self.Ay+1.4*machineUnit+self.Dy+1.4,self.Az-0.6*machineUnit+self.Dz-0.6],
-                           
-                           #[self.Ax+0.4*machineUnit+self.Dx-0.1,self.Ay+1.6*machineUnit+self.Dy+1.6,self.Az+0+self.Dz],[self.Ax+0.4*machineUnit+self.Dx-0.1,self.Ay+1.6*machineUnit+self.Dy+1.6,self.Az-0.6*machineUnit+self.Dz-0.6],[self.Ax+0+self.Dx,self.Ay+1.6*machineUnit+self.Dx+1.6,self.Az-0.6*machineUnit+self.Dz-0.6],[self.Ax+0+self.Dx,self.Ay+1.6*machineUnit+self.Dy+1.6,self.Az+0+self.Dz],
-                           
-                           #[self.Ax+0+self.Dx,self.Ay+1.6*machineUnit+self.Dy+1.6,self.Az+0+self.Dz],[self.Ax+0+self.Dx,self.Ay+1.6*machineUnit+self.Dy+1.6,self.Az-0.6*machineUnit+self.Dz-0.6],[self.Ax+0+self.Dx,self.Ay+0+self.Dy,self.Az-0.6*machineUnit+self.Dz-0.6],[self.Ax+0,self.Ay+0,self.Az+0],
+                           [self.Ax+0 ,self.Ay,self.Az+0 ],[self.Dx+0 ,self.Dy, self.Dz],[self.Dx+0 ,self.Dy+1.6*machineUnit, self.Dz],[self.Ax+0,self.Ay+1.6*machineUnit,self.Az+0],
+                           #il est deux heures et demie, j'arrive pas du tout a me concentrer a cause de tous les films sur tous les ecrans de tout le monde, forcement le mien il ne marche pas !!! et je crois qu'on est pas top loin du cercle polaire, parce que j'ai jete un oeuil dehors (ca fait mal), c'est que de la glace !! magnifique, je qualifierai meme ca de , miraculeux ! (tiens voila ce que je vais regarder parce que j'en ai marre de cette machine !
                            
                            #the sides (dark or not, as you want)
-                           #[self.Ax+0,self.Ay+0,self.Az+0],[self.Ax+0.3*machineUnit+self.Dx-0.2,self.Ay+0+self.Dy,self.Az+0+self.Dz],[self.Ax+0.3*machineUnit+self.Dx-0.2,self.Ay+1.6*machineUnit+self.Dy+1.6,self.Az+0+self.Dz],[self.Ax+0+self.Dx-0.5,self.Ay+1.6*machineUnit+self.Dy+1.6,self.Az+0+self.Dz],
+                           #c'est grand le groenland... Et la il est 4:30, je commence a trouver le temps long...
+                           [self.Ax ,self.Ay,self.Az], [self.Bx-0.1*machineUnit*self.Vx,self.By,self.Bz-0.1*machineUnit*self.Vz], [self.Bx-0.1*machineUnit*self.Vx,self.By+1.6*machineUnit,self.Bz-0.1*machineUnit*self.Vz], [self.Ax, self.Ay+1.6*machineUnit, self.Az],
+                           [self.Dx ,self.Dy,self.Dz], [self.Cx-0.1*machineUnit*self.Vx,self.Cy,self.Cz-0.1*machineUnit*self.Vz], [self.Cx-0.1*machineUnit*self.Vx,self.Cy+1.6*machineUnit,self.Cz-0.1*machineUnit*self.Vz], [self.Dx, self.Dy+1.6*machineUnit, self.Dz]
+                           #[self.Ax+0,self.Ay+0,self.Az+0],[self.Ax+0.3*machineUnit -0.2,self.Ay+0 ,self.Az+0 ],[self.Ax+0.3*machineUnit -0.2,self.Ay+1.6*machineUnit +1.6,self.Az+0 ],[self.Ax+0 -0.5,self.Ay+1.6*machineUnit +1.6,self.Az+0 ],
                            
-                           #  [self.Ax+0.3*machineUnit+self.Dx-0.2,self.Ay+0+self.Dy,self.Az+0+self.Dz],[self.Ax+0.5*machineUnit+self.Dx,self.Ay+0+self.Dy,self.Az+0+self.Dz],[self.Ax+0.5*machineUnit+self.Dx,self.Ay+0.6*machineUnit+self.Dy+0.6,self.Az+0+self.Dz],[self.Ax+0.3*machineUnit+self.Dx-0.2,self.Ay+0.6*machineUnit+self.Dy+0.6,self.Az+0+self.Dz],
+                           #[self.Ax+0.3*machineUnit -0.2,self.Ay+0 ,self.Az+0 ],[self.Ax+0.5*machineUnit ,self.Ay+0 ,self.Az+0 ],[self.Ax+0.5*machineUnit ,self.Ay+0.6*machineUnit +0.6,self.Az+0 ],[self.Ax+0.3*machineUnit -0.2,self.Ay+0.6*machineUnit +0.6,self.Az+0 ],
                            
-                           #[self.Ax+0.5*machineUnit+self.Dx,self.Ay+0.6*machineUnit+self.Dy+0.6,self.Az+0+self.Dz],[self.Ax+0.3*machineUnit+self.Dx-0.2,self.Ay+0.6*machineUnit+self.Dy+0.6,self.Az+0+self.Dz],[self.Ax+0.3*machineUnit+self.Dx-0.2,self.Ay+0.7*machineUnit+self.Dy+0.7,self.Az+0+self.Dz],[self.Ax+0.6*machineUnit+self.Dx+0.1,self.Ay+0.7*machineUnit+self.Dy+0.7,self.Az+0+self.Dz],
+                           #[self.Ax+0.5*machineUnit ,self.Ay+0.6*machineUnit +0.6,self.Az+0 ],[self.Ax+0.3*machineUnit -0.2,self.Ay+0.6*machineUnit +0.6,self.Az+0 ],[self.Ax+0.3*machineUnit -0.2,self.Ay+0.7*machineUnit +0.7,self.Az+0 ],[self.Ax+0.6*machineUnit +0.1,self.Ay+0.7*machineUnit +0.7,self.Az+0 ],
                            
-                           #[self.Ax+0.6*machineUnit+self.Dx+0.1,self.Ay+0.7*machineUnit+self.Dy+0.7,self.Az+0+self.Dz],[self.Ax+0.3*machineUnit+self.Dx-0.2,self.Ay+0.7*machineUnit+self.Dy+0.7,self.Az+0+self.Dz],[self.Ax+0.3*machineUnit+self.Dx-0.2,self.Ay+0.9*machineUnit+self.Dy,self.Az+0+self.Dz],[self.Ax+0.6*machineUnit+self.Dx+0.1,self.Ay+0.8*machineUnit+self.Dy+0.8,self.Az+0+self.Dz],
+                           #[self.Ax+0.6*machineUnit +0.1,self.Ay+0.7*machineUnit +0.7,self.Az+0 ],[self.Ax+0.3*machineUnit -0.2,self.Ay+0.7*machineUnit +0.7,self.Az+0 ],[self.Ax+0.3*machineUnit -0.2,self.Ay+0.9*machineUnit ,self.Az+0 ],[self.Ax+0.6*machineUnit +0.1,self.Ay+0.8*machineUnit +0.8,self.Az+0 ],
                            
-                           #[self.Ax+0.3*machineUnit+self.Dx-0.2,self.Ay+1.3*machineUnit+self.Dy+1.3,self.Az+0+self.Dz],[self.Ax+0.4*machineUnit+self.Dx-0.1,self.Ay+1.4*machineUnit+self.Dy+1.4,self.Az+0+self.Dz],[self.Ax+0.4*machineUnit+self.Dx-0.1,self.Ay+1.6*machineUnit+self.Dy+1.6,self.Az+0+self.Dz],[self.Ax+0.3*machineUnit+self.Dx-0.2,self.Ay+1.6*machineUnit+self.Dy+1.6,self.Az+0+self.Dz],
+                           #[self.Ax+0.3*machineUnit -0.2,self.Ay+1.3*machineUnit +1.3,self.Az+0 ],[self.Ax+0.4*machineUnit -0.1,self.Ay+1.4*machineUnit +1.4,self.Az+0 ],[self.Ax+0.4*machineUnit -0.1,self.Ay+1.6*machineUnit +1.6,self.Az+0 ],[self.Ax+0.3*machineUnit -0.2,self.Ay+1.6*machineUnit +1.6,self.Az+0 ],
                            
                            
-                           #[self.Ax+0+self.Dx-0.5,self.Ay+0+self.Dy,self.Az-0.6*machineUnit+self.Dz-0.6],[self.Ax+0.3*machineUnit+self.Dx-0.2,self.Ay+0+self.Dy,self.Az-0.6*machineUnit+self.Dz-0.6],[self.Ax+0.3*machineUnit+self.Dx-0.2,self.Ay+1.6*machineUnit+self.Dy+1.6,self.Az-0.6*machineUnit+self.Dz+1.6],[self.Ax+0+self.Dx-0.5,self.Ay+1.6*machineUnit+self.Dy+1.6,self.Az-0.6*machineUnit+self.Dz-0.6],
                            
-                           #[self.Ax+0.3*machineUnit+self.Dx-0.2,self.Ay+0+self.Dy,self.Az-0.6*machineUnit+self.Dz-0.6],[self.Ax+0.5*machineUnit+self.Dx,self.Ay+0+self.Dy,self.Az-0.6*machineUnit+self.Dz-0.6],[self.Ax+0.5*machineUnit+self.Dx,self.Ay+0.6*machineUnit+self.Dy+0.6,self.Az-0.6*machineUnit+self.Dz-0.6],[self.Ax+0.3*machineUnit+self.Dx-0.2,self.Ay+0.6*machineUnit+self.Dy+0.6,self.Az-0.6*machineUnit+self.Dz-0.6],
+                           #[self.Ax+0 -0.5,self.Ay+0 ,self.Az-0.6*machineUnit -0.6],[self.Ax+0.3*machineUnit -0.2,self.Ay+0 ,self.Az-0.6*machineUnit -0.6],[self.Ax+0.3*machineUnit -0.2,self.Ay+1.6*machineUnit +1.6,self.Az-0.6*machineUnit +1.6],[self.Ax+0 -0.5,self.Ay+1.6*machineUnit +1.6,self.Az-0.6*machineUnit -0.6],
                            
-                           #[self.Ax+0.5*machineUnit+self.Dx,self.Ay+0.6*machineUnit+self.Dy+0.6,self.Az-0.6*machineUnit+self.Dz-0.6],[self.Ax+0.3*machineUnit+self.Dx-0.2,self.Ay+0.6*machineUnit+self.Dy+0.6,self.Az-0.6*machineUnit+self.Dz-0.6],[self.Ax+0.3*machineUnit+self.Dx-0.2,self.Ay+0.7*machineUnit+self.Dy+0.7,self.Az-0.6*machineUnit+self.Dz-0.6],[self.Ax+0.6*machineUnit+self.Dx+0.1,self.Ay+0.7*machineUnit+self.Dy+0.7,self.Az-0.6*machineUnit+self.Dz-0.6],
+                           #[self.Ax+0.3*machineUnit -0.2,self.Ay+0 ,self.Az-0.6*machineUnit -0.6],[self.Ax+0.5*machineUnit ,self.Ay+0 ,self.Az-0.6*machineUnit -0.6],[self.Ax+0.5*machineUnit ,self.Ay+0.6*machineUnit +0.6,self.Az-0.6*machineUnit -0.6],[self.Ax+0.3*machineUnit -0.2,self.Ay+0.6*machineUnit +0.6,self.Az-0.6*machineUnit -0.6],
                            
-                           #[self.Ax+0.6*machineUnit+self.Dx+0.1,self.Ay+0.7*machineUnit+self.Dy+0.7,self.Az-0.6*machineUnit+self.Dz-0.6],[self.Ax+0.3*machineUnit+self.Dx-0.2,self.Ay+0.7*machineUnit+self.Dy+0.7,self.Az-0.6*machineUnit+self.Dz-0.6],[self.Ax+0.3*machineUnit+self.Dx-0.2,self.Ay+0.9*machineUnit+self.Dy+0.9,self.Az-0.6*machineUnit+self.Dz-0.6],[self.Ax+0.6*machineUnit+self.Dx+0.1,self.Ay+0.8*machineUnit+self.Dy+0.8,self.Az-0.6*machineUnit+self.Dz-0.6],
+                           #[self.Ax+0.5*machineUnit ,self.Ay+0.6*machineUnit +0.6,self.Az-0.6*machineUnit -0.6],[self.Ax+0.3*machineUnit -0.2,self.Ay+0.6*machineUnit +0.6,self.Az-0.6*machineUnit -0.6],[self.Ax+0.3*machineUnit -0.2,self.Ay+0.7*machineUnit +0.7,self.Az-0.6*machineUnit -0.6],[self.Ax+0.6*machineUnit +0.1,self.Ay+0.7*machineUnit +0.7,self.Az-0.6*machineUnit -0.6],
                            
-                           #[self.Ax+0.3*machineUnit+self.Dx-0.2,self.Ay+1.3*machineUnit+self.Dy+1.3,self.Az-0.6*machineUnit+self.Dz-0.6],[self.Ax+0.4*machineUnit+self.Dx-0.1,self.Ay+1.4*machineUnit+self.Dy+1.4,self.Az-0.6*machineUnit+self.Dz-0.6],[self.Ax+0.4*machineUnit+self.Dx-0.1,self.Ay+1.6*machineUnit+self.Dy+1.6,self.Az-0.6*machineUnit+self.Dz-0.6],[self.Ax+0.3*machineUnit+self.Dx-0.2,self.Ay+1.6*machineUnit+self.Dy+1.6,self.Az-0.6*machineUnit+self.Dz-0.6]]
+                           #[self.Ax+0.6*machineUnit +0.1,self.Ay+0.7*machineUnit +0.7,self.Az-0.6*machineUnit -0.6],[self.Ax+0.3*machineUnit -0.2,self.Ay+0.7*machineUnit +0.7,self.Az-0.6*machineUnit -0.6],[self.Ax+0.3*machineUnit -0.2,self.Ay+0.9*machineUnit +0.9,self.Az-0.6*machineUnit -0.6],[self.Ax+0.6*machineUnit +0.1,self.Ay+0.8*machineUnit +0.8,self.Az-0.6*machineUnit -0.6],
+                           
+                           #[self.Ax+0.3*machineUnit -0.2,self.Ay+1.3*machineUnit +1.3,self.Az-0.6*machineUnit -0.6],[self.Ax+0.4*machineUnit -0.1,self.Ay+1.4*machineUnit +1.4,self.Az-0.6*machineUnit -0.6],[self.Ax+0.4*machineUnit -0.1,self.Ay+1.6*machineUnit +1.6,self.Az-0.6*machineUnit -0.6],[self.Ax+0.3*machineUnit -0.2,self.Ay+1.6*machineUnit +1.6,self.Az-0.6*machineUnit -0.6]
+                           ]
     
-                           
+    
+    
+
     def draw(self):
         glBegin(GL_QUADS)
         glColor3f(1., 1., 1.)
@@ -403,10 +419,10 @@ class machine(object):
         glBegin(GL_LINES)
         glColor3f(1., 0., 0.)
         counter =0
-        for item in self.normalList :
-            counter+=3
-            glVertex3f(item[0], item[1], item[2])
-            glVertex3f(self.vertexList[counter][0], self.vertexList[counter][1], self.vertexList[counter][2])
+            # for item in self.normalList :
+            #counter+=3
+            #glVertex3f(item[0], item[1], item[2])
+            #glVertex3f(self.vertexList[counter][0], self.vertexList[counter][1], self.vertexList[counter][2])
 
         glEnd()
 
@@ -462,7 +478,7 @@ def DrawGLScene():
 
     #glEnable(GL_LIGHT1)
         
-    lightpos = numpy.array((-5., 2., -5., 0.), 'f')
+    lightpos = numpy.array((5., 2., 0., 0.), 'f')
     lightdir = numpy.array((1, 0, 0), 'f')
     glLightfv(GL_LIGHT0, GL_POSITION, lightpos)
     glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, lightdir)
@@ -622,8 +638,8 @@ def main():
 #here is where we instanciate all the objects....
 #must be here or all necessary funcs haven't apeared yet...
 #we now need to get the walls for all the machines and ... youpii
-drawables = [quad("floor", -5, 0.0, 5, 0., 0.0, -10., 10., 0.0, 0., 1.0, 1., 0.), machine("test", 0, 0, 0, 0, 0, 1)]
-myBonhomme = bonhomme(0.0,0.0,0.1)
+drawables = [quad("floor", -5, 0.0, 5, 0., 0.0, -10., 10., 0.0, 0., 1.0, 1., 0.), machine("test", 0, 0, 0, 1, 0, 0), machine("test", -3, 0, -3, 0, 0, 1)]
+myBonhomme = bonhomme(-3.0,0.0,0.1)
 
 
 
