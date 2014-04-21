@@ -16,7 +16,7 @@ alpha =0
 score=0
 upscore=5
 acceleration=10
-increment=0.1
+increment=0.01
 
 #creation de l'objet 'player' (ce sera le personnage/le 'truc' qui devra eviter les obstacles dans le jeu)
 class player (object):
@@ -47,7 +47,9 @@ class carre (object):
         self.Ay = Ay
 
     def getvertices(self):
-        self.Ax -= .01
+        global increment
+        #ici il ne faut pas que ca reste += .01, because sinon ca ne va pas accelerer ! Il faut ajouter -increment a chaque faois !!
+        self.Ax -= increment
         self.vertices = [[self.Ax,self.Ay,0],[self.Ax,self.Ay+0.5,0],[self.Ax+0.5,self.Ay+0.5,0],[self.Ax+0.5,self.Ay,0]]
       
     def drawcarre(self):
@@ -68,13 +70,16 @@ def NewObstacle(counter):
     x=randint in range(0,5)
     y=randint in range(0,5)
     list1[counter]=carre(x/10,y/10,[0.5,0.2,0.7])
-    global score
-    points+=upscore
-    if score>acceleration:
-        increment+=0.05
-    upscore+=2
-    acceleration+=100*0.5*upscore
-    print(score)
+    global score, upscore, acceleration, increment #plus bas tu utilise des variables non declarees comme globales, alos je les ai declarees..
+    #deans la ligne suivante tu utilise une variable qui nexiste pas (points.) alors qu'elle s'appelle score...
+    score+=upscore
+    increment+=0.05
+
+    if score>acceleration: # pourquoi > acceleration ??? faudrait plutot une barriere plus arbitraire non ? parce qu'acceleration, c'est bizzare comme truc..
+        #d'ailleurs il sert a quoi acceleration ..
+        upscore+=2
+        acceleration+=100*0.5*upscore
+        print(score)
     
 # Fonction d'initialisation d'OpenGL. Defini les parametres principaux.
 def InitGL(Width, Height):			         	# On l'appelle juste apres que la fenetre OpenGL ait ete creee.
@@ -124,6 +129,7 @@ def DrawGLScene():
                 item=NewObstacle(counter)
             counter+=1
 	    
+    # dessinnr les carres de la liste1
     for item in list1:
         item.getvertices()
         item.drawcarre()
