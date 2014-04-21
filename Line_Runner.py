@@ -15,7 +15,7 @@ alpha =0
 #variables pour le score et l'acceleration au cours du jeu
 score=0
 upscore=5
-acceleration=10
+value=10
 increment=0.01
 
 
@@ -49,7 +49,6 @@ class carre (object):
 
     def getvertices(self):
         global increment
-        #ici il ne faut pas que ca reste += .01, because sinon ca ne va pas accelerer ! Il faut ajouter -increment a chaque faois !!
         self.Ax -= increment
         self.vertices = [[self.Ax,self.Ay,0],[self.Ax,self.Ay+0.5,0],[self.Ax+0.5,self.Ay+0.5,0],[self.Ax+0.5,self.Ay,0]]
       
@@ -71,13 +70,11 @@ def NewObstacle(counter):
     x=randint in range(0,5)
     y=randint in range(0,5)
     list1[counter]=carre(x/10,y/10,[0.5,0.2,0.7])
-    global score, upscore, acceleration, increment #plus bas tu utilise des variables non declarees comme globales, alos je les ai declarees..
-    #deans la ligne suivante tu utilise une variable qui nexiste pas (points.) alors qu'elle s'appelle score...
+    global score, upscore, acceleration, increment
     score+=upscore
     increment+=0.05
 
-    if score>acceleration: # pourquoi > acceleration ??? faudrait plutot une barriere plus arbitraire non ? parce qu'acceleration, c'est bizzare comme truc..
-        #d'ailleurs il sert a quoi acceleration ..
+    if score>acceleration: 
         upscore+=2
         acceleration+=100*0.5*upscore
         print(score)
