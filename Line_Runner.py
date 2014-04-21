@@ -64,19 +64,21 @@ monplayer= player (-1.7,-0.9,[1.,1.,0.0])
 moncarre = carre (0.9,0.9,[0.1,0.8,0.5])
 
 #liste faisant apparaitre les premiers obstacles du jeu
-list1=[carre(0.9,0.5,[0.8,0.2,0.1]),carre(0.9,0.1,[.0,.4,.5]),carre(0.9,0.8,[0.1,.8,.6])]
+list1=[carre(0.5,0.5,[0.8,0.2,0.1]),carre(0.3,0.1,[.0,.4,.5])] #avec un carre ca va à peu pres mais des qu'il y en a plus c'est la folie
 
 def NewObstacle(counter):
-    x=randint in range(0,5)
-    y=randint in range(0,5)
-    list1[counter]=carre(x/10,y/10,[0.5,0.2,0.7])
-    global score, upscore, acceleration, increment
+    x=randint(1,11)
+    y=randint(1,11)
+    a=randint(9,13)
+    b=randint(4,8)
+    c=randint(6,12)
+    list1[counter]=carre(x/10,y/10,[a/10,b/10,c/10])
+    global score, upscore, value, increment
     score+=upscore
-    increment+=0.05
-
-    if score>acceleration: 
+    if score>value: 
+	increment+=0.0005
         upscore+=2
-        acceleration+=100*0.5*upscore
+        value+=100*0.5*upscore
         print(score)
     
 # Fonction d'initialisation d'OpenGL. Defini les parametres principaux.
@@ -111,6 +113,20 @@ def DrawGLScene():
     monplayer.getvertices()
     monplayer.drawplayer()
     moncarre.drawcarre()
+   
+   #condition pour faire apparaitre les nouveaux obstacles
+    if moncarre.Ax<=monplayer.Ax:
+        counter=0
+        for item in list1:
+            if item.Ax<=monplayer.Ax:
+	      if moncarre.Ax<=monplayer.Ax:
+                NewObstacle(counter)
+		counter+=1
+	    
+    # dessiner les carres de list1
+    for item in list1:
+        item.getvertices()
+        item.drawcarre()
     #condition pour la mort du joueur:
     if (monplayer.Ax < moncarre.Ax < monplayer.Ax+0.3 or monplayer.Ax<moncarre.Ax+0.5<monplayer.Ax+0.3)  and (monplayer.Ay<=moncarre.Ay<=monplayer.Ay+0.3 or monplayer.Ay<=moncarre.Ay+0.5<=monplayer.Ay+0.3):
         sys.exit()
@@ -119,18 +135,7 @@ def DrawGLScene():
         monplayer.Ay=1.7
     if monplayer.Ay<=-2:
         monplayer.Ay=-2
-    #condition pour faire apparaitre les nouveaux obstacles
-    if moncarre.Ax<=monplayer.Ax:
-        counter=0
-        for item in list1:
-            if item.Ax<=-0.5:
-                item=NewObstacle(counter)
-            counter+=1
-	    
-    # dessinnr les carres de la liste1
-    for item in list1:
-        item.getvertices()
-        item.drawcarre()
+    
 
     
         ##############################################
