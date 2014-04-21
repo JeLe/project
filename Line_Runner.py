@@ -45,6 +45,7 @@ class carre (object):
         self.blue = couleur[2]
         self.Ax = Ax
         self.Ay = Ay
+
     def getvertices(self):
         self.Ax -= .01
         self.vertices = [[self.Ax,self.Ay,0],[self.Ax,self.Ay+0.5,0],[self.Ax+0.5,self.Ay+0.5,0],[self.Ax+0.5,self.Ay,0]]
@@ -64,13 +65,13 @@ moncarre = carre (0.9,0.9,[0.1,0.8,0.5])
 list1=[carre(0.9,0.5,[0.8,0.2,0.1]),carre(0.9,0.1,[.0,.4,.5]),carre(0.9,0.8,[0.1,.8,.6])]
 
 def NewObstacle(counter):
-  x=randint in range(0,0.5)
-  y=randint in range(0,0.5)
-  list1[counter]=carre(x,y,[0.5,0.2,0.7])
-  global score
-  points+=upscore
-  if score>acceleration:
-    increment+=0.05
+    x=randint in range(0,5)
+    y=randint in range(0,5)
+    list1[counter]=carre(x/10,y/10,[0.5,0.2,0.7])
+    global score
+    points+=upscore
+    if score>acceleration:
+        increment+=0.05
     upscore+=2
     acceleration+=100*0.5*upscore
     print(score)
@@ -107,22 +108,27 @@ def DrawGLScene():
     monplayer.getvertices()
     monplayer.drawplayer()
     moncarre.drawcarre()
-#condition pour la mort du joueur:
+    #condition pour la mort du joueur:
     if (monplayer.Ax < moncarre.Ax < monplayer.Ax+0.3 or monplayer.Ax<moncarre.Ax+0.5<monplayer.Ax+0.3)  and (monplayer.Ay<=moncarre.Ay<=monplayer.Ay+0.3 or monplayer.Ay<=moncarre.Ay+0.5<=monplayer.Ay+0.3):
-      sys.exit()
-#conditions pour que le joueur reste dans l'ecran
+        sys.exit()
+    #conditions pour que le joueur reste dans l'ecran
     if monplayer.Ay>=1.7:
-      monplayer.Ay=1.7
+        monplayer.Ay=1.7
     if monplayer.Ay<=-2:
-      monplayer.Ay=-2
-#condition pour faire apparaitre les nouveaux obstacles
+        monplayer.Ay=-2
+    #condition pour faire apparaitre les nouveaux obstacles
     if moncarre.Ax<=monplayer.Ax:
-      counter=0
-      for item in list1:
-	if item.Ax<=-0.5:
-	  item=NewObstacle(counter)
-	  counter+=1
+        counter=0
+        for item in list1:
+            if item.Ax<=-0.5:
+                item=NewObstacle(counter)
+            counter+=1
 	    
+    for item in list1:
+        item.getvertices()
+        item.drawcarre()
+
+    
         ##############################################
         
     glutSwapBuffers()   
