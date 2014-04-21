@@ -18,6 +18,7 @@ upscore=5
 acceleration=10
 increment=0.01
 
+
 #creation de l'objet 'player' (ce sera le personnage/le 'truc' qui devra eviter les obstacles dans le jeu)
 class player (object):
     def __init__ (self, Ax, Ay, couleur):
