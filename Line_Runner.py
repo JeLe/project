@@ -67,19 +67,19 @@ moncarre = carre (0.9,0.9,[0.1,0.8,0.5])
 list1=[carre(0.5,0.5,[0.8,0.2,0.1]),carre(0.3,0.1,[.0,.4,.5])] #avec un carre ca va a peu pres mais des qu'il y en a plus c'est la folie
 
 def NewObstacle(counter):
-    x=randint(1,11)
-    y=randint(1,11)
-    a=randint(9,13)
-    b=randint(4,8)
-    c=randint(6,12)
+    x=randint(19,20)
+    y=randint(-20,20)
+    a=randint(1,10)
+    b=randint(1,10)
+    c=randint(1,10)
     list1[counter]=carre(x/10,y/10,[a/10,b/10,c/10])
     global score, upscore, value, increment
     score+=upscore
     if score>value: 
-	increment+=0.0005
+	increment+=0.005
         upscore+=2
         value+=100*0.5*upscore
-    print("new born")
+    print(score)
     
 # Fonction d'initialisation d'OpenGL. Defini les parametres principaux.
 def InitGL(Width, Height):			         	# On l'appelle juste apres que la fenetre OpenGL ait ete creee.
@@ -109,20 +109,13 @@ def DrawGLScene():
     glLoadIdentity()					# Reset The View
     global alpha
     glTranslatef(0.,0.0,-5.0)			# Move Into The Screen
-    #moncarre.getvertices()
     monplayer.getvertices()
     monplayer.drawplayer()
-    #moncarre.drawcarre()
-   
+
     #condition pour faire apparaitre les nouveaux obstacles
-   
-   #   if moncarre.Ax<=monplayer.Ax:
-   
-   #c'est dans les conditions ici que ca ne marchait pas bien du tout, je les ai juste mis en comment pour que tu vois. Et maintenant tu n'as plus qu'a refaire les ranges des random, et ca devrait le faire ! :)
     counter=0
     for item in list1:
-        if item.Ax<=-2:
-            #            if moncarre.Ax<=monplayer.Ax:
+        if item.Ax<=-3.2:
             NewObstacle(counter)
         counter+=1
 	    
@@ -141,13 +134,11 @@ def DrawGLScene():
     if monplayer.Ay<=-2:
         monplayer.Ay=-2
 
-#ca c'est les lignes pour voir ou sont les frontieres de ton ecran !
-#et voila, normalement tu peux a peu pres finir !
     glBegin(GL_LINES)
     glVertex3f(-2, -2, 0)
     glVertex3f(2, -2, 0)
-    glVertex3f(-2, 1.7, 0)
-    glVertex3f(2, 1.7, 0)
+    glVertex3f(-2, 2, 0)
+    glVertex3f(2, 2, 0)
     glEnd()
 
     
