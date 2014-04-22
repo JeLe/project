@@ -75,7 +75,7 @@ def NewObstacle(counter):
     global score, upscore, value, increment
     score+=upscore
     if score>value: 
-	increment+=0.005
+        increment+=0.005
         upscore+=2
         value+=100*0.5*upscore
     print(score)
@@ -125,8 +125,9 @@ def DrawGLScene():
 
     #condition pour la mort du joueur:
     for item in list1:
-      if (monplayer.Ax < item.Ax < monplayer.Ax+0.3 or monplayer.Ax<item.Ax+0.5<monplayer.Ax+0.3)  and (monplayer.Ay<item.Ay<monplayer.Ay+0.3 or monplayer.Ay<item.Ay+0.5<monplayer.Ay+0.3):
-	 sys.exit()
+        if (item.Ax<=monplayer.Ax<=item.Ax+.5 or item.Ax<=monplayer.Ax+0.3<=item.Ax+0.5)  and (item.Ay<=monplayer.Ay<=item.Ay+.5 or item.Ay<=monplayer.Ay+.3<=item.Ay+.5):
+            sys.exit()
+
     #conditions pour que le joueur reste dans l'ecran
     if monplayer.Ay>=1.7:
         monplayer.Ay=1.7
