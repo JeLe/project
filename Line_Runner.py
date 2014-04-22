@@ -63,7 +63,7 @@ class carre (object):
 monplayer= player (-1.7,-0.9,[1.,1.,0.0])
 
 #liste faisant apparaitre les premiers obstacles du jeu
-list1=[carre(0.5,1,[0.8,0.2,0.1]),carre(0.3,0.1,[.0,.4,.5])] #avec un carre ca va a peu pres mais des qu'il y en a plus c'est la folie
+list1=[carre(0.5,1,[0.8,0.2,0.1]),carre(0.3,0.1,[.0,.4,.5]),carre(0.5,-1,[0.2,0.9,0.3])]
 
 def NewObstacle(counter):
     x=randint(19,20)
@@ -75,9 +75,10 @@ def NewObstacle(counter):
     global score, upscore, value, increment
     score+=upscore
     if score>value: 
-        increment+=0.005
+        increment+=0.01
         upscore+=2
-        value+=100*0.5*upscore
+        value+=50*upscore
+    print("prout")
     print(score)
     
 # Fonction d'initialisation d'OpenGL. Defini les parametres principaux.
@@ -117,7 +118,7 @@ def DrawGLScene():
         if item.Ax<=-3.2:
             NewObstacle(counter)
         counter+=1
-	    
+
     # dessiner les carres de list1
     for item in list1:
         item.getvertices()
