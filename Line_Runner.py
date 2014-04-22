@@ -66,18 +66,19 @@ monplayer= player (-1.7,-0.9,[1.,1.,0.0])
 list1=[carre(2,1,[0.8,0.2,0.1]),carre(2,0.1,[.0,.4,.5]),carre(2,-1,[0.2,0.9,0.3])]
 
 def NewObstacle(counter):
-    x=randint(20,21)
+    x=randint(5,20)
     y=randint(-20,17)
-    a=randint(1,10)
-    b=randint(1,10)
-    c=randint(1,10)
-    list1[counter]=carre(x/10,y/10,[a/10,b/10,c/10])
+    a=random()
+    b=random()
+    c=random()
+    list1[counter]=carre(2+x/10,y/10,[a,b,c])
     global score, upscore, value, increment
     score+=upscore
     if score>value: 
         increment+=0.003
         upscore+=2
-        value+=5*upscore
+        value+=10*upscore
+        print(value)
 	print(score)
     
 # Fonction d'initialisation d'OpenGL. Defini les parametres principaux.
@@ -107,7 +108,7 @@ def DrawGLScene():
     glClear(GL_COLOR_BUFFER_BIT)	# Clear The Screen Buffer
     glLoadIdentity()					# Reset The View
     global alpha
-    glTranslatef(0.,0.0,-5.0)			# Move Into The Screen
+    glTranslatef(0.,0.0,-10.0)			# Move Into The Screen
     monplayer.getvertices()
     monplayer.drawplayer()
 
