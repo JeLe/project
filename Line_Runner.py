@@ -68,7 +68,7 @@ list1=[carre(0.5,0.5,[0.8,0.2,0.1]),carre(0.3,0.1,[.0,.4,.5])] #avec un carre ca
 
 def NewObstacle(counter):
     x=randint(19,20)
-    y=randint(-20,20)
+    y=randint(-20,17)
     a=randint(1,10)
     b=randint(1,10)
     c=randint(1,10)
@@ -134,6 +134,7 @@ def DrawGLScene():
     if monplayer.Ay<=-2:
         monplayer.Ay=-2
 
+#et voila, normalement tu peux a peu pres finir !
     glBegin(GL_LINES)
     glVertex3f(-2, -2, 0)
     glVertex3f(2, -2, 0)
