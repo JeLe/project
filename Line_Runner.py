@@ -16,7 +16,8 @@ alpha =0
 score=0
 upscore=5
 value=10
-increment=0.01
+increment=0.2
+pausedIncrement =0
 
 
 #creation de l'objet 'player' (ce sera le personnage/le 'truc' qui devra eviter les obstacles dans le jeu)
@@ -60,13 +61,15 @@ class carre (object):
         glEnd()
        
 #creation d'un player en precisant ses parametres (coordonnees, couleur)        
-monplayer= player (-1.7,-0.9,[1.,1.,0.0])
+monplayer = player (-1.7,-0.9,[1.,1.,0.0])
 
-
+#ok alors des fois y'a que deux carres pace qu'il... en fait j'en sais rien !!!
+#alors cette liste, c'est les valeurs possibles pour y : choice, ca prend un element de la liste au hazard...
+testValues = [0., 5., 10., 15., 20., 25., 30., 35.] #du coup quand on leu mets des points c'est mieux... :)
 
 def NewObstacle(counter):
-    x=randint(0,20)
-    y=randint(0,37)
+    x=randint(0,50)
+    y=choice(testValues)#randint(0,37)
     a=random()
     b=random()
     c=random()
@@ -77,11 +80,14 @@ def NewObstacle(counter):
         increment+=0.003
         upscore+=2
         value+=10*upscore
-	print(y)
+    print(score)
+
+
+
 #liste faisant apparaitre les premiers obstacles du jeu
-list1=[carre(2,-2,[0,0,0]), carre(2,-2,[0,0,0]), carre(2,-2,[0,0,0])]
+list1=[carre(2,-2,[0,0,0]), carre(2,-2,[0,0,0]), carre(2,-2,[0,0,0]), carre(2,-2,[0,0,0])]
 #petit truc pour que meme les trois premiers soient random
-for i in range (1,3):
+for i in range (0,4):
     NewObstacle(i)
 
 #faut remettre les valeurs initiales de ca, sinon c'est tout casse..
@@ -118,7 +124,7 @@ def DrawGLScene():
     glClear(GL_COLOR_BUFFER_BIT)	# Clear The Screen Buffer
     glLoadIdentity()					# Reset The View
     global alpha
-    glTranslatef(0.,0.0,-10.0)			# Move Into The Screen
+    glTranslatef(0.,0.0,-5.0)			# Move Into The Screen
     monplayer.getvertices()
     monplayer.drawplayer()
 
@@ -130,12 +136,12 @@ def DrawGLScene():
         counter+=1
 
     # dessiner les carres de list1
-    for item in list1:
+
         item.getvertices()
         item.drawcarre()
 
     #condition pour la mort du joueur:
-    for item in list1:
+
         if (item.Ax<=monplayer.Ax<=item.Ax+.5 or item.Ax<=monplayer.Ax+0.3<=item.Ax+0.5)  and (item.Ay<=monplayer.Ay<=item.Ay+.5 or item.Ay<=monplayer.Ay+.3<=item.Ay+.5):
             sys.exit()
 
@@ -166,7 +172,17 @@ def keyPressed(*args):
     if args[0] == 'z': #si on appuie sur 'z' le personnage se deplace vers le haut
         monplayer.Ay+=0.1
     if args[0] == 's': #si on appuie sur 's' le personnage se deplace vers le bas
-	monplayer.Ay-=0.1
+        monplayer.Ay-=0.1
+    if args[0] == 'p': #si on appuie sur 'p' ca fait pause !
+        global increment, pausedIncrement
+        print("player", monplayer.Ax, monplayer.Ay)
+        if pausedIncrement == 0 :
+            pausedIncrement = increment
+            increment = 0
+        else : #ca ca depause
+            increment = pausedIncrement
+            pausedIncrement = 0
+
 
 def main():
     global window
