@@ -62,16 +62,15 @@ class carre (object):
 #creation d'un player en precisant ses parametres (coordonnees, couleur)        
 monplayer= player (-1.7,-0.9,[1.,1.,0.0])
 
-#liste faisant apparaitre les premiers obstacles du jeu
-list1=[carre(2,1,[0.8,0.2,0.1]),carre(2,0.1,[.0,.4,.5]),carre(2,-1,[0.2,0.9,0.3])]
+
 
 def NewObstacle(counter):
-    x=randint(5,20)
-    y=randint(-20,17)
+    x=randint(0,20)
+    y=randint(0,20)
     a=random()
     b=random()
     c=random()
-    list1[counter]=carre(2+x/10,y/10,[a,b,c])
+    list1[counter]=carre(2+x/10,-2+y/10,[a,b,c])
     global score, upscore, value, increment
     score+=upscore
     if score>value: 
@@ -80,7 +79,20 @@ def NewObstacle(counter):
         value+=10*upscore
         print(value)
 	print(score)
-    
+
+#liste faisant apparaitre les premiers obstacles du jeu
+list1=[carre(2,-2,[0,0,0]), carre(2,-2,[0,0,0]), carre(2,-2,[0,0,0])]
+#petit truc pour que meme les trois premiers soient random
+for i in range (1,3):
+    NewObstacle(i)
+
+#faut remettre les valeurs initiales de ca, sinon c'est tout casse..
+score=0
+upscore=5
+value=10
+increment=0.01
+
+
 # Fonction d'initialisation d'OpenGL. Defini les parametres principaux.
 def InitGL(Width, Height):			         	# On l'appelle juste apres que la fenetre OpenGL ait ete creee.
     glClearColor(0.2, 0.5, 0.8, 0.0)                            # permet de changer la couleur de fond de la fenetre
