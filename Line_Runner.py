@@ -59,12 +59,11 @@ class carre (object):
             glVertex3f(vertex[0],vertex[1],vertex[2])
         glEnd()
        
-#creation d'un player et d'un obstacle en precisant leurs parametres (coordonnees, couleur)        
+#creation d'un player en precisant ses parametres (coordonnees, couleur)        
 monplayer= player (-1.7,-0.9,[1.,1.,0.0])
-moncarre = carre (0.9,0.9,[0.1,0.8,0.5])
 
 #liste faisant apparaitre les premiers obstacles du jeu
-list1=[carre(0.5,0.5,[0.8,0.2,0.1]),carre(0.3,0.1,[.0,.4,.5])] #avec un carre ca va a peu pres mais des qu'il y en a plus c'est la folie
+list1=[carre(0.5,1,[0.8,0.2,0.1]),carre(0.3,0.1,[.0,.4,.5])] #avec un carre ca va a peu pres mais des qu'il y en a plus c'est la folie
 
 def NewObstacle(counter):
     x=randint(19,20)
@@ -125,16 +124,15 @@ def DrawGLScene():
         item.drawcarre()
 
     #condition pour la mort du joueur:
-#ca il va falloir le mettre dans une boucle pour verifier les conditions pour chaque carre de Liste1...
-    if (monplayer.Ax < moncarre.Ax < monplayer.Ax+0.3 or monplayer.Ax<moncarre.Ax+0.5<monplayer.Ax+0.3)  and (monplayer.Ay<=moncarre.Ay<=monplayer.Ay+0.3 or monplayer.Ay<=moncarre.Ay+0.5<=monplayer.Ay+0.3):
-        sys.exit()
+    for item in list1:
+      if (monplayer.Ax < item.Ax < monplayer.Ax+0.3 or monplayer.Ax<item.Ax+0.5<monplayer.Ax+0.3)  and (monplayer.Ay<item.Ay<monplayer.Ay+0.3 or monplayer.Ay<item.Ay+0.5<monplayer.Ay+0.3):
+	 sys.exit()
     #conditions pour que le joueur reste dans l'ecran
     if monplayer.Ay>=1.7:
         monplayer.Ay=1.7
     if monplayer.Ay<=-2:
         monplayer.Ay=-2
 
-#et voila, normalement tu peux a peu pres finir !
     glBegin(GL_LINES)
     glVertex3f(-2, -2, 0)
     glVertex3f(2, -2, 0)
