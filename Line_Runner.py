@@ -63,10 +63,10 @@ class carre (object):
 monplayer= player (-1.7,-0.9,[1.,1.,0.0])
 
 #liste faisant apparaitre les premiers obstacles du jeu
-list1=[carre(0.5,1,[0.8,0.2,0.1]),carre(0.3,0.1,[.0,.4,.5]),carre(0.5,-1,[0.2,0.9,0.3])]
+list1=[carre(2,1,[0.8,0.2,0.1]),carre(2,0.1,[.0,.4,.5]),carre(2,-1,[0.2,0.9,0.3])]
 
 def NewObstacle(counter):
-    x=randint(19,20)
+    x=randint(20,21)
     y=randint(-20,17)
     a=randint(1,10)
     b=randint(1,10)
@@ -75,11 +75,10 @@ def NewObstacle(counter):
     global score, upscore, value, increment
     score+=upscore
     if score>value: 
-        increment+=0.01
+        increment+=0.003
         upscore+=2
-        value+=50*upscore
-        print("prout")
-    print(score)
+        value+=5*upscore
+	print(score)
     
 # Fonction d'initialisation d'OpenGL. Defini les parametres principaux.
 def InitGL(Width, Height):			         	# On l'appelle juste apres que la fenetre OpenGL ait ete creee.
