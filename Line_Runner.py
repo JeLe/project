@@ -77,9 +77,7 @@ def NewObstacle(counter):
         increment+=0.003
         upscore+=2
         value+=10*upscore
-        print(value)
-	print(score)
-
+	print(y)
 #liste faisant apparaitre les premiers obstacles du jeu
 list1=[carre(2,-2,[0,0,0]), carre(2,-2,[0,0,0]), carre(2,-2,[0,0,0])]
 #petit truc pour que meme les trois premiers soient random
