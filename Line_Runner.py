@@ -1,4 +1,4 @@
-#importation de ttes les 'libraries' necessaires pour le programme 
+#importation de ttes les 'libraries' necessaires pour le programme
 from OpenGL.GL import *
 from OpenGL.GLUT import *
 from OpenGL.GLU import *
@@ -64,7 +64,7 @@ monplayer= player (-1.7,-0.9,[1.,1.,0.0])
 moncarre = carre (0.9,0.9,[0.1,0.8,0.5])
 
 #liste faisant apparaitre les premiers obstacles du jeu
-list1=[carre(0.5,0.5,[0.8,0.2,0.1]),carre(0.3,0.1,[.0,.4,.5])] #avec un carre ca va à peu pres mais des qu'il y en a plus c'est la folie
+list1=[carre(0.5,0.5,[0.8,0.2,0.1]),carre(0.3,0.1,[.0,.4,.5])] #avec un carre ca va a peu pres mais des qu'il y en a plus c'est la folie
 
 def NewObstacle(counter):
     x=randint(1,11)
@@ -79,7 +79,7 @@ def NewObstacle(counter):
 	increment+=0.0005
         upscore+=2
         value+=100*0.5*upscore
-        print(score)
+    print("new born")
     
 # Fonction d'initialisation d'OpenGL. Defini les parametres principaux.
 def InitGL(Width, Height):			         	# On l'appelle juste apres que la fenetre OpenGL ait ete creee.
@@ -109,25 +109,30 @@ def DrawGLScene():
     glLoadIdentity()					# Reset The View
     global alpha
     glTranslatef(0.,0.0,-5.0)			# Move Into The Screen
-    moncarre.getvertices()
+    #moncarre.getvertices()
     monplayer.getvertices()
     monplayer.drawplayer()
-    moncarre.drawcarre()
+    #moncarre.drawcarre()
    
-   #condition pour faire apparaitre les nouveaux obstacles
-    if moncarre.Ax<=monplayer.Ax:
-        counter=0
-        for item in list1:
-            if item.Ax<=monplayer.Ax:
-	      if moncarre.Ax<=monplayer.Ax:
-                NewObstacle(counter)
-		counter+=1
+    #condition pour faire apparaitre les nouveaux obstacles
+   
+   #   if moncarre.Ax<=monplayer.Ax:
+   
+   #c'est dans les conditions ici que ca ne marchait pas bien du tout, je les ai juste mis en comment pour que tu vois. Et maintenant tu n'as plus qu'a refaire les ranges des random, et ca devrait le faire ! :)
+    counter=0
+    for item in list1:
+        if item.Ax<=-2:
+            #            if moncarre.Ax<=monplayer.Ax:
+            NewObstacle(counter)
+        counter+=1
 	    
     # dessiner les carres de list1
     for item in list1:
         item.getvertices()
         item.drawcarre()
+
     #condition pour la mort du joueur:
+#ca il va falloir le mettre dans une boucle pour verifier les conditions pour chaque carre de Liste1...
     if (monplayer.Ax < moncarre.Ax < monplayer.Ax+0.3 or monplayer.Ax<moncarre.Ax+0.5<monplayer.Ax+0.3)  and (monplayer.Ay<=moncarre.Ay<=monplayer.Ay+0.3 or monplayer.Ay<=moncarre.Ay+0.5<=monplayer.Ay+0.3):
         sys.exit()
     #conditions pour que le joueur reste dans l'ecran
@@ -135,7 +140,15 @@ def DrawGLScene():
         monplayer.Ay=1.7
     if monplayer.Ay<=-2:
         monplayer.Ay=-2
-    
+
+#ca c'est les lignes pour voir ou sont les frontieres de ton ecran !
+#et voila, normalement tu peux a peu pres finir !
+    glBegin(GL_LINES)
+    glVertex3f(-2, -2, 0)
+    glVertex3f(2, -2, 0)
+    glVertex3f(-2, 1.7, 0)
+    glVertex3f(2, 1.7, 0)
+    glEnd()
 
     
         ##############################################
