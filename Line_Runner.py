@@ -66,7 +66,7 @@ monplayer= player (-1.7,-0.9,[1.,1.,0.0])
 
 def NewObstacle(counter):
     x=randint(0,20)
-    y=randint(0,20)
+    y=randint(0,37)
     a=random()
     b=random()
     c=random()
