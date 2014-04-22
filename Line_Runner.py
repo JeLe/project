@@ -78,7 +78,7 @@ def NewObstacle(counter):
         increment+=0.01
         upscore+=2
         value+=50*upscore
-    print("prout")
+        print("prout")
     print(score)
     
 # Fonction d'initialisation d'OpenGL. Defini les parametres principaux.
