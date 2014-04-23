@@ -68,7 +68,7 @@ class wall (object):
         
         self.vertexList = [[xmin,0, zmax], [xmax, 0, zmax], [xmax, 0, zmin], [xmin,0, zmin]]
     
-    def checkNotOnWall(self):
+    def  noneShallPass(self):
         if self.vertexList[0][0]<=myBonhomme.Ax<=self.vertexList[1][0] and self.vertexList[2][2]<=myBonhomme.Az<=self.vertexList[0][2] : #this condition is kinda crappy..
             print("We don't need no education!")
             return 1 #returns 1...
@@ -301,7 +301,7 @@ class bonhomme (object):
             self.Ax += .1*direction
             direction = 0
         for item in walls:
-            if item.checkNotOnWall()==1: #one means it's on the wall !!!
+            if item. noneShallPass()==1: #one means it's on the wall !!!
                 self.Ax = oldX
                 self.Az = oldZ
 
