@@ -167,15 +167,20 @@ def DrawGLScene():
 def keyPressed(*args):
     global window
     global alpha
+    global increment, pausedIncrement
+    
     if args[0] == ESCAPE or args[0] == 'q': # Si on appuie sur 'q' ou 'echap', ferme le programme
         sys.exit()
-    if args[0] == 'z': #si on appuie sur 'z' le personnage se deplace vers le haut
-        monplayer.Ay+=0.1
-    if args[0] == 's': #si on appuie sur 's' le personnage se deplace vers le bas
-        monplayer.Ay-=0.1
+
+
+    if pausedIncrement == 0 :
+        if args[0] == 'z': #si on appuie sur 'z' le personnage se deplace vers le haut
+            monplayer.Ay+=0.1
+        if args[0] == 's': #si on appuie sur 's' le personnage se deplace vers le bas
+            monplayer.Ay-=0.1
+
     if args[0] == 'p': #si on appuie sur 'p' ca fait pause !
-        global increment, pausedIncrement
-        print("player", monplayer.Ax, monplayer.Ay)
+
         if pausedIncrement == 0 :
             pausedIncrement = increment
             increment = 0
