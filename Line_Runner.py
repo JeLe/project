@@ -174,9 +174,9 @@ def keyPressed(*args):
 
 
     if pausedIncrement == 0 :
-        if args[0] == 'z': #si on appuie sur 'z' le personnage se deplace vers le haut
+        if args[0] == 'a': #si on appuie sur 'z' le personnage se deplace vers le haut
             monplayer.Ay+=0.1
-        if args[0] == 's': #si on appuie sur 's' le personnage se deplace vers le bas
+        if args[0] == 'r': #si on appuie sur 's' le personnage se deplace vers le bas
             monplayer.Ay-=0.1
 
     if args[0] == 'p': #si on appuie sur 'p' ca fait pause !
