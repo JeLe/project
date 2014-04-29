@@ -9,7 +9,7 @@ from random import *
 ESCAPE = '\033'
 
 # variables pour la fenetre du programme 
-window = 0
+window = 1
 alpha =0
 
 #variables pour le score et l'acceleration au cours du jeu
@@ -18,6 +18,7 @@ upscore=5
 value=10
 increment=0.2
 pausedIncrement =0
+updown =0
 
 
 #creation de l'objet 'player' (ce sera le personnage/le 'truc' qui devra eviter les obstacles dans le jeu)
@@ -30,9 +31,19 @@ class player (object):
         self.Ay = Ay
     
     def getvertices(self):
+        global updown
+        self.Ay += updown*0.01
+
+        if -2.02<=monplayer.Ay<=-2.:
+            monplayer.Ay = -2
+        
+        if 1.7<=monplayer.Ay<=1.72:
+            monplayer.Ay = 1.7
+        
         self.vertices = [[self.Ax,self.Ay,0],[self.Ax,self.Ay+.3,0],[self.Ax+0.3,self.Ay+.3,0],[self.Ax+.3,self.Ay,0]]
         
     def drawplayer(self):
+        self.getvertices()
         glBegin(GL_QUADS)
         glColor3f(self.red, self.green, self.blue)
         for vertex in self.vertices:
@@ -54,6 +65,7 @@ class carre (object):
         self.vertices = [[self.Ax,self.Ay,0],[self.Ax,self.Ay+0.5,0],[self.Ax+0.5,self.Ay+0.5,0],[self.Ax+0.5,self.Ay,0]]
       
     def drawcarre(self):
+        self.getvertices()
         glBegin(GL_QUADS)
         glColor3f(self.red, self.green, self.blue)
         for vertex in self.vertices:
@@ -68,12 +80,13 @@ monplayer = player (-1.7,-0.9,[1.,1.,0.0])
 testValues = [0., 5., 10., 15., 20., 25., 30., 35.] #du coup quand on leu mets des points c'est mieux... :)
 
 def NewObstacle(counter):
-    x=randint(0,50)
+    #x=choice(testValues)
+    x=randint(5,55)
     y=choice(testValues)#randint(0,37)
     a=random()
     b=random()
     c=random()
-    list1[counter]=carre(2+x/10,-2+y/10,[a,b,c])
+    list1[counter]=carre(2.5+x/10,-2+y/10,[a,b,c])
     global score, upscore, value, increment
     score+=upscore
     if score>value: 
@@ -99,7 +112,7 @@ increment=0.01
 
 # Fonction d'initialisation d'OpenGL. Defini les parametres principaux.
 def InitGL(Width, Height):			         	# On l'appelle juste apres que la fenetre OpenGL ait ete creee.
-    glClearColor(0.2, 0.5, 0.8, 0.0)                            # permet de changer la couleur de fond de la fenetre
+    glClearColor(0, 0, 0, 0.0)     #glClearColor(0.2, 0.5, 0.8, 0.0)                            # permet de changer la couleur de fond de la fenetre
     glShadeModel(GL_SMOOTH)                      	# Enables Smooth Color Shading
     glMatrixMode(GL_PROJECTION)
     glLoadIdentity()					                # Reset The Projection Matrix
@@ -125,7 +138,6 @@ def DrawGLScene():
     glLoadIdentity()					# Reset The View
     global alpha
     glTranslatef(0.,0.0,-5.0)			# Move Into The Screen
-    monplayer.getvertices()
     monplayer.drawplayer()
 
     #condition pour faire apparaitre les nouveaux obstacles
@@ -137,7 +149,6 @@ def DrawGLScene():
 
     # dessiner les carres de list1
 
-        item.getvertices()
         item.drawcarre()
 
     #condition pour la mort du joueur:
@@ -146,10 +157,7 @@ def DrawGLScene():
             sys.exit()
 
     #conditions pour que le joueur reste dans l'ecran
-    if monplayer.Ay>=1.7:
-        monplayer.Ay=1.7
-    if monplayer.Ay<=-2:
-        monplayer.Ay=-2
+    #elles sont maintenant dans le keypresed, pour eviter que le joueur soit dessine pouis remonte, ca faisait un petit truc moche quoi, mais rien de dramatique... mais moi ca m'enervait :)
 
     glBegin(GL_LINES)
     glVertex3f(-2, -2, 0)
@@ -167,20 +175,23 @@ def DrawGLScene():
 def keyPressed(*args):
     global window
     global alpha
-    global increment, pausedIncrement
+    global increment, pausedIncrement, updown
     
     if args[0] == ESCAPE or args[0] == 'q': # Si on appuie sur 'q' ou 'echap', ferme le programme
+    #glutDestroyWindow(window)
         sys.exit()
 
 
     if pausedIncrement == 0 :
-        if args[0] == 'a': #si on appuie sur 'z' le personnage se deplace vers le haut
-            monplayer.Ay+=0.1
-        if args[0] == 'r': #si on appuie sur 's' le personnage se deplace vers le bas
-            monplayer.Ay-=0.1
+        if args[0] == 'a' or args[0] == 'A':#and monplayer.Ay<=1.7: #si on appuie sur 'z' le personnage se deplace vers le haut
+            updown = 1
+            #monplayer.Ay+=0.1
+        if args[0] == 'f' or args[0] == 'F':#and monplayer.Ay>=-2.: #si on appuie sur 's' le personnage se deplace vers le bas
+            updown = -1
+            #monplayer.Ay-=0.1
 
     if args[0] == 'p': #si on appuie sur 'p' ca fait pause !
-
+        
         if pausedIncrement == 0 :
             pausedIncrement = increment
             increment = 0
@@ -188,19 +199,37 @@ def keyPressed(*args):
             increment = pausedIncrement
             pausedIncrement = 0
 
+#high score : 2990
+
+
+def keyReleased(*args):
+    global increment, pausedIncrement, updown
+    
+    if args[0] == 'a' or args[0] == 'f' or args[0] == 'A' or args[0] == 'F' :
+        updown = 0
+
+
 
 def main():
     global window
     glutInit(sys.argv)
-    glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE)
+    glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH)
+
     glutInitWindowSize(640, 480) #defini la taille de la fenetre
     glutInitWindowPosition(0, 0)
     window = glutCreateWindow( "Line_Runner")  #donne un nom a la fenetre
     glutDisplayFunc(DrawGLScene)
     glutIdleFunc(DrawGLScene)
     glutReshapeFunc(ReSizeGLScene)
+
+    glutIgnoreKeyRepeat(1)
     glutKeyboardFunc(keyPressed)
+    glutKeyboardUpFunc(keyReleased)
+
+    glutFullScreen()
+
     InitGL(640, 480)
+
     glutMainLoop()
 
 main()

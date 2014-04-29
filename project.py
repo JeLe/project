@@ -4,7 +4,7 @@ from OpenGL.GLU import *
 import sys, time
 from math import sin,cos,sqrt,pi
 import numpy
-import snake
+#import Line_Runner
 
 
 
@@ -78,14 +78,14 @@ class wall (object):
 
 class gate (object):
     def __init__ (self, list):
-        self.vertexList = [[0, 0, 5], [5, 0, 5], [5, 0, 0], [0, 0, 0]] #how we generate this list is the whole problem !!
+        self.vertexList = list
         gates.append(self)
 
     def checkifgate(self):
         if self.vertexList[0][0]<myBonhomme.Ax<self.vertexList[1][0] and self.vertexList[2][2]<myBonhomme.Az<self.vertexList[0][2] :
             print("Youpi")
         else :
-            print(myBonhomme.Ax, myBonhomme.Az)
+            print("not Youpi")
 
 
 class quad(object):
@@ -322,7 +322,7 @@ class machine(object):
         self.getPoints()
         self.normalList = getNormals(self.vertexList)
         self.myWall = wall(self)
-        self.myGate = gate(self.vertexList)
+        self.myGate = gate(self.gateList)
     
     def getPoints(self):
         global machineUnit
@@ -332,7 +332,7 @@ class machine(object):
         #de plus, la carrosserie est en acier inoxidable, mais en vrai, pour faire le vecteurW de pour la classe quad, j'ai inverse le *self.Ax et le * self.Az dans les coordonnees, parce que en gros, si c'est pas l'un c'est l'autre, je t'expliquerai ca plus mieux un jour ou je ne prends pas l'avion !
         #alors decollage a 10:20, on est audessus de la mer a 10:30 ! # 3 minutes pour traverser la manche??? #11 :00 , re audessus de la mer ? y'a top de nuages on dirait qu'on survole le pole nord ( les pauvres anglzais !! hihi :) # ah non en fait on peut toujours s'ecraser sur un patelin...  ! 11:06 ohhhh des montagnes, avec des lacs et un tout petit peu de glace.. et la mer derriere ?? 11:11  :on viens de passer un estuaire... Et cette machine est tres galere !! mais c'est bon y'a du sprite !!!! et y'a plein d'eoliennes dans les montagnes.
         #11:20 deuxieme estuaire, avec une grosse ville et une petite lagune.. 11:23 les montagnes ont grandi et veilent aller se beigner !!
-        print(self.start)
+
         self.Ax = self.start[0][0]
         self.Ay = self.start[0][1]
         self.Az = self.start[0][2]
@@ -349,6 +349,7 @@ class machine(object):
         self.Dy = self.start[3][1]
         self.Dz = self.start[3][2]
         
+        self.gateList = [[self.Bx, 1, self.Bz], [self.Bx+0.5*machineUnit*self.Vx, 1, self.Bz+0.5*machineUnit*self.Vz], [self.Cx+0.5*machineUnit*self.Vx, 1, self.Cz+0.5*machineUnit*self.Vz], [self.Cx, 1, self.Cz]]
         
         self.vertexList = [[self.Ax,self.Ay,self.Az],[self.Bx,self.By,self.Bz], [self.Cx,self.Cy,self.Cz], [self.Dx,self.Dy,self.Dz],
                            
@@ -524,7 +525,7 @@ def keyPressed(*args):
     if args[0]== 'z':
         transz += 1.
     if args[0]== 'h':
-        snake.main()
+        Line_Runner.main()
 
 
 
@@ -631,7 +632,7 @@ def main():
     glutSpecialFunc(specialKeyPressed)
 
     glutMouseFunc(Mouseclick)
-    glutPassiveMotionFunc( myMouseMove)
+    glutPassiveMotionFunc(myMouseMove)
     
     glutMainLoop()
     
