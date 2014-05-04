@@ -183,4 +183,4 @@ for l in range(0,8) :
 		grid.append(carre(c,0-l,[0.1,0.15,0.53]))  #random.random()
 	
 
-
+main()
