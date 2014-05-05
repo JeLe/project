@@ -1,4 +1,5 @@
 
+
 from OpenGL.GL import *
 from OpenGL.GLUT import *
 from OpenGL.GLU import *
@@ -21,7 +22,7 @@ time=0
 momentum=0
 taille = 3
 dir = 'm'
-fi=10
+fi=10     #might be useless
 fj=-5
 
 
@@ -44,7 +45,7 @@ def move():
 
 	threading.Timer(0.5, move).start()
 	global i,j,dir,snakeColor,time,grid,taille,foodcoord,momentum,fi,fj
-	u=0
+	u=1
 
 	time+=1   #Sert pour ne pas tricher !
 			
@@ -59,13 +60,9 @@ def move():
 
 	coord.append([i,j])
 
-	if foodcoord  in coord and momentum!=time :
-		while u<=len(snake) : 
-			u+=1
-			if u>len(snake) :
-				snake.insert(0,carre(fi,fj,snakeColor))
-				momentum = time
-		
+	if foodcoord==coord[len(snake)] :
+		taille+=1		
+
 
 	if len(snake)>=taille :
 		snake.pop(0)
@@ -74,7 +71,7 @@ def move():
 	coord2 = []
 	for item  in coord :
 		if item in coord2 :
-			snakeColor = [0.2,0.2,0.1]
+			snakeColor = [0.2,0.15,0.1]#marron mort
 		else:
 			coord2.append(item)
 		
@@ -84,9 +81,9 @@ def move():
 
 	
 	if i in range(0,16) or j in range(0,8) :
-		snakeColor=[0.8,0.1,0.1] #rouge
+		snakeColor=[0.8,0.1,0.1] #rouge normal
 	if i>15 or i<0 or j>0 or j<(-7):
-		snakeColor=[0.,0.8,0.1] #vert
+		snakeColor=[0.,0.8,0.1] #vert out
 
 def miam() :
 	
@@ -179,7 +176,9 @@ def keyPressed(key, x, y):
 			
 def main():
 	global window
-	
+	miam()	
+	move()
+
 	glutInit(sys.argv)
 	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH)
 	
@@ -201,6 +200,7 @@ for l in range(0,8) :
 	for c in range(0,16) :
 		grid.append(carre(c,0-l,[0.1,0.15,0.53]))  #random.random()
 
-miam()	
-move()
+
 main()	
+
+		
