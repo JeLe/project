@@ -1,5 +1,4 @@
 
-
 from OpenGL.GL import *
 from OpenGL.GLUT import *
 from OpenGL.GLU import *
@@ -18,8 +17,12 @@ c=0
 l=0
 i=0
 j=0
-taille = 6
+time=0
+momentum=0
+taille = 3
 dir = 'm'
+fi=10
+fj=-5
 
 
 
@@ -39,45 +42,58 @@ class carre(object):
 
 def move():
 
-	threading.Timer(0.3, move).start()
-	global i
-	global j
-	global dir
-	global snakeColor
+	threading.Timer(0.5, move).start()
+	global i,j,dir,snakeColor,time,grid,taille,foodcoord,momentum,fi,fj
+	u=0
 
+	time+=1   #Sert pour ne pas tricher !
 			
 	if dir == 'm' :
-		i+=1
-			
+		i+=1			
 	if dir == 'k' :
 		i-=1
-
 	if dir == 'o' :
 		j+=1
 	if dir == 'l':
 		j-=1
 
 	coord.append([i,j])
+
+	if foodcoord  in coord and momentum!=time :
+		while u<=len(snake) : 
+			u+=1
+			if u>len(snake) :
+				snake.insert(0,carre(fi,fj,snakeColor))
+				momentum = time
+		
+
 	if len(snake)>=taille :
 		snake.pop(0)
 		coord.pop(0)
 	
-	coord2=[]
+	coord2 = []
 	for item  in coord :
 		if item in coord2 :
-			snakeColor = [0.2,1,0.1]
+			snakeColor = [0.2,0.2,0.1]
 		else:
 			coord2.append(item)
-
-
-
+		
 	
 	snake.append(carre(i,j,snakeColor))
-	#list(set(snake)) 
+
+
+	
+	if i in range(0,16) or j in range(0,8) :
+		snakeColor=[0.8,0.1,0.1] #rouge
+	if i>15 or i<0 or j>0 or j<(-7):
+		snakeColor=[0.,0.8,0.1] #vert
+
 def miam() :
 	
-	global food
-	food = carre(0,-1,[1.,1.,0.])
+	global food,foodcoord,fi,fj
+
+	food = carre(fi,fj,[1.,1.,0.])
+	foodcoord=[fi,fj]
 
 
 def InitGL(Width, Height):				
@@ -106,8 +122,8 @@ def ReSizeGLScene(Width, Height):
 	glMatrixMode(GL_MODELVIEW)
 
 
-# The main drawing function. 
-def DrawGLScene():
+
+def DrawGLScene():                        #La fonction dessin 
 	
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 	glLoadIdentity()
@@ -131,35 +147,39 @@ def DrawGLScene():
 
 
 def keyPressed(key, x, y):
-	global window
-	global dir
+	global window,dir,time,momentum,i,j
+
 
 	if key == ESCAPE or key == 'q':
 		destroy
+	if key == 'r' :
+		i = 0
+		j = 0
 	
-	if  key == 'm':
-		
+	if  key == 'm' and dir != 'k' and momentum!=time :
+	
 		dir = 'm'
-	
+		momentum=time
 
-	if  key == 'k':
-
-		dir = 'k'
-	
-
-	if  key == 'l':
-
-		dir = 'l'
-	
-	
-	if  key == 'o':
-
-		dir = 'o'
+	if  key == 'k' and dir != 'm' and momentum!=time :
 		
+		dir = 'k'
+		momentum=time
+
+	if  key == 'l' and dir != 'o' and momentum!=time :
+		
+		dir = 'l'
+		momentum=time
+
+	
+	if  key == 'o' and dir != 'l' and momentum!=time :
+		
+		dir = 'o'
+		momentum=time
 			
 def main():
 	global window
-	move();miam()
+	
 	glutInit(sys.argv)
 	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH)
 	
@@ -177,10 +197,10 @@ def main():
 	glutMainLoop()
 
 
-
 for l in range(0,8) :
 	for c in range(0,16) :
 		grid.append(carre(c,0-l,[0.1,0.15,0.53]))  #random.random()
-	
 
-main()
+miam()	
+move()
+main()	
