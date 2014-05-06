@@ -1,5 +1,4 @@
 
-
 from OpenGL.GL import *
 from OpenGL.GLUT import *
 from OpenGL.GLU import *
@@ -22,17 +21,17 @@ time=0
 momentum=0
 taille = 3
 dir = 'm'
-fi=10     #might be useless
-fj=-5
-
-
+fi=random.randint(0,16)
+fj=-random.randint(0,7)
+foodcoord=[fi,fj]
+speed=2.5
 
 class carre(object):
 	def __init__(self,x,y,couleur):
 		self.red=couleur[0]
 		self.green=couleur[1]
 		self.blue=couleur[2]
-		self.vertices = [[x,y,0],[x,y+1, 0],[x+1, y+1, 0],[x+1,y, 0]]
+		self.vertices = [[x,y,0],[x,y+0.99, 0],[x+0.99, y+0.99, 0],[x+0.99,y, 0]]
 	def drawSquare(self):
 		glBegin(GL_QUADS)
 		glColor3f(self.red, self.green, self.blue)
@@ -40,13 +39,13 @@ class carre(object):
 			glVertex3f(vertex[0],vertex[1],vertex[2])
 		glEnd()
 
-
+food=carre(fi,fj,[1.,1.,0.])
 def move():
 
-	threading.Timer(0.5, move).start()
-	global i,j,dir,snakeColor,time,grid,taille,foodcoord,momentum,fi,fj
-	u=1
 
+	global i,j,dir,snakeColor,time,grid,taille,foodcoord,momentum,fi,fj,food,speed
+	u=1
+	threading.Timer(1/speed, move).start()
 	time+=1   #Sert pour ne pas tricher !
 			
 	if dir == 'm' :
@@ -61,9 +60,14 @@ def move():
 	coord.append([i,j])
 
 	if foodcoord==coord[len(snake)] :
-		taille+=1		
-
-
+		taille+=1
+		if speed<4 :
+			speed+=0.5
+		if speed >=4 and speed<10 :
+			speed+=0.35
+		else :
+			speed+=0.1
+		food=miam()
 	if len(snake)>=taille :
 		snake.pop(0)
 		coord.pop(0)
@@ -87,11 +91,11 @@ def move():
 
 def miam() :
 	
-	global food,foodcoord,fi,fj
-
-	food = carre(fi,fj,[1.,1.,0.])
-	foodcoord=[fi,fj]
-
+	global foodcoord
+	i=random.randint(0,15)
+	j=-random.randint(0,7)
+	foodcoord=[i,j]
+	return(carre(i,j,[1.,1.,0.]))
 
 def InitGL(Width, Height):				
 	glClearColor(0.0, 0.0, 0.0, 0.0)	
@@ -154,7 +158,7 @@ def keyPressed(key, x, y):
 		j = 0
 	
 	if  key == 'm' and dir != 'k' and momentum!=time :
-	
+		
 		dir = 'm'
 		momentum=time
 
@@ -176,7 +180,7 @@ def keyPressed(key, x, y):
 			
 def main():
 	global window
-	miam()	
+	
 	move()
 
 	glutInit(sys.argv)
