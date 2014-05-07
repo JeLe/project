@@ -1,5 +1,3 @@
-
-
 #piece1 =[[[0,1,0,0],[0,1,1,0],[0,0,1,0],[0,0,0,0]],[[0,0,0,0],[0,0,1,1],[0,1,1,0],[0,0,0,0]],[[0,1,0,0],[0,1,1,0],[0,0,1,0],[0,0,0,0]],[[0,0,0,0],[0,0,1,1],[0,1,1,0],[0,0,0,0]]]  
 
 
@@ -47,7 +45,7 @@
 # O
 # O O
 
-#alors, j'ai mis tout ca ici parce que pour lire c'est plus pratique :)
+#-----------------------------------------------------------------------------------------------------------------------------------------------------------
 
 from OpenGL.GL import *
 from OpenGL.GLUT import *
@@ -89,27 +87,70 @@ class carre(object):
                   glVertex3f(vertex[0],vertex[1],vertex[2])
             glEnd()
 
-#Les pieces. J'en ai fait des objets, c'est plus pratique a utiliser, et ce sera beacoup plus simple d'ajouter les rotation.
-#comme tu l'avais tres bien fait, une piece, c'est une liste de carres. Mais pour bouger tous les carres en meme temps, i faut qu'ils partent tous du meme point, et ce point on doit y avoir acces facilement. Alors ce point c'est maintenant ton instance de ton objetc (appelons le mapiece) comme ceci : mapiece.Ax, meme principe pour le y...
+
+#Pour bouger tous les carres en meme temps, ils faut qu'ils partent tous du meme point, et ce point on doit y avoir acces facilement. Alors ce point c'est maintenant ton instance de ton objetc (appelons le mapiece) comme ceci : mapiece.Ax, meme principe pour le y...   (PAS UNDERSTAND, fin on le retrouve ou ?)
 
 
 class piece1(object):
     def __init__(self):
-        self.x = 4 #j'ai repris tes valeurs de x et y que tu as mis pour le debut de toutes tes pieces ici...
+        self.x = 4 
         self.y = 12
-        self.color =[0,1,0]  # green
+        self.color =[0,1,0]  # vert / S a droite
         self.list = [carre(self.x,self.y,self.color),carre(self.x,self.y-1,self.color),carre(self.x+1,self.y-1,self.color),carre(self.x+1,self.y-2,self.color)]
+
+class piece2(object):
+    def __init__(self):
+        self.x = 4 
+        self.y = 12
+        self.color =[1,0,0]  # rouge / S a gauche
+        self.list = [carre(self.x,self.y,self.color),carre(self.x,self.y-1,self.color),carre(self.x-1,self.y-1,self.color),carre(self.x-1,self.y-2,self.color)]
     
-    #ca c'est pour recuperer ta fameuse liste que tu avais au depart. Sauf que la en plus tu puex mettre les autres listes pour la rotation et faire un truc qui choisit la bonne :)
+class piece3(object):
+    def __init__(self):
+        self.x = 4 
+        self.y = 12
+        self.color =[0,0,1]  # bleu / ligne
+        self.list = [carre(self.x,self.y,self.color),carre(self.x,self.y-1,self.color),carre(self.x,self.y-2,self.color),carre(self.x,self.y-3,self.color)]
+    
+class piece4(object):
+    def __init__(self):
+        self.x = 4 
+        self.y = 12
+        self.color =[1,1,0]  # jaune / carre
+        self.list = [carre(self.x,self.y,self.color),carre(self.x+1,self.y,self.color),carre(self.x,self.y-1,self.color),carre(self.x+1,self.y-1,self.color)]
+    
+class piece5(object):
+    def __init__(self):
+        self.x = 4 
+        self.y = 12
+        self.color =[1,0,1]  # violet / T
+        self.list = [carre(self.x,self.y,self.color),carre(self.x,self.y-1,self.color),carre(self.x+1,self.y-1,self.color),carre(self.x,self.y-2,self.color)] 
+    
+class piece6(object):
+    def __init__(self):
+        self.x = 4 
+        self.y = 12
+        self.color =[0,1,0]  # cyan  / anti L
+        self.list = [carre(self.x+1,self.y,self.color),carre(self.x+1,self.y-1,self.color),carre(self.x+1,self.y-2,self.color),carre(self.x,self.y-2,self.color)] 
+    
+class piece7(object):
+    def __init__(self):
+        self.x = 4 
+        self.y = 12
+        self.color =[1,0.2,0.4]  # orange / L
+        self.list = [carre(self.x,self.y,self.color),carre(self.x,self.y-1,self.color),carre(self.x,self.y-2,self.color),carre(self.x+1,self.y-2,self.color)] 
+    
+    
+    #ca c'est pour recuperer ta fameuse liste que tu avais au depart. Sauf que la en plus tu peux mettre les autres listes pour la rotation et faire un truc qui choisit la bonne :) ( LISTE TOUT EN HAUT ? OU DU COUP JPEUX METTRE MES OBJETS PIECES ? )
     def getSquareList(self):
         test = true # cette ligne c'est juste pour eviter une erreur, il faut qua tu ecrives ta methode...
         self.bas #il faut aussi que ici tu mette un parametre a ton objet pour savoir ou est le bas... Comme ca tu compares ce parametre a ce qui representera le bas pour savoir si il est atteint ou pas..
     
-    #cette methode descend ton objet, il faut l'appeler dans le timer...
+    #cette methode descend ton objet, il faut l'appeler dans le timer... (JE L'AI APPELE DANS LE MOVE OU YA LE TIMER) ( MAIS VOILA YA DEUX MOVE ..)
     def down(self):
-        self.y -= 1
+        self.y -= 1 
 
-    #ca c'est pour bouger de gauche a droite. Il faut pourvoir le faire plus d'une fois par timer, donc on l'appelle a chaque fois qu'une touche est enfoncee. c'est a dire dans la fonction Keypressed !
+    #ca c'est pour bouger de gauche a droite. Il faut pourvoir le faire plus d'une fois par timer, donc on l'appelle a chaque fois qu'une touche est enfoncee. c'est a dire dans la fonction Keypressed ! ( LE PERMIER MOVE(SELF) )
     def move(self):
         self.y += direct
         direct = 0
@@ -119,20 +160,9 @@ class piece1(object):
         #alors ici il faut que tu prenne le self.list rafraichit (c'est a dire apres avor appele la methode getSquareList, et que tu fasse une boucle pour appeler la methode draw de chaque element (les instances de la classe carre ) de ta liste.
 
 
-#alors ces trucs la il faut en faire des objets aussi... a chaque fois c'est le meme principe que le premier objet...
-piece2 = [carre(x,y,piececolor2),carre(x,y-1,piececolor2),carre(x-1,y-1,piececolor2),carre(x-1,y-2,piececolor2)] #red
-piece3 = [carre(x,y,piececolor3),carre(x,y-1,piececolor3),carre(x,y-2,piececolor3),carre(x,y-3,piececolor3)] #line
-piece4 = [carre(x,y,piececolor4),carre(x+1,y,piececolor4),carre(x,y-1,piececolor4),carre(x+1,y-1,piececolor4)] #square
-piece5 = [carre(x,y,piececolor5),carre(x,y-1,piececolor5),carre(x+1,y-1,piececolor5),carre(x,y-2,piececolor5)] #t
-piece6 = [carre(x+1,y,piececolor6),carre(x+1,y-1,piececolor6),carre(x+1,y-2,piececolor6),carre(x,y-2,piececolor6)] #anti - L
-piece7 = [carre(x,y,piececolor7),carre(x,y-1,piececolor7),carre(x,y-2,piececolor7),carre(x+1,y-2,piececolor7)] # L
 
-
-
-
-#alors maintenant au lieu de faire un random un peu tout seul, faison en une fonction !
 def randomPiece():
-    test = true #meme principe : faut que tu te fasse ta fonction ! alors soit tu fait comme t'avais fait, tu fais une liste d'instances de classes pieces (une de chaque) et tu fait ton choice, ou alors tu te debrouille !
+    test = true #meme principe : faut que tu te fasse ta fonction ! alors soit tu fait comme t'avais fait, tu fais une liste d'instances de classes pieces (une de chaque) et tu fait ton choice
     #tu peux donc par exemple faire ta liste comme ceci
     piecerandom = [piece1(), piece2(), etc] #avec piece1 et tout ca etant des classes et entre les () tu mets ce qu'il faut quoi !
     pieceR = random.choice(piecerandom)     #du coup cette ligne tu peux peut etre la garder :)
@@ -144,17 +174,16 @@ def bas():
     #c'est peut etre aussi dans cette fonction qu'il faudrait regarder si tu as fait une ligne et si oui te rajouter des points dans une variable globale :)
 
 def move():
-    #ne sert que a faire descendre la piece...
-    threading.Timer(0.8, move).start()
+    threading.Timer(0.8, move).start()     # (ET LA LE DEUXIEME MOVE )
     #global x
     #global y
     #global direct
     #du coup tu n'as plus besoin que de ta variable globale qui est l'objet qui est en train de descendre !
-    global pieceR  #mais tu n'auras pas besoin de cette ligne, car c'est un objet...
+    global pieceR  #mais tu n'auras pas besoin de cette ligne, car c'est un objet...     (DONC LA JE COMPREND PAS DU COUP, JE SAIS PLUS QUOI GARDER)
     
+    down()
     
-    # ta variable y n'existe plus, c'est le pieceR.y (le y de l'instance d'une classe piece et que tu as appelle pieceR dans ta version, moi je n'y voit aucun inconveniant, mais si tu veux changer le nom c'est toi qui voit :)
-    #du coup ta condition est bien, il faut juste la changer un peu a cause de ce que je viens de dire : alors je me suis permis de la changer...
+   
     if pieceR.y>3 :
         #j'ai enleve le truc du x, il est deja apelle dans le keyboardfunc...
         #mais ici on fait descendre la piece
@@ -172,7 +201,7 @@ def move():
 #FABRICATION
 #Grille de jeu
 
-# est ce qu'elle sert vraiment a qqch ta grille ? parce qu'en fait t'es parti avec des peices independantes et pas des etats de pixels (les carres de la gille...) mais c'est pas grave du tout c'est ta facon de faire et ca marche tout aussi bien :)
+# est ce qu'elle sert vraiment a qqch ta grille ? parce qu'en fait t'es parti avec des pieces independantes et pas des etats de pixels (les carres de la gille...) mais c'est pas grave du tout c'est ta facon de faire et ca marche tout aussi bien :)
 # cela dit laisse la ou elle est pour l'instant... elle ne gene personne !
 
 moncarre=carre(0,0,[1.0,1.0,1.0])
@@ -228,11 +257,8 @@ def DrawGLScene():
 
     #DESSIN
 
-    #du coup la boucle for item in pieceR ne va plus marcher parce que pieceR sera un objet piece lambada, et donc tu n'auras plus besoin d'appeler que la methode draw de pieceR, comme ceci : pieceR.draw()
-    for item in  pieceR :
-          item.draw()
+    pieceR.draw()
 
-    #ca ca marches toujours :)
     for item in grille :
           for trucs in item :
                 trucs.draw()
@@ -259,6 +285,8 @@ def keyPressed(key, x, y):
     if key == 's':
           direct = -1
 
+    move()
+
 
 def main():
     global window
@@ -277,7 +305,7 @@ def main():
     InitGL(640, 480)
     glutMainLoop()
 
-#alors maintenat avant d'appeler tes fonctions (move() et main()), il faut creer une premiere piece qui descend et qui est choisie aleatoirement :
+#alors maintenant avant d'appeler tes fonctions (move() et main()), il faut creer une premiere piece qui descend et qui est choisie aleatoirement :
 randomPiece()
 
 move()
