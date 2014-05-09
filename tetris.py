@@ -99,12 +99,14 @@ class carre(object):
 class piece(object):
     def __init__(self):
         self.x = 4 
-        self.y = 12
+        self.y = 20
         index = random.randint(0,6)
+
         ## et la c'est une liste des couleurs dans le meme ordre que les pieces !
         colorList =[[1,0.2,0.4], [0,1,0], [1,0,1], [1,1,0], [0,0,1], [1,0,0], [0,1,0]] # orange / L
         self.color = colorList[index]
         #ca c'est la liste de toutes les pieces comme ca on peut faire un random choice dedans, puisque les methodes ci dessous sont les memes pour toutes les pieces !
+
         totalList = [[carre(self.x,self.y,self.color),carre(self.x,self.y-1,self.color),carre(self.x,self.y-2,self.color),carre(self.x+1,self.y-2,self.color)],
                 [carre(self.x+1,self.y,self.color),carre(self.x+1,self.y-1,self.color),carre(self.x+1,self.y-2,self.color),carre(self.x,self.y-2,self.color)],
                     [carre(self.x,self.y,self.color),carre(self.x,self.y-1,self.color),carre(self.x+1,self.y-1,self.color),carre(self.x,self.y-2,self.color)],
@@ -117,24 +119,6 @@ class piece(object):
     ##Alors en fait, self.list, c'est la vraie liste de tes carres. Tu pourra meme y ajouter les listes de tes differentes configurartions, et comme ca en fait, tu fais la representation de ta piece dans ton code... c'est ca qui est dessine dans la methode draw(). Et non, tu ne peux pas mettre tes objets pieces, parce que jusqua ce que je dirai stop, c'est dans la classe piece, donc ca c'est la liste de cette piece en particulier...
     ##je crois que ca c'est toujours pas tres clair, alors si t'a des questions dessus n'hesite pas :)
     ##mais du coup la ca marche et donc je sais pas si ca te va ou pas...
-    
-    def myinit(self):# c'est la meme chose que le __init__ mais on peux pas appeler le init une deuxieme fois et on peut pas l'enlever, donc, ben voila...
-        self.x = 4
-        self.y = 12
-        index = random.randint(0,6)
-        ## et la c'est une liste des couleurs dans le meme ordre que les pieces !
-        colorList =[[1,0.2,0.4], [0,1,0], [1,0,1], [1,1,0], [0,0,1], [1,0,0], [0,1,0]] # orange / L
-        self.color = colorList[index]
-        #ca c'est la liste de toutes les pieces comme ca on peut faire un random choice dedans, puisque les methodes ci dessous sont les memes pour toutes les pieces !
-        totalList = [[carre(self.x,self.y,self.color),carre(self.x,self.y-1,self.color),carre(self.x,self.y-2,self.color),carre(self.x+1,self.y-2,self.color)],
-                         [carre(self.x+1,self.y,self.color),carre(self.x+1,self.y-1,self.color),carre(self.x+1,self.y-2,self.color),carre(self.x,self.y-2,self.color)],
-                         [carre(self.x,self.y,self.color),carre(self.x,self.y-1,self.color),carre(self.x+1,self.y-1,self.color),carre(self.x,self.y-2,self.color)],
-                         [carre(self.x,self.y,self.color),carre(self.x+1,self.y,self.color),carre(self.x,self.y-1,self.color),carre(self.x+1,self.y-1,self.color)],
-                         [carre(self.x,self.y,self.color),carre(self.x,self.y-1,self.color),carre(self.x,self.y-2,self.color),carre(self.x,self.y-3,self.color)],
-                         [carre(self.x,self.y,self.color),carre(self.x,self.y-1,self.color),carre(self.x-1,self.y-1,self.color),carre(self.x-1,self.y-2,self.color)],
-                         [carre(self.x,self.y,self.color),carre(self.x,self.y-1,self.color),carre(self.x+1,self.y-1,self.color),carre(self.x+1,self.y-2,self.color)]]
-        self.list = totalList[index]
-
 
     def getSquareList(self):
         ## alors maintenat on fait le choix de la piece a l'init de piece. Du coup on a une liste d'instances de carre. Alors il faut une boucle pour faire descendre tous les carres de la self.list, du coup cette methode ne sert plus a rien, tout se passe dans down. C'est d'ailleurs plus efficace de faire ca comme ca, parce qu'au lieu de recreer des instances de carre a chaque fois, on ne fait que changer leur parametre a chaque timer (move)
@@ -144,6 +128,7 @@ class piece(object):
     #cette methode descend ton objet, il faut l'appeler dans le timer... (JE L'AI APPELE DANS LE MOVE OU YA LE TIMER) ( MAIS VOILA YA DEUX MOVE ..)
     ##oui c'est ce qu'il fallait faire :)
     def down(self):
+        self.y -=1
         for thing in self.list:
             thing.y-= 1
 
@@ -152,6 +137,8 @@ class piece(object):
     ## mais sinon ca va :)
     def backAndForth(self):
         global direct
+        for thing in self.list :
+            thing.x += direct
         self.x += direct ##il va falloir ajouter une condition pour qu'on ne puisse pas sortir de la zone de jeu...
         direct = 0
 
@@ -165,6 +152,7 @@ class piece(object):
 
 ##LA FIN DE LA ClASSE C'EST ICI !
 
+##de la...
 
 ##en fait, cette fonction elle est un peu pourrie, et a cause d'elle tu as besoin de 50000 classes de pieces differentes. Alors je l'ai remplacee par un choix random dans la classe piece unique que j'ai refaite a partir des autres classes que toi tu avait. c'est en gros une refonte, un espece de deux en 1 quoi, donc c'est moins cher et c'est plus pratique !
 def randomPiece():
@@ -178,6 +166,8 @@ def bas():
     # du coup pour comprendre cette fonction va voir le commentaire dans le timer et apres reviens ici.
     #c'est donc ici qu'il faut placer tes if : pour savoir si t'est en bas, et si c'est le cas tu as deux choses a faire : ajouter la piece qui viens d'atterrir a ce qui represente la ligne du bas, puis appeler ta fonction randomPiece() pour refaire une piece qui recomence a descendre.
     #c'est peut etre aussi dans cette fonction qu'il faudrait regarder si tu as fait une ligne et si oui te rajouter des points dans une variable globale :)
+
+##a de la, je crois que ca sert a rien...
 
 def move():
     threading.Timer(0.8, move).start()     # (ET LA LE DEUXIEME MOVE )
@@ -196,13 +186,12 @@ def move():
         #mais ici on fait descendre la piece
     pieceR.down()
     ##tout simplement :) Mainetant tout le travail est fait a l'interieur de ta classe piece quelle qu'ell soit !
-        
+    print(pieceR.y)
         ## ca je te laisse y reflechir encore un peu :)
     if pieceR.y<=3 : #ca ca veut dire que ta piece est arrivee en bas...
         #alors il va faloir gerer une representation dynamique de ce qu'est le bas. C'est a dire que une fois qu'on a commence a jouer le bas n'est plus juste une ligne...
         #donc moi je te propose de faire une nouvelle fonction par exemple bas(), que j'ai declaree plus haut, et qui va regarder si le pieceR.bas est sur la ligne du bas et si c'est le cas va faire en sorte d'incorporer cette piece qui vient d'atterir dans ce que tu choisira pour representer le bas, soit un objet, soit une liste ou ce que tu veux, mais choisit bien parce que ca va deja etre assez galere comme ca .... :( Du coup les ifs de cette fonction ne servent plus a grand chose, il faudra juste appeler ta nouvelle fonction bas avant de descendre ta piece..
-        pieceR.myinit()##ca c'est parce au final, si la piece arrive en bas il faut en refaire une nouvelle !
-
+        pieceR.__init__()##ca c'est parce au final, si la piece arrive en bas il faut en refaire une nouvelle !
 
 
 
@@ -240,7 +229,7 @@ def DrawGLScene():
     ##ici en fait y'avait pas besoin de variables globales...
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)	# Clear The Screen And The Depth Buffer
     glLoadIdentity()	# Reset The View
-    glTranslatef(-5.,-7.0,-15.0)	# Move Into The Screen
+    glTranslatef(-5.,-10.0,-25.0)	# Move Into The Screen
 
 
     #DESSIN
@@ -251,7 +240,6 @@ def DrawGLScene():
           for trucs in item :
                 trucs.draw()
 
-  
     
     glutSwapBuffers()
 
@@ -263,10 +251,10 @@ def keyPressed(key, x, y):
         sys.exit()
 
     if key == 'd':
-          direct = 1
+        direct = 1
 
     if key == 's':
-          direct = -1
+        direct = -1
 ##    move()
 ##c'etait pas move qu'il fallait appeler, mais ce qui est maintenat backAndForth
     pieceR.backAndForth()
