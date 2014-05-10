@@ -75,31 +75,52 @@ window = 0
 class carre(object):
 
     def __init__(self,x,y,couleur):
-        self.red=couleur[0]
-        self.green=couleur[1]
-        self.blue=couleur[2]
         self.x = x
         self.y = y
-    
+        self.couleur = couleur
     def getVertices(self):
         self.vertices = [[self.x,self.y,0],[self.x,self.y+1, 0],[self.x+1, self.y+1, 0],[self.x+1,self.y, 0]]
 
     def draw(self):
         self.getVertices()
         glBegin(GL_QUADS)
-        glColor3f(self.red, self.green, self.blue)
+        glColor3f(self.couleur[0], self.couleur[1], self.couleur[2]) #ca permet de changer la couleur facilement pour faire des tests
         for vertex in self.vertices:
             glVertex3f(vertex[0],vertex[1],vertex[2])
         glEnd()
 
 
-#Pour bouger tous les carres en meme temps, ils faut qu'ils partent tous du meme point, et ce point on doit y avoir acces facilement. Alors ce point c'est maintenant ton instance de ton objetc (appelons le mapiece) comme ceci : mapiece.Ax, meme principe pour le y...   (PAS UNDERSTAND, fin on le retrouve ou ?)
+##ici pour le sol, moi j'aime bien les objets alors j'en fait un !
+class floor(object):
+    def __init__(self):
+        self.top = []
+        for i in range(0, 12):
+            self.top.append(carre(i, 0, [0, 1, 0]))
+        self.bottom = []
+    
+    def addPiece(self):
+        for item in self.bottom :
+            item.couleur = [1,1,1]
+            #for thing in self.top :
+            #   if thing.x == item.x and thing.y < item.y:
+            #       item.color = [1,1,1]# = item
+            #       print (len(self.top))
+
+    def draw(self):
+        for item in self.top:
+            item.draw()
+        for item in self.bottom:
+            #for thing in item:
+            item.draw()
+
+
+#Pour bouger tous les carres en meme temps, ils faut qu'ils partent tous du meme point, et ce point on doit y avoir acces facilement. Alors ce point c'est maintenant ton instance de ton objetc (appelons le pieceR) comme ceci : pieceR.x, meme principe pour le y...   (PAS UNDERSTAND, fin on le retrouve ou ?)
 
 
 class piece(object):
     def __init__(self):
         self.x = 4 
-        self.y = 20
+        self.y = 19
         index = random.randint(0,6)
 
         ## et la c'est une liste des couleurs dans le meme ordre que les pieces !
@@ -124,10 +145,23 @@ class piece(object):
         ## alors maintenat on fait le choix de la piece a l'init de piece. Du coup on a une liste d'instances de carre. Alors il faut une boucle pour faire descendre tous les carres de la self.list, du coup cette methode ne sert plus a rien, tout se passe dans down. C'est d'ailleurs plus efficace de faire ca comme ca, parce qu'au lieu de recreer des instances de carre a chaque fois, on ne fait que changer leur parametre a chaque timer (move)
         
         self.bas = "prout" #il faut aussi que ici tu mette un parametre a ton objet pour savoir ou est le bas... Comme ca tu compares ce parametre a ce qui representera le bas pour savoir si il est atteint ou pas..
-    
+    def checkOnFloor(self):
+        for thing in self.list:
+            for item in sol.top:
+                if item.x == thing.x and item.y+1 == thing.y:
+                    print (item.x, item.y, thing.x, thing.y)
+                    for item in self.list:
+                        sol.top.append(item) #on peux se permettre d'utiliser l'instance de sol parce que il n'y en aura toujours qu'un !
+                    #sol.addPiece()
+                    print("prout")
+                    self.__init__()
+
+
+
     #cette methode descend ton objet, il faut l'appeler dans le timer... (JE L'AI APPELE DANS LE MOVE OU YA LE TIMER) ( MAIS VOILA YA DEUX MOVE ..)
     ##oui c'est ce qu'il fallait faire :)
     def down(self):
+        self.checkOnFloor()
         self.y -=1
         for thing in self.list:
             thing.y-= 1
@@ -167,7 +201,7 @@ def bas():
     #c'est donc ici qu'il faut placer tes if : pour savoir si t'est en bas, et si c'est le cas tu as deux choses a faire : ajouter la piece qui viens d'atterrir a ce qui represente la ligne du bas, puis appeler ta fonction randomPiece() pour refaire une piece qui recomence a descendre.
     #c'est peut etre aussi dans cette fonction qu'il faudrait regarder si tu as fait une ligne et si oui te rajouter des points dans une variable globale :)
 
-##a de la, je crois que ca sert a rien...
+##a de la, ca sert a rien...
 
 def move():
     threading.Timer(0.8, move).start()     # (ET LA LE DEUXIEME MOVE )
@@ -186,12 +220,12 @@ def move():
         #mais ici on fait descendre la piece
     pieceR.down()
     ##tout simplement :) Mainetant tout le travail est fait a l'interieur de ta classe piece quelle qu'ell soit !
-    print(pieceR.y)
-        ## ca je te laisse y reflechir encore un peu :)
-    if pieceR.y<=3 : #ca ca veut dire que ta piece est arrivee en bas...
+
+        ## ca ca ne sert a rien, il faut tout faire dans notre sol !
+        # if pieceR.y<=3 : #ca ca veut dire que ta piece est arrivee en bas...
         #alors il va faloir gerer une representation dynamique de ce qu'est le bas. C'est a dire que une fois qu'on a commence a jouer le bas n'est plus juste une ligne...
         #donc moi je te propose de faire une nouvelle fonction par exemple bas(), que j'ai declaree plus haut, et qui va regarder si le pieceR.bas est sur la ligne du bas et si c'est le cas va faire en sorte d'incorporer cette piece qui vient d'atterir dans ce que tu choisira pour representer le bas, soit un objet, soit une liste ou ce que tu veux, mais choisit bien parce que ca va deja etre assez galere comme ca .... :( Du coup les ifs de cette fonction ne servent plus a grand chose, il faudra juste appeler ta nouvelle fonction bas avant de descendre ta piece..
-        pieceR.__init__()##ca c'est parce au final, si la piece arrive en bas il faut en refaire une nouvelle !
+#pieceR.__init__()##ca c'est parce au final, si la piece arrive en bas il faut en refaire une nouvelle !
 
 
 
@@ -235,10 +269,10 @@ def DrawGLScene():
     #DESSIN
 
     pieceR.draw()
-
-    for item in grille :
-          for trucs in item :
-                trucs.draw()
+    sol.draw()
+        #for item in grille :
+        # for trucs in item :
+        #       trucs.draw()
 
     
     glutSwapBuffers()
@@ -275,6 +309,7 @@ def main():
     
     glutKeyboardFunc(keyPressed)
     InitGL(640, 480)
+    move()
     glutMainLoop()
 
 
@@ -289,17 +324,16 @@ moncarre=carre(0,0,[1.0,1.0,1.0])
 machin=[]
 grille=[]
 
-for ligne in range(10):
-    for colonne in range(20):
+for colonne in range(20):
+    for ligne in range(12):
         machin.append(carre(ligne,colonne,[1.0,1.0,1.0]))
     grille.append(machin)
 
 ##il faut donc ici, car c'est ici qu'on fabrique tout visiblement, fabriquer pieceR :
 
-
 #alors maintenant avant d'appeler tes fonctions (move() et main()), il faut creer une premiere piece qui descend et qui est choisie aleatoirement :
+sol = floor()
 pieceR = piece()
 
 
-move()
 main()
