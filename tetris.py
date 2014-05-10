@@ -98,13 +98,10 @@ class floor(object):
             self.top.append(carre(i, 0, [0, 1, 0]))
         self.bottom = []
     
-    def addPiece(self):
-        for item in self.bottom :
-            item.couleur = [1,1,1]
-            #for thing in self.top :
-            #   if thing.x == item.x and thing.y < item.y:
-            #       item.color = [1,1,1]# = item
-            #       print (len(self.top))
+    def checkLine(self):
+        test = 0
+
+
 
     def draw(self):
         for item in self.top:
@@ -146,15 +143,16 @@ class piece(object):
         
         self.bas = "prout" #il faut aussi que ici tu mette un parametre a ton objet pour savoir ou est le bas... Comme ca tu compares ce parametre a ce qui representera le bas pour savoir si il est atteint ou pas..
     def checkOnFloor(self):
+        flag =0
         for thing in self.list:
             for item in sol.top:
                 if item.x == thing.x and item.y+1 == thing.y:
-                    print (item.x, item.y, thing.x, thing.y)
-                    for item in self.list:
-                        sol.top.append(item) #on peux se permettre d'utiliser l'instance de sol parce que il n'y en aura toujours qu'un !
-                    #sol.addPiece()
-                    print("prout")
-                    self.__init__()
+                    flag = 1
+        if flag ==1: ##this flag avoids a serious bug ! Believe me..., and avoids appending duplicates to sol.top
+            for item in self.list:
+                sol.top.append(item) #on peux se permettre d'utiliser l'instance de sol parce que il n'y en aura toujours qu'un !
+            sol.checkLine()
+            self.__init__()
 
 
 
