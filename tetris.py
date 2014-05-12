@@ -1,52 +1,3 @@
-#piece1 =[[[0,1,0,0],[0,1,1,0],[0,0,1,0],[0,0,0,0]],[[0,0,0,0],[0,0,1,1],[0,1,1,0],[0,0,0,0]],[[0,1,0,0],[0,1,1,0],[0,0,1,0],[0,0,0,0]],[[0,0,0,0],[0,0,1,1],[0,1,1,0],[0,0,0,0]]]  
-
-
-# O 
-# O O
-#   O
-
-
-#piece2 = [[[0,0,2,0],[0,2,2,0],[0,2,0,0],[0,0,0,0]],[[0,0,0,0],[0,2,2,0],[0,0,2,2],[0,0,0,0]],[[0,0,2,0],[0,2,2,0],[0,2,0,0],[0,0,0,0]],[[0,0,0,0],[0,2,2,0],[0,0,2,2],[0,0,0,0]]]     
-    
-#   O
-# O O
-# O
-
-
-
-#piece3 = [[[0,3,0,0],[0,3,0,0],[0,3,0,0],[0,3,0,0]],[[3,3,3,3],[0,0,0,0],[0,0,0,0],[0,0,0,0]],[[0,3,0,0],[0,3,0,0],[0,3,0,0],[0,3,0,0]],[[3,3,3,3],[0,0,0,0],[0,0,0,0],[0,0,0,0]]]      
-
-# O
-# O
-# O
-# O
- 
-
-#piece4 = [[[0,4,4,0],[0,4,4,0],[0,0,0,0],[0,0,0,0]],[[0,4,4,0],[0,4,4,0],[0,0,0,0],[0,0,0,0]],[[0,4,4,0],[0,4,4,0],[0,0,0,0],[0,0,0,0]],[[0,4,4,0],[0,4,4,0],[0,0,0,0],[0,0,0,0]]]
-
-# O O
-# O O 
-    
-#piece5 = [[[0,5,0,0],[0,5,5,0],[0,5,0,0],[0,0,0,0]],[[0,0,0,0],[0,0,5,0],[0,5,5,5],[0,0,0,0]],[[0,0,0,5],[0,0,5,5],[0,0,0,5],[0,0,0,0]],[[0,5,5,5],[0,0,5,0],[0,0,0,0],[0,0,0,0]]]     
-
-# O
-# O O
-# O
-
-#piece6 = [[[0,0,6,0],[0,0,6,0],[0,6,6,0],[0,0,0,0]],[[0,0,0,0],[0,6,6,6],[0,0,0,6],[0,0,0,0]],[[0,6,6,0],[0,6,0,0],[0,6,0,0],[0,0,0,0]],[[0,0,0,0],[0,6,0,0],[0,6,6,6],[0,0,0,0]]]     
-
-#   O
-#   O
-# O O 
-
-#piece7 = [[[0,7,0,0],[0,7,0,0],[0,7,7,0],[0,0,0,0]],[[0,0,0,0],[0,0,0,7],[0,7,7,7],[0,0,0,0]],[[0,7,7,0],[0,0,7,0],[0,0,7,0],[0,0,0,0]],[[0,0,0,0],[0,7,7,7],[0,7,0,0],[0,0,0,0]]]     
-
-# O
-# O
-# O O
-
-#-----------------------------------------------------------------------------------------------------------------------------------------------------------
-
 from OpenGL.GL import *
 from OpenGL.GLUT import *
 from OpenGL.GLU import *
@@ -54,19 +5,9 @@ import sys,threading,random
 
 ESCAPE = '\033'
 
-x=4
-y=12
-
-piececolor=[0,1,0]
-piececolor2=[1,0,0]
-piececolor3=[0,0,1]
-piececolor4=[1,1,0]
-piececolor5=[1,0,1]
-piececolor6=[0,1,1]
-piececolor7=[1,0.2,0.4]
-
 direct = 0
-
+score = 0
+dead = 0
 
 # Number of the glut window
 window = 0
@@ -99,9 +40,21 @@ class floor(object):
         self.bottom = []
     
     def checkLine(self):
-        test = 0
-
-
+        for i in range(1,20):
+            counter = 0
+            for thing in self.top:
+                if thing.y == i:
+                    counter+=1
+            if counter == 12:
+                global score
+                score+=1
+                for thing in self.top :
+                    if thing.y == i:
+                        thing.y = 0
+                    if thing.y> i:
+                        thing.y -=1
+                self.checkLine()
+                print (score)
 
     def draw(self):
         for item in self.top:
@@ -117,65 +70,105 @@ class floor(object):
 class piece(object):
     def __init__(self):
         self.x = 4 
-        self.y = 19
-        index = random.randint(0,6)
-
+        self.y = 20
+        self.index = random.randint(0,6)
+        self.config = 0
         ## et la c'est une liste des couleurs dans le meme ordre que les pieces !
-        colorList =[[1,0.2,0.4], [0,1,0], [1,0,1], [1,1,0], [0,0,1], [1,0,0], [0,1,0]] # orange / L
-        self.color = colorList[index]
+        colorList =[[1,0.2,0.4], [0,1,1], [1,0,1], [1,1,0], [0,0,1], [1,0,0], [0,1,0]]
+        self.color = colorList[self.index]
         #ca c'est la liste de toutes les pieces comme ca on peut faire un random choice dedans, puisque les methodes ci dessous sont les memes pour toutes les pieces !
-
-        totalList = [[carre(self.x,self.y,self.color),carre(self.x,self.y-1,self.color),carre(self.x,self.y-2,self.color),carre(self.x+1,self.y-2,self.color)],
-                [carre(self.x+1,self.y,self.color),carre(self.x+1,self.y-1,self.color),carre(self.x+1,self.y-2,self.color),carre(self.x,self.y-2,self.color)],
-                    [carre(self.x,self.y,self.color),carre(self.x,self.y-1,self.color),carre(self.x+1,self.y-1,self.color),carre(self.x,self.y-2,self.color)],
-                    [carre(self.x,self.y,self.color),carre(self.x+1,self.y,self.color),carre(self.x,self.y-1,self.color),carre(self.x+1,self.y-1,self.color)],
-                    [carre(self.x,self.y,self.color),carre(self.x,self.y-1,self.color),carre(self.x,self.y-2,self.color),carre(self.x,self.y-3,self.color)],
-                    [carre(self.x,self.y,self.color),carre(self.x,self.y-1,self.color),carre(self.x-1,self.y-1,self.color),carre(self.x-1,self.y-2,self.color)],
-                    [carre(self.x,self.y,self.color),carre(self.x,self.y-1,self.color),carre(self.x+1,self.y-1,self.color),carre(self.x+1,self.y-2,self.color)]]
-        self.list = totalList[index]
+        ##chaque liste dans la liste c'est une config ... comme ca on peux tourner tranquille :)
+        self.totalList = [[[carre(self.x,self.y,self.color),carre(self.x,self.y-1,self.color),carre(self.x,self.y-2,self.color),carre(self.x+1,self.y-2,self.color)], [carre(self.x-1,self.y-1,self.color), carre(self.x,self.y-1,self.color), carre(self.x+1,self.y-1,self.color),carre(self.x+1,self.y,self.color)], [carre(self.x,self.y-2,self.color), carre(self.x,self.y-1,self.color), carre(self.x,self.y,self.color),carre(self.x-1,self.y,self.color)],  [carre(self.x-1,self.y-1,self.color), carre(self.x,self.y-1,self.color), carre(self.x+1,self.y-1,self.color),carre(self.x-1,self.y-2,self.color)]],
+                
+                    [[carre(self.x,self.y,self.color),carre(self.x,self.y-1,self.color),carre(self.x,self.y-2,self.color),carre(self.x-1,self.y-2,self.color)],[carre(self.x-1,self.y-1,self.color),carre(self.x,self.y-1,self.color),carre(self.x+1,self.y-1,self.color),carre(self.x+1,self.y-2,self.color)],[carre(self.x,self.y-2,self.color),carre(self.x,self.y-1,self.color),carre(self.x,self.y,self.color),carre(self.x+1,self.y,self.color)],[carre(self.x-1,self.y-1,self.color),carre(self.x,self.y-1,self.color),carre(self.x+1,self.y-1,self.color),carre(self.x-1,self.y,self.color)]],
+                          
+                    [[carre(self.x,self.y,self.color),carre(self.x,self.y-1,self.color),carre(self.x+1,self.y-1,self.color),carre(self.x,self.y-2,self.color)],[carre(self.x-1,self.y-1,self.color),carre(self.x,self.y-1,self.color),carre(self.x+1,self.y-1,self.color),carre(self.x,self.y,self.color)], [carre(self.x,self.y,self.color),carre(self.x,self.y-1,self.color),carre(self.x-1,self.y-1,self.color),carre(self.x,self.y-2,self.color)], [carre(self.x-1,self.y-1,self.color),carre(self.x,self.y-1,self.color),carre(self.x+1,self.y-1,self.color),carre(self.x,self.y-2,self.color)]],
+                          
+                          
+                    [[carre(self.x,self.y,self.color),carre(self.x+1,self.y,self.color),carre(self.x,self.y-1,self.color),carre(self.x+1,self.y-1,self.color)]],
+                          
+                    [[carre(self.x,self.y,self.color),carre(self.x,self.y-1,self.color),carre(self.x,self.y-2,self.color),carre(self.x,self.y-3,self.color)],[carre(self.x-2,self.y-1,self.color),carre(self.x-1,self.y-1,self.color),carre(self.x,self.y-1,self.color),carre(self.x+1,self.y-1,self.color)]],
+                          
+                          
+                [[carre(self.x,self.y,self.color),carre(self.x,self.y-1,self.color),carre(self.x-1,self.y-1,self.color),carre(self.x-1,self.y-2,self.color)],[carre(self.x-1,self.y,self.color),carre(self.x,self.y,self.color),carre(self.x,self.y-1,self.color),carre(self.x+1,self.y-1,self.color)]],
+                          
+                          
+                    [[carre(self.x,self.y,self.color),carre(self.x,self.y-1,self.color),carre(self.x+1,self.y-1,self.color),carre(self.x+1,self.y-2,self.color)],[carre(self.x+1,self.y,self.color),carre(self.x,self.y,self.color),carre(self.x,self.y-1,self.color),carre(self.x-1,self.y-1,self.color)]]]
+        self.list = self.totalList[self.index][self.config]
     #ca c'est pour recuperer ta fameuse liste que tu avais au depart. Sauf que la en plus tu peux mettre les autres listes pour la rotation et faire un truc qui choisit la bonne :) ( LISTE TOUT EN HAUT ? OU DU COUP JPEUX METTRE MES OBJETS PIECES ? )
     ##Alors en fait, self.list, c'est la vraie liste de tes carres. Tu pourra meme y ajouter les listes de tes differentes configurartions, et comme ca en fait, tu fais la representation de ta piece dans ton code... c'est ca qui est dessine dans la methode draw(). Et non, tu ne peux pas mettre tes objets pieces, parce que jusqua ce que je dirai stop, c'est dans la classe piece, donc ca c'est la liste de cette piece en particulier...
     ##je crois que ca c'est toujours pas tres clair, alors si t'a des questions dessus n'hesite pas :)
     ##mais du coup la ca marche et donc je sais pas si ca te va ou pas...
 
-    def getSquareList(self):
-        ## alors maintenat on fait le choix de la piece a l'init de piece. Du coup on a une liste d'instances de carre. Alors il faut une boucle pour faire descendre tous les carres de la self.list, du coup cette methode ne sert plus a rien, tout se passe dans down. C'est d'ailleurs plus efficace de faire ca comme ca, parce qu'au lieu de recreer des instances de carre a chaque fois, on ne fait que changer leur parametre a chaque timer (move)
-        
-        self.bas = "prout" #il faut aussi que ici tu mette un parametre a ton objet pour savoir ou est le bas... Comme ca tu compares ce parametre a ce qui representera le bas pour savoir si il est atteint ou pas..
     def checkOnFloor(self):
         flag =0
         for thing in self.list:
             for item in sol.top:
                 if item.x == thing.x and item.y+1 == thing.y:
                     flag = 1
+                if flag == 1 and thing.y>=18:
+                    flag = 2
         if flag ==1: ##this flag avoids a serious bug ! Believe me..., and avoids appending duplicates to sol.top
             for item in self.list:
                 sol.top.append(item) #on peux se permettre d'utiliser l'instance de sol parce que il n'y en aura toujours qu'un !
             sol.checkLine()
             self.__init__()
+        if flag == 2:
+            global dead
+            dead = 1
+            print(dead)
 
-
+    def checkBoundries(self):
+        global direct
+        #this loop checks the sides
+        for thing in self.list:
+            if thing.x+direct ==-1 or thing.x+direct == 12 :
+                return 0
+        #this loop checks if it lands on other pieces already in self.top
+        for thing in self.list:
+            for item in sol.top:
+                if thing.y == item.y and thing.x+direct == item.x:
+                    return 0
+        return 1 #never reached if there is a problem
 
     #cette methode descend ton objet, il faut l'appeler dans le timer... (JE L'AI APPELE DANS LE MOVE OU YA LE TIMER) ( MAIS VOILA YA DEUX MOVE ..)
     ##oui c'est ce qu'il fallait faire :)
     def down(self):
         self.checkOnFloor()
         self.y -=1
-        for thing in self.list:
-            thing.y-= 1
+        for item in self.totalList[self.index]:
+            for thing in item:
+                thing.y-= 1
+        self.list = self.totalList[self.index][self.config]
+
+    def changeConfig(self, spin):
+        oldConfig = self.config
+        self.config = self.config+spin
+        if self.config == len(self.totalList[self.index]):
+            self.config =0
+        if self.config == -1:
+            self.config = len(self.totalList[self.index])-1
+
+        self.list = self.totalList[self.index][self.config]
+        # ici je ne comprends pas pourquoi ca ne marche pas...
+        if self.checkBoundries() == 0:
+            self.list = self.totalList[self.index][oldConfig]
 
     #ca c'est pour bouger de gauche a droite. Il faut pourvoir le faire plus d'une fois par timer, donc on l'appelle a chaque fois qu'une touche est enfoncee. c'est a dire dans la fonction Keypressed ! ( LE PERMIER MOVE(SELF) )
     ##j'en ai marre et il fait chaud !!!!!!!!
     ## mais sinon ca va :)
     def backAndForth(self):
         global direct
-        for thing in self.list :
-            thing.x += direct
-        self.x += direct ##il va falloir ajouter une condition pour qu'on ne puisse pas sortir de la zone de jeu...
+        flag = self.checkBoundries()
+        if flag == 1:
+            for item in self.totalList[self.index]:
+                for thing in item:
+                    thing.x += direct
+            self.x += direct ##il va falloir ajouter une condition pour qu'on ne puisse pas sortir de la zone de jeu...
+        self.list = self.totalList[self.index][self.config]
         direct = 0
 
     def draw(self):
-
         #alors ici il faut que tu prenne le self.list rafraichit (c'est a dire apres avor appele la methode getSquareList, et que tu fasse une boucle pour appeler la methode draw de chaque element (les instances de la classe carre ) de ta liste.
         #donc vu qu'il me le faut pour faire des tests je te fais cette boucle, que tu n'aurais eu aucun mal a faire quoi qu'il arrive
         ##comme je l'ai dit ca ca sert plus a rien : self.getSquareList()
@@ -202,7 +195,7 @@ def bas():
 ##a de la, ca sert a rien...
 
 def move():
-    threading.Timer(0.8, move).start()     # (ET LA LE DEUXIEME MOVE )
+    threading.Timer(.8, move).start()     # (ET LA LE DEUXIEME MOVE ).8
     #global x
     #global y
     #global direct
@@ -216,7 +209,11 @@ def move():
     #if pieceR.y>3 :
         #j'ai enleve le truc du x, il est deja apelle dans le keyboardfunc...
         #mais ici on fait descendre la piece
-    pieceR.down()
+        
+        ##et on la fait descendre que si on est encore vivant :)
+    global dead
+    if dead != 1:
+        pieceR.down()
     ##tout simplement :) Mainetant tout le travail est fait a l'interieur de ta classe piece quelle qu'ell soit !
 
         ## ca ca ne sert a rien, il faut tout faire dans notre sol !
@@ -262,8 +259,10 @@ def DrawGLScene():
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)	# Clear The Screen And The Depth Buffer
     glLoadIdentity()	# Reset The View
     glTranslatef(-5.,-10.0,-25.0)	# Move Into The Screen
-
-
+    global dead
+    if dead == 4:
+        for item in lost:
+            item.draw()
     #DESSIN
 
     pieceR.draw()
@@ -282,13 +281,19 @@ def keyPressed(key, x, y):
     if key == ESCAPE or key == 't':
         sys.exit()
 
-    if key == 'd':
+    if key == 'm':
         direct = 1
-
-    if key == 's':
+    if key == 'k':
         direct = -1
+    if key=='a':
+        pieceR.down()
+    if key == 'o':
+        pieceR.changeConfig(1)
+    if key == 'l':
+        pieceR.changeConfig(-1)
+
 ##    move()
-##c'etait pas move qu'il fallait appeler, mais ce qui est maintenat backAndForth
+##c'etait pas move(timer) qu'il fallait appeler, mais ce qui est maintenat backAndForth, une methode, donc il faut l'instance . backandforth...
     pieceR.backAndForth()
 
 
@@ -304,7 +309,7 @@ def main():
     glutDisplayFunc(DrawGLScene)
     glutIdleFunc(DrawGLScene)
     glutReshapeFunc(ReSizeGLScene)
-    
+    glutFullScreen()
     glutKeyboardFunc(keyPressed)
     InitGL(640, 480)
     move()
@@ -317,7 +322,7 @@ def main():
 
 # est ce qu'elle sert vraiment a qqch ta grille ? parce qu'en fait t'es parti avec des pieces independantes et pas des etats de pixels (les carres de la gille...) mais c'est pas grave du tout c'est ta facon de faire et ca marche tout aussi bien :)
 # cela dit laisse la ou elle est pour l'instant... elle ne gene personne !
-
+##bon ba au final non la grille elle sert a rien...
 moncarre=carre(0,0,[1.0,1.0,1.0])
 machin=[]
 grille=[]
@@ -332,6 +337,28 @@ for colonne in range(20):
 #alors maintenant avant d'appeler tes fonctions (move() et main()), il faut creer une premiere piece qui descend et qui est choisie aleatoirement :
 sol = floor()
 pieceR = piece()
+
+##moi j'ai trouve ca rigolo... mais ca marche pas... pour l'instant ! C'etatit pour ecrire "lost" avec les pices... Et mon high score de l'avion c'est 105 non en fait 147 et mort par suicide... faut vraiment que ca accelere !(une demie heure de jeu avec deux carres sur le sol, ca me parrait un peu facile...)lignes... Ce qui serait cool, c'est qu'il accelkere non ? demande a pincon, lui son truc il accelere !
+lost = [piece(), piece(), piece(), piece()]
+lost[0].index = 0
+lost[0].x = 0
+lost[0].y = 7
+
+lost[1].index = 4
+lost[1].x = 3
+lost[1].y = 7
+
+lost[2].index = 6
+lost[2].x = 6
+lost[2].y = 7
+
+lost[3].index = 3
+lost[3].x = 9
+lost[3].y = 7
+for item in lost:
+    item.list = item.totalList[item.index][0]
+    item.list[0].x = item.x
+    item.list[0].y = item.y
 
 
 main()
