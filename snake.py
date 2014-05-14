@@ -220,13 +220,6 @@ for l in range(0,8) :
 		grid.append(carre(c,0-l,[0.1,0.15,0.53]))  #random.random()
 
 
-<<<<<<< HEAD
-#main() # ca c'est en comment uniquement pour pouvoir le mettre dans le projet complet !
-=======
-main()	
 
-		
-<<<<<<< HEAD
->>>>>>> FETCH_HEAD
-=======
->>>>>>> FETCH_HEAD
+#main() # ca c'est en comment uniquement pour pouvoir le mettre dans le projet complet !
+
