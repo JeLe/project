@@ -7,9 +7,6 @@ import numpy
 from random import *
 import Line_Runner
 
-#make door and wall objetcs common to objects easier to use. If static, they sould only be calculated once and should be in a seperate list
-#wall objects will be made like they are now, excepet add sort of vertices and take only extremes into account. That will lighten the memory use.
-
 
 #all global variables
 ESCAPE = '\033'
@@ -50,6 +47,7 @@ class wall (object):
 
 
     def getPoints(self, thingToWall):
+        #oui j'aurais du utiliser les fonctions min et max de python, mais au final la elles sont faites maison...
         xmin = thingToWall.vertexList[0][0]
         zmin = thingToWall.vertexList[0][2]
         xmax = thingToWall.vertexList[0][0]
@@ -68,8 +66,9 @@ class wall (object):
         self.vertexList = [[xmin,0, zmax], [xmax, 0, zmax], [xmax, 0, zmin], [xmin,0, zmin]]
 
     def  noneShallPass(self):
-        if self.vertexList[0][0]<=myBonhomme.Ax<=self.vertexList[1][0] and self.vertexList[2][2]<=myBonhomme.Az<=self.vertexList[0][2] : #this condition is kinda crappy..
-            print("We don't need no education!")
+        #ici on verifie que le bonhomme n'aissaie pas de passer a travers un mur
+        if self.vertexList[0][0]<=myBonhomme.Ax<=self.vertexList[1][0] and self.vertexList[2][2]<=myBonhomme.Az<=self.vertexList[0][2] : #this condition is kinda crappy.. Because we only test one side of the dude
+            print("We don't need no education!") # on est dans un Wall ou pas ? :)
             return 1 #returns 1...
         else :
             return 0
@@ -80,19 +79,22 @@ class gate (object):
         self.vertexList = list
         gates.append(self)
         self.id = id
-    
+    #ici on regarde si le bonhomme est dans une porte ou pas. Celles ci declanchent un jeu, selon devant quelle borne on est, a qui est associe une porte et donc un jeu
     def checkifgate(self):
-        if self.vertexList[0][0]<myBonhomme.Ax<self.vertexList[1][0] and self.vertexList[2][2]<myBonhomme.Az<self.vertexList[0][2] :
-            return self.id
-        
+        a = min(self.vertexList[0][0], self.vertexList[1][0], self.vertexList[2][0])
+        b = max(self.vertexList[0][0], self.vertexList[1][0], self.vertexList[2][0])
+        c = min(self.vertexList[0][2], self.vertexList[1][2], self.vertexList[2][2])
+        d = max(self.vertexList[0][2], self.vertexList[1][2], self.vertexList[2][2])
+        if a<myBonhomme.Ax<b and c<myBonhomme.Az<d :#meme probleme avec la condition que pour les murs
+            return self.id#cet identifient definit quel jeu sera lance
         else :
-            print(self.vertexList[0][0], self.vertexList[1][0])
             return 0
 
+#le tout premier objet de tout le projet. Une instance de celui ci est un carre definit par un point, deux vecteurs et une couleur (avec ses coordonnes RVB)
 class quad(object):
     def __init__(self, name, Ax, Ay, Az, Vx, Vy, Vz, Wx, Wy, Wz, red, green, blue):
         self.name = name
-        self.type = "static"
+        self.type = "static" # ce type est discutable...
         self.Ax = Ax
         self.Ay = Ay
         self.Az = Az
@@ -107,27 +109,25 @@ class quad(object):
         self.blue = blue
         #we get the vertices here in init because it's static
         self.getPoints()
-        self.normalList=getNormals(self.vertexList)
+        self.normalList=getNormals(self.vertexList) #le vecteur normal associe au carre... Cela devait servir pour la lumiere, mais nous avons decide d'implementer celle ci ulterieurement.
 
-    #    self.wall = wall(self)
-
+#la methode qui calcule les 4 points du carre a partir du point et des 2 vecteurs de l'initialisation
     def getPoints(self):
         self.vertexList = [[self.Ax, self.Ay, self.Az], [self.Ax+self.Vx, self.Ay+self.Vy, self.Az+self.Vz],[self.Ax+self.Vx+self.Wx, self.Ay+self.Vy+self.Wy, self.Az+self.Vz+self.Wz], [self.Ax+self.Wx, self.Ay+self.Wy, self.Az+self.Wz]]
 
+#la methode qui dessine le carre a l'ecran, grace a OpenGl. Cette methode ne doit etre appele a partir de DrawGLScene directement ou indirectement
     def draw(self):
-
         glBegin(GL_QUADS)
         glColor3f(self.red, self.green, self.blue)
         counter = 0
         for vertex in self.vertexList:
-
-            glNormal3f(0., -1., 0.)
+            glNormal3f(0., -1., 0.) #une normale arbitraire, vu que l'implementation de la lumiere doit attendre, cela n'a aucune incidence.
             glVertex3f(vertex[0], vertex[1], vertex[2])
         glEnd()
 
 
 
-#this is where you put your dude classes
+#deubut des classes associees au bonhomme. Les noms parlent d'eux meme ( ou pas :)
 unite = 3
 class foot (object):
     def __init__(self, Ax, Ay, Az, Vx, Vy, Vz):
@@ -138,6 +138,8 @@ class foot (object):
         self.Vy = Vy
         self.Vz = Vz
 
+#Lucile je te laisse commenter ton bonhomme ;)
+# et alors sinon y'a quelques problemes... Il faut deux vecteurs deja... Donx il te faut un vecteur W quelque part ( dans chaque ckasses differente... mais c'est le meme a chaque fois :) )
     def getPoints(self):
         global unite
         
@@ -347,6 +349,7 @@ class kopf (object):
                                [x+3*unite, y, z], [x+3*unite, y+3*unite, z], [x+3*unite, y+3*unite, z+3*unite], [x+3*unite, y, z+3*unite],
                                [x, y+3*unite, z], [x+3*unite, y+3*unite, z], [x+3*unite, y+3*unite, z+3*unite], [x, y+3*unite, z+3*unite]]
 
+#Le bonhomme lui meme, qui regroupe en un meme endroit toutes les parties du corp.
 class bonhomme (object):
     def __init__(self, Ax, Ay, Az, Vx, Vy, Vz):
         self.Ax = Ax
@@ -355,7 +358,7 @@ class bonhomme (object):
         self.Vx = Vx
         self.Vy = Vy
         self.Vz = Vz
-        self.type = "moving"
+        self.type = "moving" # ce type signifie que les points doivent etre recalcules a chaque boucle d'affichage, car le bonhomme peut bouger !
 
     def getPoints(self):
         global unite
@@ -395,8 +398,7 @@ class bonhomme (object):
         glBegin(GL_QUADS)
         counter = 0
         for item in self.vertexList:
-            #this works because we enabled it in init.
-            #so if we need ambient, diffuse and specular lighting I don't know if it's wise...
+            #les lignes commentes sont des residus de nos recherches dans le domaine de la lumiere...
             glColor3f(0.9, 0.9, 0.9)
             #glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, cyan)
             glNormal3f(self.normalList[counter][0],self.normalList[++counter][1],self.normalList[++counter][2])
@@ -404,24 +406,27 @@ class bonhomme (object):
         #glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, white)
         glEnd()
 
+#
     def move(self):
-        global forward
-        global direction
-        #ok so direction devient le coefi dir de ladroite sur laquelle se deplace le bnhomme, on incremente de ce qu'on veut siur x, on calcule z et voila...
-        #pb : on voit pas quand il tourne...
+        global forward, direction
         oldX = self.Ax
         oldZ = self.Az
+        #suivant les etats des touches directionnelles stockes dans forward et direction, on incremente les x et z pour faire bouger le bonhomme
         if forward != 0:
             self.Az += .01*forward
         if direction != 0:
             self.Ax += .02*direction
+                #puis on verifie qu'il ne se trouve pas de murs sur son chemin
         for item in walls:
-            if item.noneShallPass()==1: #one means it's on the wall !!!
+            if item.noneShallPass()==1: #si la methode noneShallPass retourne 1, c'est qu'il y a presence d'un mur. On garde donc les anciennes valeurs non incrementees de Ax et Az
                 self.Ax = oldX
                 self.Az = oldZ
 
 
-#END OF DUDE
+#Fin de des classes relatives au bonhomme
+
+#debut des machines
+#c'est pareil Pi, c'est la tienne faudrait y ajouter des comments un peu :)
 machineUnit = 3
 
 class machine(object):
@@ -441,12 +446,8 @@ class machine(object):
 
     def getPoints(self):
         global machineUnit
-        #alors au final j'avais raconte n'importe quoi, pour que ca marche vraiment, il faut deux vecteurs!! Alors pour simplifier la tache, on va reutiliser la premiere classe de Graal Corp, la classe quad !
-        #je fais donc un quad, avec le point et les deux vecteurs que il faudra maintenant donner a la creation de ta machine.
-        self.start = quad("machine first", self.Ax, self.Ay, self.Az, 0.5*machineUnit*self.Vx, self.Ay, 0.5*machineUnit*self.Vz, -0.6*machineUnit*self.Vz, self.Ay, -0.6*machineUnit*self.Vx, 1., 1., 0.).vertexList #mais je n'en garde que la liste de vertexs. De cette liste, qui represente les points de ton premier carre (celui du dessous), je vais recuperer les quatres points A, B, C, D, qui vont servir a redessiner tous les autres :)
-        #de plus, la carrosserie est en acier inoxidable, mais en vrai, pour faire le vecteurW de pour la classe quad, j'ai inverse le *self.Ax et le * self.Az dans les coordonnees, parce que en gros, si c'est pas l'un c'est l'autre, je t'expliquerai ca plus mieux un jour ou je ne prends pas l'avion !
-        #alors decollage a 10:20, on est audessus de la mer a 10:30 ! # 3 minutes pour traverser la manche??? #11 :00 , re audessus de la mer ? y'a top de nuages on dirait qu'on survole le pole nord ( les pauvres anglzais !! hihi :) # ah non en fait on peut toujours s'ecraser sur un patelin...  ! 11:06 ohhhh des montagnes, avec des lacs et un tout petit peu de glace.. et la mer derriere ?? 11:11  :on viens de passer un estuaire... Et cette machine est tres galere !! mais c'est bon y'a du sprite !!!! et y'a plein d'eoliennes dans les montagnes.
-        #11:20 deuxieme estuaire, avec une grosse ville et une petite lagune.. 11:23 les montagnes ont grandi et veilent aller se beigner !!
+        #pour que la machine puisse etre tournee dans le bon sens ( vers l'interur de la piece) il faut qu'elle soit entierement calculee a partir d'un quad et de ses vecteurs, comme ca on peut la faire tourner avec les vecteurs !
+        self.start = quad("machine first", self.Ax, self.Ay, self.Az, 0.5*machineUnit*self.Vx, self.Ay, 0.5*machineUnit*self.Vz, -0.6*machineUnit*self.Vz, self.Ay, -0.6*machineUnit*self.Vx, 1., 1., 0.).vertexList
 
         self.Ax = self.start[0][0]
         self.Ay = self.start[0][1]
@@ -463,24 +464,19 @@ class machine(object):
         self.Dx = self.start[3][0]
         self.Dy = self.start[3][1]
         self.Dz = self.start[3][2]
+        
 
         self.gateList = [[self.Bx, 1, self.Bz], [self.Bx+0.5*machineUnit*self.Vx, 1, self.Bz+0.5*machineUnit*self.Vz], [self.Cx+0.5*machineUnit*self.Vx, 1, self.Cz+0.5*machineUnit*self.Vz], [self.Cx, 1, self.Cz]]
 
         self.vertexList = [[self.Ax,self.Ay,self.Az],[self.Bx,self.By,self.Bz], [self.Cx,self.Cy,self.Cz], [self.Dx,self.Dy,self.Dz],
 
-                           #et maintenat qu'on a les quatres points de la base de la machine qui sont calcules avec des vecteurs, on calcule les autres points a partir de ceux la, et avec les vecteurs de temps en temps ausssi! Les vecteurs ne servent a rien uniquement quand il n'y a que y qui change : quand on va vers le haut quoi !
+          
                            [self.Bx, self.By+0, self.Bz+0 ],[self.Cx, self.Cy+0, self.Cz],[self.Cx, self.Cy+0.6*machineUnit, self.Cz],[self.Bx, self.By+0.6*machineUnit, self.Bz],
 
                            [self.Bx, self.By+0.6*machineUnit, self.Bz],[self.Cx, self.Cy+0.6*machineUnit, self.Cz],[self.Cx+0.1*machineUnit*self.Vx, self.Cy+0.7*machineUnit, self.Cz+0.1*machineUnit*self.Vz],[self.Bx+0.1*machineUnit*self.Vx, self.By+0.7*machineUnit, self.Bz+0.1*machineUnit*self.Vz],
-                           #11:30, il s comencent deja a servir les repas, ahlala, et y'a plein de nuages, c'est tres joli mais en plus je crois qu'on est re audessus de la mer... et je commence le 3e album du jour vert de la journeee.
-                           # et a chaque carre, on repart avec les coords de celui d'avant ! et j'aimerai pas etre sur la mer sous les nuages la tout de suite, qu'est ce qu'il doit faire froid !!
+            
                            [self.Bx+0.1*machineUnit*self.Vx, self.By+0.7*machineUnit, self.Bz+0.1*machineUnit*self.Vz],[self.Cx+0.1*machineUnit*self.Vx, self.Cy+0.7*machineUnit, self.Cz+0.1*machineUnit*self.Vz],[self.Cx+0.1*machineUnit*self.Vx, self.Cy+0.8*machineUnit, self.Cz+0.1*machineUnit*self.Vz],[self.Bx+0.1*machineUnit*self.Vx, self.By+0.8*machineUnit, self.Bz+0.1*machineUnit*self.Vz],
-                           # pff, le paysage est vraiment ennuyeux, je vais pouvoir me concentrer ! (il doit etre a peu pres midi, midi et quart...
-                           #je viens de trouver le bug dans mes vecteurs, il est 12:40, on arrive je pense sur le groenland, ca on vient de toucher TERRE ! (a la cristophe colomb) et qyue y'a de la glace partout, c'est rigolo ! (et je viens de voir sur l'ecran de gens devant que dehors il fait -54... Farenheit!! (ca fait -47 celsius)la neige est belle !Bon, a mes vecteurs.. Mais il y a un enorme trou dans une montagne ! ce doit etre un volcan !!
-                           #j'en ai marre cette machine ne fonctionne pas du tout, et les montagnes enneigees me donnent envie d'aller faire du ski !
-                           #une heure et demie, ca y est ca marche, et ben, c'est pas splendide les vecteurs ! et c'est nul les gens derriee avaeint le soleil dans la tete, du coup je ne peux plus regarder la mer... Parce que c'est grand la mer en fait... (on a passe la petite peninsule du groenland il y a 15mn..
-                           # bon je vais essayer de finir la machine dans la demi heure...
-                           #plutot 3/4 d'heure...
+           
                            [self.Bx+0.1*machineUnit*self.Vx, self.By+0.8*machineUnit, self.Bz+0.1*machineUnit*self.Vz],[self.Cx+0.1*machineUnit*self.Vx, self.Cy+0.8*machineUnit, self.Cz+0.1*machineUnit*self.Vz],[self.Cx-0.1*machineUnit*self.Vx, self.Cy+0.9*machineUnit, self.Cz-0.1*machineUnit*self.Vz], [self.Bx-0.1*machineUnit*self.Vx, self.By+0.9*machineUnit, self.Bz-0.1*machineUnit*self.Vz],
 
                            [self.Bx-0.1*machineUnit*self.Vx, self.By+0.9*machineUnit, self.Bz-0.1*machineUnit*self.Vz],[self.Cx-0.1*machineUnit*self.Vx, self.Cy+0.9*machineUnit, self.Cz-0.1*machineUnit*self.Vz],[self.Cx-0.1*machineUnit*self.Vx, self.Cy+1.3*machineUnit, self.Cz-0.1*machineUnit*self.Vz],[self.Bx-0.1*machineUnit*self.Vx, self.By+1.3*machineUnit, self.Bz-0.1*machineUnit*self.Vz],
@@ -492,10 +488,7 @@ class machine(object):
                            [self.Ax,self.Ay+1.6*machineUnit,self.Az],[self.Bx,self.By+1.6*machineUnit,self.Bz], [self.Cx,self.Cy+1.6*machineUnit,self.Cz], [self.Dx,self.Dy+1.6*machineUnit,self.Dz],
 
                            [self.Ax+0 ,self.Ay,self.Az+0 ],[self.Dx+0 ,self.Dy, self.Dz],[self.Dx+0 ,self.Dy+1.6*machineUnit, self.Dz],[self.Ax+0,self.Ay+1.6*machineUnit,self.Az+0],
-                           #il est deux heures et demie, j'arrive pas du tout a me concentrer a cause de tous les films sur tous les ecrans de tout le monde, forcement le mien il ne marche pas !!! et je crois qu'on est pas top loin du cercle polaire, parce que j'ai jete un oeuil dehors (ca fait mal), c'est que de la glace !! magnifique, je qualifierai meme ca de , miraculeux ! (tiens voila ce que je vais regarder parce que j'en ai marre de cette machine !
-
-                           #the sides (dark or not, as you want)
-                           #c'est grand le groenland... Et la il est 4:30, je commence a trouver le temps long...
+         
                            [self.Ax ,self.Ay,self.Az], [self.Bx-0.1*machineUnit*self.Vx,self.By,self.Bz-0.1*machineUnit*self.Vz], [self.Bx-0.1*machineUnit*self.Vx,self.By+1.6*machineUnit,self.Bz-0.1*machineUnit*self.Vz], [self.Ax, self.Ay+1.6*machineUnit, self.Az],
                            [self.Dx ,self.Dy,self.Dz], [self.Cx-0.1*machineUnit*self.Vx,self.Cy,self.Cz-0.1*machineUnit*self.Vz], [self.Cx-0.1*machineUnit*self.Vx,self.Cy+1.6*machineUnit,self.Cz-0.1*machineUnit*self.Vz], [self.Dx, self.Dy+1.6*machineUnit, self.Dz]
                            #[self.Ax+0,self.Ay+0,self.Az+0],[self.Ax+0.3*machineUnit -0.2,self.Ay+0 ,self.Az+0 ],[self.Ax+0.3*machineUnit -0.2,self.Ay+1.6*machineUnit +1.6,self.Az+0 ],[self.Ax+0 -0.5,self.Ay+1.6*machineUnit +1.6,self.Az+0 ],
@@ -534,17 +527,12 @@ class machine(object):
         glEnd()
         glBegin(GL_LINES)
         glColor3f(1., 0., 0.)
-        counter =0
-            # for item in self.normalList :
-            #counter+=3
-            #glVertex3f(item[0], item[1], item[2])
-            #glVertex3f(self.vertexList[counter][0], self.vertexList[counter][1], self.vertexList[counter][2])
-
         glEnd()
 
+#fin de la machine et des classes diverses. Suivent les fonctions plus classiques
 
+#l'algorythme de calcul des normales, mais les tests lumineux n'etant pas concluants, il est pour l'instant de peu d'utilite
 
-#And in init(if static) or in getVertices (if not static) add this line self.normalList=CalculateNormal(self)
 def getNormals(vertexList) :
     normalList=[]
     counter=0
@@ -562,11 +550,11 @@ def getNormals(vertexList) :
     return(normalList)
 
 
-#now our GL functions. DraxFunc is first cause most important
+# et maintenat les fonctions qui permettent a open GL de marcher via GLUT
 
 
 
-# The main drawing function.
+#La fonction ou on dessine tout a l'ecran
 def DrawGLScene():
     # Clear The Screen And The Depth Buffer, load the current and only matrix
     global alpha, transz, teta, game
@@ -592,14 +580,12 @@ def DrawGLScene():
 
 
     ######################################
-    #here we start the light stuff !!
+    #ici sont nos tests de lumiere, ils ne sont pas actifs, car il fallait decommenter la ligne glEnable(GL_LIGHTING) dans la faonction initGL
 
         glEnable(GL_LIGHT0)
         glLightfv(GL_LIGHT0, GL_AMBIENT, numpy.array((0.50, 0.50, 0.50, 0.5), 'f'))
         glLightfv(GL_LIGHT0, GL_DIFFUSE, numpy.array((1., 0., 0., 1.0), 'f'))
 
-
-    #glEnable(GL_LIGHT1)
 
         lightpos = numpy.array((5., 2., 0., 0.), 'f')
         lightdir = numpy.array((1, 0, 0), 'f')
@@ -609,7 +595,7 @@ def DrawGLScene():
 
 
 
-    #the line is the lamps stand !
+        #Ceci dessine une ligne sur le devant de la piece
         glBegin(GL_LINES)
         glColor3f(0,0,1)
         glVertex3f(-5,.3,5)
@@ -628,48 +614,56 @@ def DrawGLScene():
         glutSwapBuffers()
 
 
+#la fonction qui est appellee si une touche est enfoncee
 
 def keyPressed(*args):
     global transz, teta, alpha, game
 
-    # If escape or q is pressed, kill everything.
+#si echape ou q est touche, l
     if args[0] == ESCAPE or args[0] == 'q':
         sys.exit()
 
-    #manual rotations and zooms
-    #OK THE TETA IS CRAP but can be cool for tests..
+#zooms et rotations manuelles
+#le teta fait pivoter la salle sur l'axe z, ce qui est nul, mais utile pour certains tests. C'est pour cela qu'on le fait saturer
     if args[0] == 'e' and teta<30:
         teta += 2
     if args[0] == 'd' and teta>-45:
         teta += -2
+    
     if args[0] == 's':
         transz += -1.
     if args[0]== 'z':
         transz += 1.
+
+##la c'est mal fait..
     if args[0]== 'h':
         game = 1
         Line_Runner.stop = 0
         #only for 3D stuff...
         glDisable(GL_DEPTH_TEST)
-        glDisable(GL_LIGHTING)
+
 
     if args[0]== 't' or Line_Runner.stop == 1:
         game = 0
         glEnable(GL_DEPTH_TEST)
-        glEnable(GL_LIGHTING)
 
+#ici on appelle la fonction de clavier du line runner, en lui envoyant les arguments recus, c'est a dire les entrees du clavier
     if game == 1:
         Line_Runner.LRkeyPressed(args)
 
+#la fonction qui est appellee si une touche est relachee.
 def keyReleased(*args):
     global game
+    #meme principe que quand une touche est enfoncee
     if game ==1 :
         Line_Runner.LRkeyReleased(args)
 
+
+#les fonctions qui sont appellees lorsqu'une touche dite speciale est enfoncee ou relachee. Ici on ne regarde que les etats des touches directionnelles.
+
 def specialKeyPressed(key, x, y):
     global direction, forward, game
-
-    #to move the dude...
+#celles ci servent a faire bouger le bonhomme.
     if key == GLUT_KEY_UP :
         forward = 1
     if key == GLUT_KEY_DOWN:
@@ -680,10 +674,8 @@ def specialKeyPressed(key, x, y):
         direction = 1
 
 
-
 def specialKeyReleased(key, x, y):
     global forward, direction
-
     if key == GLUT_KEY_UP :
         forward = 0
     if key == GLUT_KEY_DOWN:
@@ -694,11 +686,12 @@ def specialKeyReleased(key, x, y):
         direction = 0
 
 
+#Les fonctions qui regardent quand il se passe quelque chose avec la souris..
 
+#ici le mouvement, sur les axes x et y
 def myMouseMove (x, y):
-    global alpha
-    global xold
-    #the mouse is now sensitive ! the faster you go the more you turn ! :)
+    global alpha, xold
+    #un mouvement ici fait tourner la salle.. et plus la difference entre le point de depart et celui d'arrivee est grande, plus on tourne !
     if xold<x:
         diff = x-xold
         alpha = diff
@@ -709,27 +702,28 @@ def myMouseMove (x, y):
 
     glutPostRedisplay()
 
-
+#si il y a un clique, on regarde si le bonhomme se trouve dans une porte quelconque...
 def Mouseclick (button, state, x, y):
-    #state is to do stuff while you are only pressed down a,d haven't released the mouse button yet for example (down gives state 0..)
-    if GLUT_LEFT_BUTTON == button and state==0:
+
+    if GLUT_LEFT_BUTTON == button and state==0: #state == 0 signifie que le bouton de la souris est enfonce.
         for element in gates :
             if element.checkifgate() != 0 :
                 print(element.checkifgate())
+                #si la borne a pour identifiant LR, on lance le Line_runner.
                 if element.checkifgate() == 'LR':
                     global game
                     game = 1
                     Line_Runner.stop = 0
-                    #only for 3D stuff...
+                    #et il faut enlever ce test, car il ne sert que quand il y a une profondeur.. (c'est a dire de la 3D)
                     glDisable(GL_DEPTH_TEST)
-                    glDisable(GL_LIGHTING)
 
 
+#notre clique droit ne sert pas a grand chose...
     if GLUT_RIGHT_BUTTON == button and state == 0 :
         print ("right_click")
 
 
-#these are the inital functions
+#Les fonctions d'initialisation d'OpenGL
 def InitGL(Width, Height):
     glClearColor(0.0, 0.0, 0.0, 0.0)
     glClearDepth(1.0)
@@ -738,7 +732,7 @@ def InitGL(Width, Height):
     glEnable(GL_COLOR_MATERIAL)
     glEnable(GL_RESCALE_NORMAL)
     glShadeModel(GL_SMOOTH)
-    glEnable(GL_LIGHTING)
+    #glEnable(GL_LIGHTING)
     glLightModelfv(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE)
 
 
@@ -748,7 +742,7 @@ def InitGL(Width, Height):
 
     glMatrixMode(GL_MODELVIEW)
 
-
+#fonction appelee lorsque la fenetre est redimensionnee
 def reSizeGLScene(Width, Height):
     if Height == 0:						        # Prevent A Divide By Zero If The Window Is Too Small
         Height = 1
@@ -760,27 +754,28 @@ def reSizeGLScene(Width, Height):
     glMatrixMode(GL_MODELVIEW)
 
 
+#fonction principale.
 def main():
     global window
-
+    #sequence d'initialisation
     glutInit(sys.argv)
     glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH)
     glutInitWindowSize(640, 480)
     glutInitWindowPosition(100, 50)
-    window = glutCreateWindow("Lucile's Dude :)")
+    window = glutCreateWindow("Final Project")
     InitGL(640, 480)
     glutSetWindow(window)
 
-    #these are the callbacks to the functions that actually do something...
+#declaration des fonctions pour GLUT. Ce sont ces seules fonctions qui sont appellees chaque fois que la boucle infinie recommence.
+
     glutDisplayFunc(DrawGLScene)
     glutIdleFunc(DrawGLScene)
     glutReshapeFunc(reSizeGLScene)
 
-<<<<<<< HEAD
-#glutFullScreen()
-=======
+
+#permet le plein ecran
     #glutFullScreen()
->>>>>>> FETCH_HEAD
+
 
     glutIgnoreKeyRepeat(1)
     glutKeyboardFunc(keyPressed)
@@ -793,12 +788,12 @@ def main():
     glutMouseFunc(Mouseclick)
     glutPassiveMotionFunc(myMouseMove)
 
+#et on lance la boucle infinie qui fait que la fenetre reste ouverte jusqu'a ce qu'on detruise l'aplication anec sys.exit
     glutMainLoop()
 
-#here is where we instanciate all the objects....
-#must be here or all necessary funcs haven't apeared yet...
-#we now need to get the walls for all the machines and ... youpii
-drawables = [quad("floor", -5, 0.0, 5, 0., 0.0, -10., 10., 0.0, 0., 1.0, 1., 0.), machine("LR", 0, 0, 0, 1, 0, 0), machine("test", -3, 0, -3, 0, 0, 1)]
+
+#ici on cree les instances de nos objets avant d'entrer dans la boucle principale.
+drawables = [quad("floor", -5, 0.0, 5, 0., 0.0, -10., 10., 0.0, 0., 1.0, 1., 0.), machine("LR", 0, 0, 0, 1, 0, 0), machine("snake", -3, 0, -3, 0, 0, 1), machine("tetris", 0, 0, 5, 0, 0, -1)]
 myBonhomme = bonhomme(-3.0,0.0,0.1, 1, 0, 0)
 
 
