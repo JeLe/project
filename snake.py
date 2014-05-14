@@ -226,4 +226,7 @@ for l in range(0,8) :
 main()	
 
 		
+<<<<<<< HEAD
+>>>>>>> FETCH_HEAD
+=======
 >>>>>>> FETCH_HEAD
