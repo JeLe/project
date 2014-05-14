@@ -3,7 +3,7 @@ from OpenGL.GL import *
 from OpenGL.GLUT import *
 from OpenGL.GLU import *
 import sys
-from Image import *
+
 from random import *
 
 ESCAPE = '\033'

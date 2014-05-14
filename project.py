@@ -776,7 +776,11 @@ def main():
     glutIdleFunc(DrawGLScene)
     glutReshapeFunc(reSizeGLScene)
 
+<<<<<<< HEAD
 #glutFullScreen()
+=======
+    #glutFullScreen()
+>>>>>>> FETCH_HEAD
 
     glutIgnoreKeyRepeat(1)
     glutKeyboardFunc(keyPressed)
