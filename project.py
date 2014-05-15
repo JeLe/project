@@ -487,10 +487,35 @@ class machine(object):
 
                            [self.Ax,self.Ay+1.6*machineUnit,self.Az],[self.Bx,self.By+1.6*machineUnit,self.Bz], [self.Cx,self.Cy+1.6*machineUnit,self.Cz], [self.Dx,self.Dy+1.6*machineUnit,self.Dz],
 
-                           [self.Ax+0 ,self.Ay,self.Az+0 ],[self.Dx+0 ,self.Dy, self.Dz],[self.Dx+0 ,self.Dy+1.6*machineUnit, self.Dz],[self.Ax+0,self.Ay+1.6*machineUnit,self.Az+0],
+                           #[self.Ax+0 ,self.Ay,self.Az+0 ],[self.Dx+0 ,self.Dy, self.Dz],[self.Dx+0 ,self.Dy+1.6*machineUnit, self.Dz],[self.Ax+0,self.Ay+1.6*machineUnit,self.Az+0],
          
-                           [self.Ax ,self.Ay,self.Az], [self.Bx-0.1*machineUnit*self.Vx,self.By,self.Bz-0.1*machineUnit*self.Vz], [self.Bx-0.1*machineUnit*self.Vx,self.By+1.6*machineUnit,self.Bz-0.1*machineUnit*self.Vz], [self.Ax, self.Ay+1.6*machineUnit, self.Az],
-                           [self.Dx ,self.Dy,self.Dz], [self.Cx-0.1*machineUnit*self.Vx,self.Cy,self.Cz-0.1*machineUnit*self.Vz], [self.Cx-0.1*machineUnit*self.Vx,self.Cy+1.6*machineUnit,self.Cz-0.1*machineUnit*self.Vz], [self.Dx, self.Dy+1.6*machineUnit, self.Dz]
+                           #[self.Ax ,self.Ay,self.Az], [self.Bx-0.1*machineUnit*self.Vx,self.By,self.Bz-0.1*machineUnit*self.Vz], [self.Bx-0.1*machineUnit*self.Vx,self.By+1.6*machineUnit,self.Bz-0.1*machineUnit*self.Vz], [self.Ax, self.Ay+1.6*machineUnit, self.Az],
+                           #[self.Dx ,self.Dy,self.Dz], [self.Cx-0.1*machineUnit*self.Vx,self.Cy,self.Cz-0.1*machineUnit*self.Vz], [self.Cx-0.1*machineUnit*self.Vx,self.Cy+1.6*machineUnit,self.Cz-0.1*machineUnit*self.Vz], [self.Dx, self.Dy+1.6*machineUnit, self.Dz],
+                           
+                           #les cotes
+                           
+                           
+                           #[self.Bx,self.By,self.Bz],[self.Bx-0.2*machineUnit*self.Vx, self.By, self.Bz-0.2*machineUnit*self.Vz ],[self.Bx-0.2*machineUnit*self.Vx,self.By+0.9*machineUnit,self.Bz-0.2*machineUnit*self.Vz ],[self.Bx,self.By+0.6*machineUnit,self.Bz ],
+                           
+                           
+                           
+                           # [self.Bx,self.By+0.6*machineUnit,self.Bz+0 ],[self.Bx+0.1*machineUnit*self.Vx,self.By+0.7*machineUnit,self.Bz+0.1*machineUnit*self.Vz ],[self.Bx+0.1*machineUnit*self.Vx ,self.By+0.8*machineUnit,self.Bz+0.1*machineUnit*self.Vz ],[self.Bx-0.2*machineUnit*self.Vx,self.By+0.9*machineUnit ,self.Bz-0.2*machineUnit*self.Vz ],
+                           
+                           
+                           
+                           #[self.Bx-0.2*machineUnit*self.Vx,self.By+1.3 ,self.Bz+0],[self.Bx-0.2*machineUnit*self.Vx,self.By+1.6*machineUnit,self.Bz+0],[self.Bx-0.1*machineUnit*self.Bx,self.By+1.6*machineUnit,self.Bz+0],[self.Bx-0.1*machineUnit*self.Vx,self.By+1.4*machineUnit,self.Bz+0.6]
+                           
+                           
+                           
+                           [self.Bx-0.6*machineUnit*self.Vx,self.By,self.Bz],[self.Bx-0.2*machineUnit*self.Vx, self.By+0*machineUnit, self.Bz-0.6*machineUnit*self.Vx ],[self.Bx-0.2*machineUnit*self.Vx,self.By+0.9*machineUnit,self.Bz-0.6*machineUnit*self.Vx ],[self.Bx,self.By+0.6*machineUnit,self.Bz-0.6*machineUnit*self.Vz],
+                           
+                           
+                           
+                           [self.Bx,self.By+0.6*machineUnit,self.Bz-0.6*machineUnit*self.Vx ],[self.Bx+0.1*machineUnit*self.Vx,self.By+0.7*machineUnit,self.Bz-0.6*machineUnit*self.Vx ],[self.Bx+0.1*machineUnit*self.Vx ,self.By+0.8*machineUnit,self.Bz-0.6*machineUnit*self.Vx ],[self.Bx-0.2*machineUnit*self.Vx,self.By+0.9*machineUnit ,self.Bz-0.6*machineUnit*self.Vx ],
+                           
+                           
+                           
+                           #[self.Bx-0.2*machineUnit*self.Vx,self.By+1.3 ,self.Bz-0.6*machineUnit*self.Vx],[self.Bx-0.2*machineUnit*self.Vx,self.By+1.6*machineUnit,self.Bz-0.6*machineUnit*self.Vx],[self.Bx-0.1*machineUnit*self.Bx,self.By+1.6*machineUnit,self.Bz-0.6*machineUnit*self.Vx],[self.Bx-0.1*machineUnit*self.Vx,self.By+1.4*machineUnit,self.Bz-0.6*machineUnit*self.Vx]
                            #[self.Ax+0,self.Ay+0,self.Az+0],[self.Ax+0.3*machineUnit -0.2,self.Ay+0 ,self.Az+0 ],[self.Ax+0.3*machineUnit -0.2,self.Ay+1.6*machineUnit +1.6,self.Az+0 ],[self.Ax+0 -0.5,self.Ay+1.6*machineUnit +1.6,self.Az+0 ],
 
                            #[self.Ax+0.3*machineUnit -0.2,self.Ay+0 ,self.Az+0 ],[self.Ax+0.5*machineUnit ,self.Ay+0 ,self.Az+0 ],[self.Ax+0.5*machineUnit ,self.Ay+0.6*machineUnit +0.6,self.Az+0 ],[self.Ax+0.3*machineUnit -0.2,self.Ay+0.6*machineUnit +0.6,self.Az+0 ],
@@ -732,7 +757,7 @@ def InitGL(Width, Height):
     glEnable(GL_COLOR_MATERIAL)
     glEnable(GL_RESCALE_NORMAL)
     glShadeModel(GL_SMOOTH)
-    #glEnable(GL_LIGHTING)
+    glEnable(GL_LIGHTING)
     glLightModelfv(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE)
 
 
