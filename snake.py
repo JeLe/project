@@ -21,6 +21,7 @@ momentum=0
 taille = 3
 direction = 'm'
 speed=2.5
+score=0
 
 class carre(object):
 	def __init__(self,x,y,couleur):
@@ -50,7 +51,7 @@ food=miam()
 def move():
 
 
-	global i,j,direction,snakeColor,temps,grid,taille,foodcoord,momentum,food,speed
+	global i,j,direction,snakeColor,temps,grid,taille,foodcoord,momentum,food,speed,score
         threading.Timer(1/speed, move).start()
 	temps+=1   #Sert pour ne pas tricher !
 			
@@ -74,6 +75,7 @@ def move():
 		else :
 			speed+=0.07
 		food=miam()
+                score+=1
                 for item in coord :
                         if item == foodcoord :
                                 food=miam()
@@ -97,10 +99,12 @@ def move():
 
 
 def reset() :
-	global direction,i,j,taille,speed,momentum,temps
+	global direction,i,j,taille,speed,momentum,temps,score
 
 	snake[:]=[]
 	coord[:]=[]
+        print 'Score :', score
+        score=0
         momentum=temps
 	taille=3
 	speed=2.50
@@ -220,6 +224,4 @@ for l in range(0,8) :
 		grid.append(carre(c,0-l,[0.1,0.15,0.53]))  #random.random()
 
 
-
-#main() # ca c'est en comment uniquement pour pouvoir le mettre dans le projet complet !
-
+#main()	
