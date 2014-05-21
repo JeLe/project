@@ -27,7 +27,7 @@ class carre(object):
 		self.red=couleur[0]
 		self.green=couleur[1]
 		self.blue=couleur[2]
-		self.vertices = [[x,y,0],[x,y+1., 0],[x+1., y+1., 0],[x+1.,y, 0]]
+		self.vertices = [[x,y,0],[x,y+0.99, 0],[x+0.99, y+0.99, 0],[x+0.99,y, 0]]
 	def drawSquare(self):
 		glBegin(GL_QUADS)
 		glColor3f(self.red, self.green, self.blue)

@@ -5,7 +5,7 @@ import sys, time
 from math import sin,cos,sqrt,pi
 import numpy
 from random import *
-import Line_Runner
+import Line_Runner, snake, tetris
 
 
 #all global variables
@@ -36,7 +36,7 @@ gates = []
 ########################################
 #ALL THE OBJECT CLASSES
 
-#All main vertex lists must be self.vertexList, except for gates and wall, et encore :)...
+
 
 
 class wall (object):
@@ -128,22 +128,28 @@ class quad(object):
 
 
 #deubut des classes associees au bonhomme. Les noms parlent d'eux meme ( ou pas :)
-unite = 3
+
+unite = .3
+
 class foot (object):
-    def __init__(self, Ax, Ay, Az, Vx, Vy, Vz):
+    def __init__(self, Ax, Ay, Az, Vx, Vy, Vz, Wx, Wy, Wz):
         self.Ax = Ax
         self.Ay = Ay
         self.Az = Az
+        
         self.Vx = Vx
         self.Vy = Vy
         self.Vz = Vz
-
-#Lucile je te laisse commenter ton bonhomme ;)
-# et alors sinon y'a quelques problemes... Il faut deux vecteurs deja... Donx il te faut un vecteur W quelque part ( dans chaque ckasses differente... mais c'est le meme a chaque fois :) )
+        
+        self.Wx = Wx
+        self.Wy = Wy
+        self.Wz = Wz
+    
+    
+    
     def getPoints(self):
         global unite
-        
-        self.start = quad("machine first", self.Ax, self.Ay, self.Az, 0.5*unite*self.Vx, self.Ay, 0.5*unite*self.Vz, -0.6*unite*self.Vz, self.Ay, -0.6*unite*self.Vx, 1., 1., 0.).vertexList
+        self.start = quad("foot", self.Ax, self.Ay, self.Az, 2*unite*self.Vx, self.Vy, 2*unite*self.Vz, -3*unite*self.Wx, self.Wy, -3*unite*self.Wz, 1., 1., 0.).vertexList
         
         self.x = self.start[0][0]
         self.y = self.start[0][1]
@@ -160,265 +166,313 @@ class foot (object):
         self.Dx = self.start[3][0]
         self.Dy = self.start[3][1]
         self.Dz = self.start[3][2]
+        
+        self.footVertexList = [[self.x,self.y,self.z], [self.Bx,self.By,self.Bz], [self.Cx,self.Cy,self.Cz], [self.Dx,self.Dy,self.Dz],
+                               [self.x,self.y,self.z], [self.Bx,self.By,self.Bz], [self.Bx,self.By+unite,self.Bz], [self.x,self.y+unite,self.z],
+                               [self.x,self.y,self.z], [self.x,self.y+unite,self.z], [self.Dx,self.Dy+unite,self.Dz], [self.Dx,self.Dy,self.Dz],
+                               [self.Dx,self.Dy,self.Dz], [self.Dx,self.Dy+unite,self.Dz], [self.Cx,self.Cy+unite,self.Cz], [self.Cx,self.Cy,self.Cz],
+                               [self.Bx,self.By,self.Bz], [self.Bx,self.By+unite,self.Bz], [self.Cx,self.Cy+unite,self.Cz], [self.Cx,self.Cy,self.Cz],
+                               [self.x,self.y+unite,self.z], [self.Bx,self.By+unite,self.Bz], [self.Cx,self.Cy+unite,self.Cz],[self.Dx,self.Dy+unite,self.Dz]]
 
-        self.footVertexList = [[self.x,self.y,self.z], [self.Bx,self.By,self.Bz], [self.Cx,self.Cy,self.Cz+unite*self.Vz], [self.Dx,self.Dy,self.Dz+unite*self.Vz],
-                               [self.x,self.y,self.z], [self.Bx,self.By,self.Bz], [self.Dx,self.Dy+unite,self.Dz], [self.x,self.y+unite,self.z],
-                               [self.x,self.y,self.z], [self.x,self.y+unite,self.z], [self.Dx,self.Dy+unite,self.Dz+unite*self.Vz], [self.Dx,self.Dy,self.Dz+unite*self.Vz],
-                               [self.Dx,self.Dy,self.Dz+unite*self.Vz], [self.Dx,self.Dy+unite,self.Dz+unite*self.Vz], [self.Cx,self.Cy+unite,self.Cz+unite*self.Vz], [self.Cx,self.Cy,self.Cz+unite*self.Vz],
-                               [self.Bx,self.By,self.Bz], [self.Bx,self.By+unite,self.Bz], [self.Cx,self.Cy+unite,self.Cz+unite*self.Vz], [self.Cx,self.Cy,self.Cz+unite*self.Vz],
-                               [self.x,self.y+unite,self.z], [self.Bx,self.By+unite,self.Bz], [self.Cx,self.Cy+unite,self.Cz+unite*self.Vz],[self.Dx,self.Dy+unite,self.Dz+unite*self.Vz]]
+
+
 
 
 class ashi (object):
-    def __init__ (self, Ax, Ay, Az, Vx, Vy, Vz):
+    def __init__ (self, Ax, Ay, Az, Vx, Vy, Vz, Wx, Wy, Wz):
         self.Ax = Ax
         self.Ay = Ay
         self.Az = Az
+        
         self.Vx = Vx
         self.Vy = Vy
         self.Vz = Vz
-
+        
+        self.Wx = Wx
+        self.Wy = Wy
+        self.Wz = Wz
+    
+    
+    
     def getPoints(self):
         global unite
-        
-        self.start = quad("machine first", self.Ax, self.Ay, self.Az, 0.5*unite*self.Vx, self.Ay, 0.5*unite*self.Vz, -0.6*unite*self.Vz, self.Ay, -0.6*unite*self.Vx, 1., 1., 0.).vertexList
+        self.start = quad("ashi", self.Ax, self.Ay, self.Az, 2*unite*self.Vx, self.Vy, 2*unite*self.Vz, -2*unite*self.Wx, self.Wy, -2*unite*self.Wz, 1., 1., 0.).vertexList
         
         self.x = self.start[0][0]
-        self.y = self.start[0][1]
+        self.y = self.start[0][1] + unite
         self.z = self.start[0][2]
         
         self.Bx = self.start[1][0]
-        self.By = self.start[1][1]
+        self.By = self.start[1][1] + unite
         self.Bz = self.start[1][2]
         
         self.Cx = self.start[2][0]
-        self.Cy = self.start[2][1]
+        self.Cy = self.start[2][1] + unite
         self.Cz = self.start[2][2]
         
         self.Dx = self.start[3][0]
-        self.Dy = self.start[3][1]
+        self.Dy = self.start[3][1] + unite
         self.Dz = self.start[3][2]
         
-        self.ashiVertexList = [[self.x, y, z], [self.x, y+8*unite, z], [self.x+2*unite, y+8*unite, z], [self.x+2*unite, y, z],
-                                [self.x, y, z], [self.x, y+8*unite, z], [self.x, y+8*unite, z+2*unite], [self.x, y, z+2*unite],
-                                [self.x+2*unite, y, z], [self.x+2*unite, y+8*unite, z], [self.x+2*unite, y+8*unite, z+unite], [self.x+2*unite, y, z+unite],
-                                [self.x, y, z+2*unite], [self.x, y+8*unite, z+2*unite], [self.x+2*unite, y+8*unite, z+2*unite], [self.x+2*unite, y, z+2*unite]]
+        self.ashiVertexList = [[self.x, self.y, self.z], [self.x, self.y+8*unite, self.z], [self.Bx, self.By+8*unite, self.Bz], [self.Bx, self.By, self.Bz],
+                               [self.x, self.y, self.z], [self.x, self.y+8*unite, self.z], [self.Dx, self.Dy+8*unite, self.Dz], [self.Dx, self.Dy, self.Dz],
+                               [self.Bx, self.By, self.Bz], [self.Bx, self.By+8*unite, self.Bz], [self.Cx, self.Cy+8*unite, self.Cz], [self.Cx, self.Cy, self.Cz],
+                               [self.Dx, self.Dy, self.Dz], [self.Dx, self.Dy+8*unite, self.Dz], [self.Cx, self.Cy+8*unite, self.Cz], [self.Cx, self.Cy, self.Cz]]
+
+
+
 
 
 class torso (object):
-    def __init__ (self, Ax, Ay, Az, Vx, Vy, Vz):
+    def __init__ (self, Ax, Ay, Az, Vx, Vy, Vz, Wx, Wy, Wz):
         self.Ax = Ax
         self.Ay = Ay
         self.Az = Az
+        
         self.Vx = Vx
         self.Vy = Vy
         self.Vz = Vz
-
+        
+        self.Wx = Wx
+        self.Wy = Wy
+        self.Wz = Wz
+    
+    
+    
     def getPoints(self):
         global unite
-        
-        self.start = quad("machine first", self.Ax, self.Ay, self.Az, 0.5*unite*self.Vx, self.Ay, 0.5*unite*self.Vz, -0.6*unite*self.Vz, self.Ay, -0.6*unite*self.Vx, 1., 1., 0.).vertexList
+        self.start = quad("torso", self.Ax, self.Ay, self.Az, 5*unite*self.Vx, self.Vy, 5*unite*self.Vz, -2*unite*self.Wx, self.Wy, -2*unite*self.Wz, 1., 1., 0.).vertexList
         
         self.x = self.start[0][0]
-        self.y = self.start[0][1]
+        self.y = self.start[0][1] + 9*unite
         self.z = self.start[0][2]
         
         self.Bx = self.start[1][0]
-        self.By = self.start[1][1]
+        self.By = self.start[1][1] +9*unite
         self.Bz = self.start[1][2]
         
         self.Cx = self.start[2][0]
-        self.Cy = self.start[2][1]
+        self.Cy = self.start[2][1] +9*unite
         self.Cz = self.start[2][2]
         
         self.Dx = self.start[3][0]
-        self.Dy = self.start[3][1]
+        self.Dy = self.start[3][1] +9*unite
         self.Dz = self.start[3][2]
         
-        self.torsoVertexList = [[x, y, z], [x, y+7*unite, z], [x+5*unite, y+7*unite, z], [x+5*unite, y, z],
-                                [x, y, z], [x, y+7*unite, z], [x, y+7*unite, z+2*unite], [x, y, z+2*unite],
-                                [x+5*unite, y, z], [x+5*unite, y+7*unite, z], [x+5*unite, y+7*unite, z+2*unite], [x+5*unite, y, z+2*unite],
-                                [x, y, z+2*unite], [x, y+7*unite, z+2*unite], [x+5*unite, y+7*unite, z+2*unite], [x+5*unite, y, z+2*unite]]
+        self.torsoVertexList = [[self.x, self.y, self.z], [self.x, self.y+7*unite, self.z], [self.Bx, self.By+7*unite, self.Bz], [self.Bx, self.By, self.Bz],
+                                [self.x, self.y, self.z], [self.x, self.y+7*unite, self.z], [self.Dx, self.Dy+7*unite, self.Dz], [self.Dx, self.Dy, self.Dz],
+                                [self.Bx, self.By, self.Bz], [self.Bx, self.By+7*unite, self.Bz], [self.Cx, self.Cy+7*unite, self.Cz], [self.Cx, self.Cy, self.Cz],
+                                [self.Dx, self.Dy, self.Dz], [self.Dx, self.Dy+7*unite, self.Dz], [self.Cx, self.Cy+7*unite, self.Cz], [self.Cx, self.Cy, self.Cz]]
+
+
 
 class brazo (object):
-    def __init__ (self, Ax, Ay, Az, Vx, Vy, Vz):
+    def __init__ (self, Ax, Ay, Az, Vx, Vy, Vz, Wx, Wy, Wz):
         self.Ax = Ax
         self.Ay = Ay
         self.Az = Az
         self.Vx = Vx
         self.Vy = Vy
         self.Vz = Vz
-
+        self.Wx = Wx
+        self.Wy = Wy
+        self.Wz = Wz
+    
+    
+    
     def getPoints(self):
         global unite
-            
-        self.start = quad("machine first", self.Ax, self.Ay, self.Az, 0.5*unite*self.Vx, self.Ay, 0.5*unite*self.Vz, -0.6*unite*self.Vz, self.Ay, -0.6*unite*self.Vx, 1., 1., 0.).vertexList
-                
-        self.x = self.start[0][0]
-        self.y = self.start[0][1]
-        self.z = self.start[0][2]
-                
-        self.Bx = self.start[1][0]
-        self.By = self.start[1][1]
-        self.Bz = self.start[1][2]
-                
-        self.Cx = self.start[2][0]
-        self.Cy = self.start[2][1]
-        self.Cz = self.start[2][2]
-                
-        self.Dx = self.start[3][0]
-        self.Dy = self.start[3][1]
-        self.Dz = self.start[3][2]
-                    
-        self.brazoVertexList = [[x, y, z+0.5*unite], [x-unite, y, z+0.5*unite], [x-unite, y, z+1.5*unite], [x, y, z+1.5*unite],
-                                [x, y, z+0.5*unite], [x-unite, y, z+0.5*unite], [x-unite, y-9*unite, z+0.5*unite], [x, y-9*unite, z+0.5*unite],
-                                [x-unite, y, z+0.5*unite], [x-unite, y, z+1.5*unite], [x-unite, y-9*unite, z+1.5*unite], [x-unite, y-9*unite, z+0.5*unite],
-                                [x, y, z+0.5*unite], [x, y, z+1.5*unite], [x, y-9*unite, z+1.5*unite], [x, y-9*unite, z+0.5*unite],
-                                [x, y, z+1.5*unite], [x-unite, y, z+1.5*unite], [x-unite, y-9*unite, z+1.5*unite], [x, y-9*unite, z+1.5*unite],
-                                [x, y-9*unite, z+0.5*unite], [x-unite, y-9*unite, z+0.5*unite], [x-unite, y-9*unite, z+1.5*unite], [x, y-9*unite, z+1.5*unite]]
+        self.start = quad("brazo", self.Ax, self.Ay, self.Az, 1*unite*self.Vx, self.Vy, 1*unite*self.Vz, -1*unite*self.Wx, self.Wy, -1*unite*self.Wz, 1., 1., 0.).vertexList
+        
+        self.x = self.start[0][0] -unite*self.Vx
+        self.y = self.start[0][1] +7*unite
+        self.z = self.start[0][2] +1.5*unite*self.Vz
+        
+        self.Bx = self.start[1][0] -unite*self.Vx
+        self.By = self.start[1][1] +7*unite
+        self.Bz = self.start[1][2] +1.5*unite*self.Vz
+        
+        self.Cx = self.start[2][0] -unite*self.Vx
+        self.Cy = self.start[2][1] +7*unite
+        self.Cz = self.start[2][2] +1.5*unite*self.Vz
+        
+        self.Dx = self.start[3][0] -unite*self.Vx
+        self.Dy = self.start[3][1] +7*unite
+        self.Dz = self.start[3][2] +1.5*unite*self.Vz
+        
+        self.brazoVertexList = [[self.x, self.y, self.z], [self.Bx, self.By, self.Bz], [self.Cx, self.Cy, self.Cz], [self.Dx, self.Dy, self.Dz],
+                                [self.x, self.y, self.z], [self.x, self.y+9*unite, self.z], [self.Bx, self.By+9*unite, self.Bz], [self.Bx, self.By, self.Bz],
+                                [self.x, self.y, self.z], [self.x, self.y+9*unite, self.z], [self.Dx, self.Dy+9*unite, self.Dz], [self.Dx, self.Dy, self.Dz],
+                                [self.Dx, self.Dy, self.Dz], [self.Dx, self.Dy+9*unite, self.Dz], [self.Cx, self.Cy+9*unite, self.Cz], [self.Cx, self.Cy, self.Cz],
+                                [self.Cx, self.Cy, self.Cz], [self.Cx, self.Cy+9*unite, self.Cz], [self.Bx, self.By+9*unite, self.Bz], [self.Bx, self.By, self.Bz],
+                                [self.x, self.y+9*unite, self.z], [self.Bx, self.By+9*unite, self.Bz], [self.Cx, self.Cy+9*unite, self.Cz], [self.Dx, self.Dy+9*unite, self.Dz]]
+
+
 
 class cou (object):
-    def __init__ (self, Ax, Ay, Az, Vx, Vy, Vz):
+    def __init__ (self, Ax, Ay, Az, Vx, Vy, Vz, Wx, Wy, Wz):
+        
         self.Ax = Ax
         self.Ay = Ay
         self.Az = Az
         self.Vx = Vx
         self.Vy = Vy
         self.Vz = Vz
-
+        self.Wx = Wx
+        self.Wy = Wy
+        self.Wz = Wz
+    
+    
     def getPoints(self):
         global unite
+        self.start = quad("cou", self.Ax, self.Ay, self.Az, 1*unite*self.Vx, self.Vy, 1*unite*self.Vz, -1*unite*self.Wx, self.Wy, -1*unite*self.Wz, 1., 1., 0.).vertexList
         
-        self.start = quad("machine first", self.Ax, self.Ay, self.Az, 0.5*unite*self.Vx, self.Ay, 0.5*unite*self.Vz, -0.6*unite*self.Vz, self.Ay, -0.6*unite*self.Vx, 1., 1., 0.).vertexList
+        self.x = self.start[0][0] +2*unite*self.Vx
+        self.y = self.start[0][1] +16*unite
+        self.z = self.start[0][2] +.5*unite*self.Vz
         
-        self.x = self.start[0][0]
-        self.y = self.start[0][1]
-        self.z = self.start[0][2]
+        self.Bx = self.start[1][0] +2*unite*self.Vx
+        self.By = self.start[1][1] +16*unite
+        self.Bz = self.start[1][2] +.5*unite*self.Vz
         
-        self.Bx = self.start[1][0]
-        self.By = self.start[1][1]
-        self.Bz = self.start[1][2]
+        self.Cx = self.start[2][0] +2*unite*self.Vx
+        self.Cy = self.start[2][1] +16*unite
+        self.Cz = self.start[2][2] +.5*unite*self.Vz
         
-        self.Cx = self.start[2][0]
-        self.Cy = self.start[2][1]
-        self.Cz = self.start[2][2]
+        self.Dx = self.start[3][0] +2*unite*self.Vx
+        self.Dy = self.start[3][1] +16*unite
+        self.Dz = self.start[3][2] +.5*unite*self.Vz
         
-        self.Dx = self.start[3][0]
-        self.Dy = self.start[3][1]
-        self.Dz = self.start[3][2]
-        
-        self.couVertexList = [[x, y, z+0.5*unite], [x+unite, y, z+0.5*unite], [x+unite, y+unite, z+0.5*unite], [x, y+unite, z+0.5*unite],
-                              [x, y, z+0.5*unite], [x, y+unite, z+0.5*unite], [x, y+unite, z+1.5*unite], [x, y, z+1.5*unite],
-                              [x, y, z+1.5*unite], [x, y+unite, z+1.5*unite], [x+unite, y+unite, z+1.5*unite], [x+unite, y, z+1.5*unite],
-                              [x+unite, y, z+0.5*unite], [x+unite, y+unite, z+0.5*unite], [x+unite, y+unite, z+1.5*unite], [x+unite, y, z+1.5*unite]]
+        self.couVertexList = [[self.x, self.y, self.z], [self.Bx, self.By, self.Bz], [self.Bx, self.By+unite, self.Bz], [self.x, self.y+unite, self.z],
+                              [self.x, self.y, self.z], [self.x, self.y+unite, self.z], [self.Dx, self.Dy+unite, self.Dz], [self.Dx, self.Dy, self.Dz],
+                              [self.Bx, self.By, self.Bz], [self.Bx, self.By+unite, self.Bz], [self.Cx, self.Cy+unite, self.Cz], [self.Cx, self.Cy, self.Cz],
+                              [self.Dx, self.Dy, self.Dz], [self.Dx, self.Dy+unite, self.Dz], [self.Cx, self.Cy+unite, self.Cz], [self.Cx, self.Cy, self.Cz]]
+
+
 
 class kopf (object):
-    def __init__ (self, Ax, Ay, Az, Vx, Vy, Vz):
+    def __init__ (self, Ax, Ay, Az, Vx, Vy, Vz, Wx, Wy, Wz):
+        
         self.Ax = Ax
         self.Ay = Ay
         self.Az = Az
         self.Vx = Vx
         self.Vy = Vy
         self.Vz = Vz
-
+        self.Wx = Wx
+        self.Wy = Wy
+        self.Wz = Wz
+    
+    
+    
     def getPoints(self):
         global unite
+        self.start = quad("kopf", self.Ax, self.Ay, self.Az, 3*unite*self.Vx, self.Vy, 3*unite*self.Vz, -3*unite*self.Wx, self.Wy, -3*unite*self.Wz, 1., 1., 0.).vertexList
         
-        self.start = quad("machine first", self.Ax, self.Ay, self.Az, 0.5*unite*self.Vx, self.Ay, 0.5*unite*self.Vz, -0.6*unite*self.Vz, self.Ay, -0.6*unite*self.Vx, 1., 1., 0.).vertexList
-        
-        self.x = self.start[0][0]
-        self.y = self.start[0][1]
+        self.x = self.start[0][0] +unite*self.Vx
+        self.y = self.start[0][1] +17*unite
         self.z = self.start[0][2]
         
-        self.Bx = self.start[1][0]
-        self.By = self.start[1][1]
+        self.Bx = self.start[1][0] +unite*self.Vx
+        self.By = self.start[1][1] +17*unite
         self.Bz = self.start[1][2]
         
-        self.Cx = self.start[2][0]
-        self.Cy = self.start[2][1]
+        self.Cx = self.start[2][0] +unite*self.Vx
+        self.Cy = self.start[2][1] +17*unite
         self.Cz = self.start[2][2]
         
-        self.Dx = self.start[3][0]
-        self.Dy = self.start[3][1]
+        self.Dx = self.start[3][0] +unite*self.Vx
+        self.Dy = self.start[3][1] +17*unite
         self.Dz = self.start[3][2]
         
-        self.kopfVertexList = [[x, y, z], [x+3*unite, y, z], [x+3*unite, y, z+3*unite], [x, y, z+3*unite],
-                               [x, y, z], [x+3*unite, y, z], [x+3*unite, y+3*unite, z], [x, y+3*unite, z],
-                               [x, y, z], [x, y+3*unite, z], [x, y+3*unite, z+3*unite], [x, y, z+3*unite],
-                               [x, y, z+3*unite], [x+3*unite, y, z+3*unite], [x+3*unite, y+3*unite, z+3*unite], [x, y+3*unite, z+3*unite],
-                               [x+3*unite, y, z], [x+3*unite, y+3*unite, z], [x+3*unite, y+3*unite, z+3*unite], [x+3*unite, y, z+3*unite],
-                               [x, y+3*unite, z], [x+3*unite, y+3*unite, z], [x+3*unite, y+3*unite, z+3*unite], [x, y+3*unite, z+3*unite]]
+        self.kopfVertexList = [[self.x, self.y, self.z], [self.Bx, self.By, self.Bz], [self.Cx, self.Cy, self.Cz], [self.Dx, self.Dy, self.Dz],
+                               [self.x, self.y, self.z], [self.Bx, self.By, self.Bz], [self.Bx, self.By+3*unite, self.Bz], [self.x, self.y+3*unite, self.z],
+                               [self.x, self.y, self.z], [self.x, self.y+3*unite, self.z], [self.Dx, self.Dy+3*unite, self.Dz], [self.Dx, self.Dy, self.Dz],
+                               [self.Dx, self.Dy, self.Dz], [self.Cx, self.Cy, self.Cz], [self.Cx, self.Cy+3*unite, self.Cz], [self.Dx, self.Dy+3*unite, self.Dz],
+                               [self.Bx, self.By, self.Bz], [self.Bx, self.By+3*unite, self.Bz], [self.Cx, self.Cy+3*unite, self.Cz], [self.Cx, self.Cy, self.Cz],
+                               [self.x, self.y+3*unite, self.z], [self.Bx, self.By+3*unite, self.Bz], [self.Cx, self.Cy+3*unite, self.Cz], [self.Dx, self.Dy+3*unite, self.Dz]]
 
-#Le bonhomme lui meme, qui regroupe en un meme endroit toutes les parties du corp.
+
+
 class bonhomme (object):
-    def __init__(self, Ax, Ay, Az, Vx, Vy, Vz):
+    def __init__(self, Ax, Ay, Az, Vx, Vy, Vz, Wx, Wy, Wz):
         self.Ax = Ax
         self.Ay = Ay
         self.Az = Az
         self.Vx = Vx
         self.Vy = Vy
         self.Vz = Vz
-        self.type = "moving" # ce type signifie que les points doivent etre recalcules a chaque boucle d'affichage, car le bonhomme peut bouger !
-
+        self.Wx = Wx
+        self.Wy = Wy
+        self.Wz = Wz
+        self.type = "moving"
+    
+    
+    
     def getPoints(self):
         global unite
-        myFoot = foot(self.Ax, self.Ay, self.Az, self.Vx, self.Vy, self.Vz)
+        myFoot = foot(self.Ax, self.Ay, self.Az, self.Vx, self.Vy, self.Vz, self.Wx, self.Wy, self.Wz)
         myFoot.getPoints()
-        #myFoot2 = foot(self.Ax+3*unite, self.Ay, self.Az, self.Vx, self.Vy, self.Vz)
-        #myFoot2.getPoints()
-        #watashiNoAshi = ashi(self.Ax, self.Ay, self.Az, self.Vx, self.Vy, self.Vz)
-        #watashiNoAshi.getPoints()
-        #watashiNoAshi2 = ashi(self.Ax+3*unite, self.Ay, self.Az, self.Vx, self.Vy, self.Vz)
-        #watashiNoAshi2.getPoints()
-        #mioTorso = torso(self.Ax, self.Ay, self.Az, self.Vx, self.Vy, self.Vz)
-        #mioTorso.getPoints()
-        #miBrazo = brazo(self.Ax, self.Ay, self.Az, self.Vx, self.Vy, self.Vz)
-        #miBrazo.getPoints()
-        #miBrazo2 = brazo(self.Ax+6*unite, self.Ay, self.Az, self.Vx, self.Vy, self.Vz)
-        #miBrazo2.getPoints()
-        #monCou = cou(self.Ax, self.Ay, self.Az, self.Vx, self.Vy, self.Vz)
-        #monCou.getPoints()
-        #meineKopf = kopf(self.Ax, self.Ay, self.Az, self.Vx, self.Vy, self.Vz)
-        #meineKopf.getPoints()
+        myFoot2 = foot(self.Ax+3*unite*self.Vx, self.Ay, self.Az+3*unite*self.Vz, self.Vx, self.Vy, self.Vz, self.Wx, self.Wy, self.Wz)
+        myFoot2.getPoints()
+        watashiNoAshi = ashi(self.Ax, self.Ay, self.Az, self.Vx, self.Vy, self.Vz, self.Wx, self.Wy, self.Wz)
+        watashiNoAshi.getPoints()
+        watashiNoAshi2 = ashi(self.Ax+3*unite*self.Vx, self.Ay, self.Az+3*unite*self.Vz, self.Vx, self.Vy, self.Vz, self.Wx, self.Wy, self.Wz)
+        watashiNoAshi2.getPoints()
+        mioTorso = torso(self.Ax, self.Ay, self.Az, self.Vx, self.Vy, self.Vz, self.Wx, self.Wy, self.Wz)
+        mioTorso.getPoints()
+        miBrazo = brazo(self.Ax, self.Ay, self.Az, self.Vx, self.Vy, self.Vz, self.Wx, self.Wy, self.Wz)
+        miBrazo.getPoints()
+        miBrazo2 = brazo(self.Ax+6*unite*self.Vx, self.Ay, self.Az+6*unite*self.Vz, self.Vx, self.Vy, self.Vz, self.Wx, self.Wy, self.Wz)
+        miBrazo2.getPoints()
+        monCou = cou(self.Ax, self.Ay, self.Az, self.Vx, self.Vy, self.Vz, self.Wx, self.Wy, self.Wz)
+        monCou.getPoints()
+        meineKopf = kopf(self.Ax, self.Ay, self.Az, self.Vx, self.Vy, self.Vz, self.Wx, self.Wy, self.Wz)
+        meineKopf.getPoints()
+        
         self.vertexList = []
         self.vertexList.extend(myFoot.footVertexList)
-        #self.vertexList.extend(watashiNoAshi.jambeVertexList)
-        #self.vertexList.extend(myFoot2.footVertexList)
-        #self.vertexList.extend(watashiNoAshi2.jambeVertexList)
-        #self.vertexList.extend(mioTorso.torseVertexList)
-        #self.vertexList.extend(miBrazo.brazoVertexList)
-        #self.vertexList.extend(miBrazo2.brazoVertexList)
-        #self.vertexList.extend(monCou.couVertexList)
-        #self.vertexList.extend(meineKopf.kopfVertexList)
-
+        self.vertexList.extend(watashiNoAshi.ashiVertexList)
+        self.vertexList.extend(myFoot2.footVertexList)
+        self.vertexList.extend(watashiNoAshi2.ashiVertexList)
+        self.vertexList.extend(mioTorso.torsoVertexList)
+        self.vertexList.extend(miBrazo.brazoVertexList)
+        self.vertexList.extend(miBrazo2.brazoVertexList)
+        self.vertexList.extend(monCou.couVertexList)
+        self.vertexList.extend(meineKopf.kopfVertexList)
         self.normalList = getNormals(self.vertexList)
-
+    
+    
+    
     def draw(self):
         self.getPoints()
         glBegin(GL_QUADS)
         counter = 0
         for item in self.vertexList:
-            #les lignes commentes sont des residus de nos recherches dans le domaine de la lumiere...
-            glColor3f(0.9, 0.9, 0.9)
+            #this works because we enabled it in init.
+            #so if we need ambient, diffuse and specular lighting I don't know if it's wise...
+            glColor3f(1.0, 0.4, 0.2)
             #glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, cyan)
             glNormal3f(self.normalList[counter][0],self.normalList[++counter][1],self.normalList[++counter][2])
             glVertex3f(item[0], item[1], item[2])
         #glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, white)
         glEnd()
-
-#
+    
+    
+    
     def move(self):
-        global forward, direction
+        global forward,direction
         oldX = self.Ax
         oldZ = self.Az
-        #suivant les etats des touches directionnelles stockes dans forward et direction, on incremente les x et z pour faire bouger le bonhomme
+        
         if forward != 0:
-            self.Az += .01*forward
+            self.Az += .025*forward
+
         if direction != 0:
-            self.Ax += .02*direction
-                #puis on verifie qu'il ne se trouve pas de murs sur son chemin
+            self.Ax += .025*direction
+        
         for item in walls:
-            if item.noneShallPass()==1: #si la methode noneShallPass retourne 1, c'est qu'il y a presence d'un mur. On garde donc les anciennes valeurs non incrementees de Ax et Az
+            if item.noneShallPass()==1: #one means it's on the wall !!!
                 self.Ax = oldX
                 self.Az = oldZ
 
@@ -426,7 +480,7 @@ class bonhomme (object):
 #Fin de des classes relatives au bonhomme
 
 #debut des machines
-#c'est pareil Pi, c'est la tienne faudrait y ajouter des comments un peu :)
+
 machineUnit = 3
 
 class machine(object):
@@ -487,56 +541,26 @@ class machine(object):
 
                            [self.Ax,self.Ay+1.6*machineUnit,self.Az],[self.Bx,self.By+1.6*machineUnit,self.Bz], [self.Cx,self.Cy+1.6*machineUnit,self.Cz], [self.Dx,self.Dy+1.6*machineUnit,self.Dz],
 
-                           #[self.Ax+0 ,self.Ay,self.Az+0 ],[self.Dx+0 ,self.Dy, self.Dz],[self.Dx+0 ,self.Dy+1.6*machineUnit, self.Dz],[self.Ax+0,self.Ay+1.6*machineUnit,self.Az+0],
+                           [self.Ax+0 ,self.Ay,self.Az+0 ],[self.Dx+0 ,self.Dy, self.Dz],[self.Dx+0 ,self.Dy+1.6*machineUnit, self.Dz],[self.Ax+0,self.Ay+1.6*machineUnit,self.Az+0],
          
-                           #[self.Ax ,self.Ay,self.Az], [self.Bx-0.1*machineUnit*self.Vx,self.By,self.Bz-0.1*machineUnit*self.Vz], [self.Bx-0.1*machineUnit*self.Vx,self.By+1.6*machineUnit,self.Bz-0.1*machineUnit*self.Vz], [self.Ax, self.Ay+1.6*machineUnit, self.Az],
-                           #[self.Dx ,self.Dy,self.Dz], [self.Cx-0.1*machineUnit*self.Vx,self.Cy,self.Cz-0.1*machineUnit*self.Vz], [self.Cx-0.1*machineUnit*self.Vx,self.Cy+1.6*machineUnit,self.Cz-0.1*machineUnit*self.Vz], [self.Dx, self.Dy+1.6*machineUnit, self.Dz],
+                               #les cotes
+                           [self.Ax ,self.Ay,self.Az], [self.Bx-0.1*machineUnit*self.Vx,self.By,self.Bz-0.1*machineUnit*self.Vz], [self.Bx-0.1*machineUnit*self.Vx,self.By+1.6*machineUnit,self.Bz-0.1*machineUnit*self.Vz], [self.Ax, self.Ay+1.6*machineUnit, self.Az],
+                           [self.Dx ,self.Dy,self.Dz], [self.Cx-0.1*machineUnit*self.Vx,self.Cy,self.Cz-0.1*machineUnit*self.Vz], [self.Cx-0.1*machineUnit*self.Vx,self.Cy+1.6*machineUnit,self.Cz-0.1*machineUnit*self.Vz], [self.Dx, self.Dy+1.6*machineUnit, self.Dz],
                            
-                           #les cotes
-                           
-                           
-                           #[self.Bx,self.By,self.Bz],[self.Bx-0.2*machineUnit*self.Vx, self.By, self.Bz-0.2*machineUnit*self.Vz ],[self.Bx-0.2*machineUnit*self.Vx,self.By+0.9*machineUnit,self.Bz-0.2*machineUnit*self.Vz ],[self.Bx,self.By+0.6*machineUnit,self.Bz ],
+                       
                            
                            
+                            [self.Bx,self.By,self.Bz],[self.Bx-0.1*machineUnit*self.Vx, self.By, self.Bz-0.1*machineUnit*self.Vz ],[self.Bx-0.1*machineUnit*self.Vx,self.By+0.9*machineUnit,self.Bz-0.1*machineUnit*self.Vz ],[self.Bx,self.By+0.6*machineUnit,self.Bz ],
                            
-                           # [self.Bx,self.By+0.6*machineUnit,self.Bz+0 ],[self.Bx+0.1*machineUnit*self.Vx,self.By+0.7*machineUnit,self.Bz+0.1*machineUnit*self.Vz ],[self.Bx+0.1*machineUnit*self.Vx ,self.By+0.8*machineUnit,self.Bz+0.1*machineUnit*self.Vz ],[self.Bx-0.2*machineUnit*self.Vx,self.By+0.9*machineUnit ,self.Bz-0.2*machineUnit*self.Vz ],
-                           
-                           
-                           
-                           #[self.Bx-0.2*machineUnit*self.Vx,self.By+1.3 ,self.Bz+0],[self.Bx-0.2*machineUnit*self.Vx,self.By+1.6*machineUnit,self.Bz+0],[self.Bx-0.1*machineUnit*self.Bx,self.By+1.6*machineUnit,self.Bz+0],[self.Bx-0.1*machineUnit*self.Vx,self.By+1.4*machineUnit,self.Bz+0.6]
+                            [self.Cx,self.Cy,self.Cz],[self.Cx-0.1*machineUnit*self.Vx, self.Cy, self.Cz-0.1*machineUnit*self.Vz ],[self.Cx-0.1*machineUnit*self.Vx,self.Cy+0.9*machineUnit,self.Cz-0.1*machineUnit*self.Vz ],[self.Cx,self.Cy+0.6*machineUnit,self.Cz ],
                            
                            
+                           [self.Bx,self.By+0.6*machineUnit,self.Bz+0 ],[self.Bx+0.1*machineUnit*self.Vx,self.By+0.7*machineUnit,self.Bz+0.1*machineUnit*self.Vz ],[self.Bx+0.1*machineUnit*self.Vx ,self.By+0.8*machineUnit,self.Bz+0.1*machineUnit*self.Vz ],[self.Bx-0.1*machineUnit*self.Vx,self.By+0.9*machineUnit ,self.Bz-0.1*machineUnit*self.Vz ],
+                           [self.Cx,self.Cy+0.6*machineUnit,self.Cz+0 ],[self.Cx+0.1*machineUnit*self.Vx,self.Cy+0.7*machineUnit,self.Cz+0.1*machineUnit*self.Vz ],[self.Cx+0.1*machineUnit*self.Vx ,self.Cy+0.8*machineUnit,self.Cz+0.1*machineUnit*self.Vz ],[self.Cx-0.1*machineUnit*self.Vx,self.Cy+0.9*machineUnit ,self.Cz-0.1*machineUnit*self.Vz ],
                            
-                           [self.Bx-0.6*machineUnit*self.Vx,self.By,self.Bz],[self.Bx-0.2*machineUnit*self.Vx, self.By+0*machineUnit, self.Bz-0.6*machineUnit*self.Vx ],[self.Bx-0.2*machineUnit*self.Vx,self.By+0.9*machineUnit,self.Bz-0.6*machineUnit*self.Vx ],[self.Bx,self.By+0.6*machineUnit,self.Bz-0.6*machineUnit*self.Vz],
+                           [self.Bx-0.1*machineUnit*self.Vx, self.By+1.3*machineUnit, self.Bz-0.1*machineUnit*self.Vz],[self.Bx, self.By+1.4*machineUnit, self.Bz],[self.Bx,self.By+1.6*machineUnit,self.Bz], [self.Bx-0.1*machineUnit*self.Vx, self.By+1.6*machineUnit, self.Bz-0.1*machineUnit*self.Vz],
+                           [self.Cx-0.1*machineUnit*self.Vx, self.Cy+1.3*machineUnit, self.Cz-0.1*machineUnit*self.Vz],[self.Cx, self.Cy+1.4*machineUnit, self.Cz],[self.Cx,self.Cy+1.6*machineUnit,self.Cz], [self.Cx-0.1*machineUnit*self.Vx, self.Cy+1.6*machineUnit, self.Cz-0.1*machineUnit*self.Vz]
                            
-                           
-                           
-                           [self.Bx,self.By+0.6*machineUnit,self.Bz-0.6*machineUnit*self.Vx ],[self.Bx+0.1*machineUnit*self.Vx,self.By+0.7*machineUnit,self.Bz-0.6*machineUnit*self.Vx ],[self.Bx+0.1*machineUnit*self.Vx ,self.By+0.8*machineUnit,self.Bz-0.6*machineUnit*self.Vx ],[self.Bx-0.2*machineUnit*self.Vx,self.By+0.9*machineUnit ,self.Bz-0.6*machineUnit*self.Vx ],
-                           
-                           
-                           
-                           #[self.Bx-0.2*machineUnit*self.Vx,self.By+1.3 ,self.Bz-0.6*machineUnit*self.Vx],[self.Bx-0.2*machineUnit*self.Vx,self.By+1.6*machineUnit,self.Bz-0.6*machineUnit*self.Vx],[self.Bx-0.1*machineUnit*self.Bx,self.By+1.6*machineUnit,self.Bz-0.6*machineUnit*self.Vx],[self.Bx-0.1*machineUnit*self.Vx,self.By+1.4*machineUnit,self.Bz-0.6*machineUnit*self.Vx]
-                           #[self.Ax+0,self.Ay+0,self.Az+0],[self.Ax+0.3*machineUnit -0.2,self.Ay+0 ,self.Az+0 ],[self.Ax+0.3*machineUnit -0.2,self.Ay+1.6*machineUnit +1.6,self.Az+0 ],[self.Ax+0 -0.5,self.Ay+1.6*machineUnit +1.6,self.Az+0 ],
-
-                           #[self.Ax+0.3*machineUnit -0.2,self.Ay+0 ,self.Az+0 ],[self.Ax+0.5*machineUnit ,self.Ay+0 ,self.Az+0 ],[self.Ax+0.5*machineUnit ,self.Ay+0.6*machineUnit +0.6,self.Az+0 ],[self.Ax+0.3*machineUnit -0.2,self.Ay+0.6*machineUnit +0.6,self.Az+0 ],
-
-                           #[self.Ax+0.5*machineUnit ,self.Ay+0.6*machineUnit +0.6,self.Az+0 ],[self.Ax+0.3*machineUnit -0.2,self.Ay+0.6*machineUnit +0.6,self.Az+0 ],[self.Ax+0.3*machineUnit -0.2,self.Ay+0.7*machineUnit +0.7,self.Az+0 ],[self.Ax+0.6*machineUnit +0.1,self.Ay+0.7*machineUnit +0.7,self.Az+0 ],
-
-                           #[self.Ax+0.6*machineUnit +0.1,self.Ay+0.7*machineUnit +0.7,self.Az+0 ],[self.Ax+0.3*machineUnit -0.2,self.Ay+0.7*machineUnit +0.7,self.Az+0 ],[self.Ax+0.3*machineUnit -0.2,self.Ay+0.9*machineUnit ,self.Az+0 ],[self.Ax+0.6*machineUnit +0.1,self.Ay+0.8*machineUnit +0.8,self.Az+0 ],
-
-                           #[self.Ax+0.3*machineUnit -0.2,self.Ay+1.3*machineUnit +1.3,self.Az+0 ],[self.Ax+0.4*machineUnit -0.1,self.Ay+1.4*machineUnit +1.4,self.Az+0 ],[self.Ax+0.4*machineUnit -0.1,self.Ay+1.6*machineUnit +1.6,self.Az+0 ],[self.Ax+0.3*machineUnit -0.2,self.Ay+1.6*machineUnit +1.6,self.Az+0 ],
-
-
-
-                           #[self.Ax+0 -0.5,self.Ay+0 ,self.Az-0.6*machineUnit -0.6],[self.Ax+0.3*machineUnit -0.2,self.Ay+0 ,self.Az-0.6*machineUnit -0.6],[self.Ax+0.3*machineUnit -0.2,self.Ay+1.6*machineUnit +1.6,self.Az-0.6*machineUnit +1.6],[self.Ax+0 -0.5,self.Ay+1.6*machineUnit +1.6,self.Az-0.6*machineUnit -0.6],
-
-                           #[self.Ax+0.3*machineUnit -0.2,self.Ay+0 ,self.Az-0.6*machineUnit -0.6],[self.Ax+0.5*machineUnit ,self.Ay+0 ,self.Az-0.6*machineUnit -0.6],[self.Ax+0.5*machineUnit ,self.Ay+0.6*machineUnit +0.6,self.Az-0.6*machineUnit -0.6],[self.Ax+0.3*machineUnit -0.2,self.Ay+0.6*machineUnit +0.6,self.Az-0.6*machineUnit -0.6],
-
-                           #[self.Ax+0.5*machineUnit ,self.Ay+0.6*machineUnit +0.6,self.Az-0.6*machineUnit -0.6],[self.Ax+0.3*machineUnit -0.2,self.Ay+0.6*machineUnit +0.6,self.Az-0.6*machineUnit -0.6],[self.Ax+0.3*machineUnit -0.2,self.Ay+0.7*machineUnit +0.7,self.Az-0.6*machineUnit -0.6],[self.Ax+0.6*machineUnit +0.1,self.Ay+0.7*machineUnit +0.7,self.Az-0.6*machineUnit -0.6],
-
-                           #[self.Ax+0.6*machineUnit +0.1,self.Ay+0.7*machineUnit +0.7,self.Az-0.6*machineUnit -0.6],[self.Ax+0.3*machineUnit -0.2,self.Ay+0.7*machineUnit +0.7,self.Az-0.6*machineUnit -0.6],[self.Ax+0.3*machineUnit -0.2,self.Ay+0.9*machineUnit +0.9,self.Az-0.6*machineUnit -0.6],[self.Ax+0.6*machineUnit +0.1,self.Ay+0.8*machineUnit +0.8,self.Az-0.6*machineUnit -0.6],
-
-                           #[self.Ax+0.3*machineUnit -0.2,self.Ay+1.3*machineUnit +1.3,self.Az-0.6*machineUnit -0.6],[self.Ax+0.4*machineUnit -0.1,self.Ay+1.4*machineUnit +1.4,self.Az-0.6*machineUnit -0.6],[self.Ax+0.4*machineUnit -0.1,self.Ay+1.6*machineUnit +1.6,self.Az-0.6*machineUnit -0.6],[self.Ax+0.3*machineUnit -0.2,self.Ay+1.6*machineUnit +1.6,self.Az-0.6*machineUnit -0.6]
                            ]
 
 
@@ -544,7 +568,7 @@ class machine(object):
 
     def draw(self):
         glBegin(GL_QUADS)
-        glColor3f(1., 1., 1.)
+        glColor3f(.3, .9, 5.)
         counter = 0
         for item in self.vertexList:
             glNormal3f(self.normalList[counter][0],self.normalList[++counter][1],self.normalList[++counter][2])
@@ -591,14 +615,10 @@ def DrawGLScene():
         glEnable(GL_DEPTH_TEST)
         glLoadIdentity()
 
-    # push the origin of (x, y, z) to wher you can see it
-    #and go a little higher than the origin to be above the floor
-    #without having to rotate the whole thing..
+#la premiere translation de la piece vers l'arriere, afin qu'elle entre dans notre champ de vision
         glTranslatef(0., -3.0, -15.0)
 
-    #Here are the movements you do when you move around or for/backwards
-    #Hey Ben, I found out you need to do all your translations first
-    #then you rotations, or you get wierd stuff...
+#les rotations et translations de la piece
         glTranslatef(0,0,transz)
         glRotatef(alpha, 0, 1, 0)
         glRotatef(teta, 0, 0, 1)
@@ -627,12 +647,11 @@ def DrawGLScene():
         glVertex3f(5,.3,5)
         glEnd()
 
-    #drawables is the list that has all the object instances we will need to draw.
+    #drawables est la liste qui contient tout ce qui doit etre dessine a l'exception du bonhomme
         for thing in drawables :
             if thing.type == "non static":
                 thing.move()
-            thing.draw() #this includes refreshing vertices for non statics
-
+            thing.draw() #ceci appelle les methodes de dessin de tous les objets qui doivent etre dessines..
         myBonhomme.move()
         myBonhomme.draw()
 
@@ -644,7 +663,7 @@ def DrawGLScene():
 def keyPressed(*args):
     global transz, teta, alpha, game
 
-#si echape ou q est touche, l
+#si echape ou q est touche, l'application est fermee
     if args[0] == ESCAPE or args[0] == 'q':
         sys.exit()
 
@@ -668,9 +687,9 @@ def keyPressed(*args):
         glDisable(GL_DEPTH_TEST)
 
 
-    if args[0]== 't' or Line_Runner.stop == 1:
+    if args[0]== 't':
         game = 0
-        glEnable(GL_DEPTH_TEST)
+
 
 #ici on appelle la fonction de clavier du line runner, en lui envoyant les arguments recus, c'est a dire les entrees du clavier
     if game == 1:
@@ -742,6 +761,12 @@ def Mouseclick (button, state, x, y):
                     #et il faut enlever ce test, car il ne sert que quand il y a une profondeur.. (c'est a dire de la 3D)
                     glDisable(GL_DEPTH_TEST)
 
+                if element.checkifgate() == 'tetris':
+
+                    tetris.dead = 0
+                    #et il faut enlever ce test, car il ne sert que quand il y a une profondeur.. (c'est a dire de la 3D)
+                    glDisable(GL_DEPTH_TEST)
+
 
 #notre clique droit ne sert pas a grand chose...
     if GLUT_RIGHT_BUTTON == button and state == 0 :
@@ -757,7 +782,7 @@ def InitGL(Width, Height):
     glEnable(GL_COLOR_MATERIAL)
     glEnable(GL_RESCALE_NORMAL)
     glShadeModel(GL_SMOOTH)
-    glEnable(GL_LIGHTING)
+    #glEnable(GL_LIGHTING)
     glLightModelfv(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE)
 
 
@@ -787,19 +812,19 @@ def main():
     glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH)
     glutInitWindowSize(640, 480)
     glutInitWindowPosition(100, 50)
-    window = glutCreateWindow("Final Project")
+    window = glutCreateWindow("ROOTS")
     InitGL(640, 480)
-    glutSetWindow(window)
 
-#declaration des fonctions pour GLUT. Ce sont ces seules fonctions qui sont appellees chaque fois que la boucle infinie recommence.
+
+    #declaration des fonctions pour GLUT. Ce sont ces seules fonctions qui sont appellees chaque fois que la boucle infinie recommence.
 
     glutDisplayFunc(DrawGLScene)
     glutIdleFunc(DrawGLScene)
     glutReshapeFunc(reSizeGLScene)
 
 
-#permet le plein ecran
-    #glutFullScreen()
+    #permet le plein ecran
+    glutFullScreen()
 
 
     glutIgnoreKeyRepeat(1)
@@ -818,9 +843,9 @@ def main():
 
 
 #ici on cree les instances de nos objets avant d'entrer dans la boucle principale.
-drawables = [quad("floor", -5, 0.0, 5, 0., 0.0, -10., 10., 0.0, 0., 1.0, 1., 0.), machine("LR", 0, 0, 0, 1, 0, 0), machine("snake", -3, 0, -3, 0, 0, 1), machine("tetris", 0, 0, 5, 0, 0, -1)]
-myBonhomme = bonhomme(-3.0,0.0,0.1, 1, 0, 0)
-
+drawables = [quad("floor", -5, 0.0, 5, 0., 0.0, -10., 10., 0.0, 0., 1.0, 1., 0.), machine("LR", 0, 0, 0, 1, 0, 0), machine("snake", -3, 0, -3, 0, 0, 1), machine("tetris", 0, 0, -5, 0, 0, 1)]
+#myBonhomme = bonhomme(-3.0,0.0,0.1, 0.707, 0, -0.707, 0.707, 0, 0.707)
+myBonhomme = bonhomme(-3.0,0.0,0.1, -1, 0, 0, 0, 0, -1)
 
 
 main()

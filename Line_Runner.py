@@ -32,12 +32,12 @@ class LRplayer (object):
 
     def getvertices(self):
         global LRupdown
-        self.Ay += LRupdown*0.01
+        self.Ay += LRupdown*0.03
 
-        if -2.02<=self.Ay<=-2.:
+        if -2.06<=self.Ay<=-2.:
             self.Ay = -2
 
-        if 1.7<=self.Ay<=1.72:
+        if 1.7<=self.Ay<=1.76:
             self.Ay = 1.7
 
         self.vertices = [[self.Ax,self.Ay,0],[self.Ax,self.Ay+.3,0],[self.Ax+0.3,self.Ay+.3,0],[self.Ax+.3,self.Ay,0]]
@@ -134,11 +134,6 @@ def LRinitGL(Width, Height):			         	# On l'appelle juste apres que la fenet
 
 
 
-
-
-
-
-
 def LRreSizeGLScene(Width, Height):
     if Height == 0:						        # Prevent A Divide By Zero If The Window Is Too Small
         Height = 1
@@ -203,7 +198,7 @@ def LRkeyPressed(args):
         if args[0] == 'a' or args[0] == 'A':#and monplayer.Ay<=1.7: #si on appuie sur 'z' le personnage se deplace vers le haut
             LRupdown = 1
             #monplayer.Ay+=0.1
-        if args[0] == 'f' or args[0] == 'F':#and monplayer.Ay>=-2.: #si on appuie sur 's' le personnage se deplace vers le bas
+        if args[0] == 'd' or args[0] == 'D':#and monplayer.Ay>=-2.: #si on appuie sur 's' le personnage se deplace vers le bas
             LRupdown = -1
             #monplayer.Ay-=0.1
 
