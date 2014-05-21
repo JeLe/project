@@ -189,9 +189,7 @@ def LRkeyPressed(args):
     global LRwindow
     global LRincrement, LRpausedIncrement, LRupdown
 
-    if args[0] == ESCAPE or args[0] == 'q': # Si on appuie sur 'q' ou 'echap', ferme le programme
-    #glutDestroyWindow(window)
-        sys.exit()
+
 
 
     if LRincrement != 0 :
@@ -219,7 +217,7 @@ def LRkeyPressed(args):
 def LRkeyReleased(args):
     global LRincrement, LRpausedIncrement, LRupdown
 
-    if args[0] == 'a' or args[0] == 'f' or args[0] == 'A' or args[0] == 'F' :
+    if args[0] == 'a' or args[0] == 'd' or args[0] == 'A' or args[0] == 'd' :
         LRupdown = 0
 
 

@@ -3,7 +3,7 @@ from OpenGL.GLUT import *
 from OpenGL.GLU import *
 import sys, time
 from math import sin,cos,sqrt,pi
-import numpy
+#import numpy
 from random import *
 import Line_Runner, snake, tetris
 
@@ -23,9 +23,9 @@ forward = 0
 direction = 0
 
 #colors with numpy
-cyan = numpy.array((0., .8, .8, 1.), 'f')
-red = numpy.array((1., 0., 0., 1.), 'f')
-white = numpy.array((1., 1., 1., 1.), 'f')
+#cyan = numpy.array((0., .8, .8, 1.), 'f')
+#red = numpy.array((1., 0., 0., 1.), 'f')
+#white = numpy.array((1., 1., 1., 1.), 'f')
 
 #wall and door buffers
 walls = []
@@ -68,7 +68,7 @@ class wall (object):
     def  noneShallPass(self):
         #ici on verifie que le bonhomme n'aissaie pas de passer a travers un mur
         if self.vertexList[0][0]<=myBonhomme.Ax<=self.vertexList[1][0] and self.vertexList[2][2]<=myBonhomme.Az<=self.vertexList[0][2] : #this condition is kinda crappy.. Because we only test one side of the dude
-            print("We don't need no education!") # on est dans un Wall ou pas ? :)
+            # print("We don't need no education!") # on est dans un Wall ou pas ? :)
             return 1 #returns 1...
         else :
             return 0
@@ -608,8 +608,12 @@ def DrawGLScene():
     # Clear The Screen And The Depth Buffer, load the current and only matrix
     global alpha, transz, teta, game
 
-    if game ==1 and Line_Runner.stop == 0:
+    if game == 1 and Line_Runner.stop == 0:
         Line_Runner.LRdrawGLScene()
+    elif game == 2 and tetris.dead == 0:
+        tetris.DrawGLScene()
+    elif game == 3 and snake.dead == 0:
+        snake.DrawGLScene()
     else :
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
         glEnable(GL_DEPTH_TEST)
@@ -627,16 +631,16 @@ def DrawGLScene():
     ######################################
     #ici sont nos tests de lumiere, ils ne sont pas actifs, car il fallait decommenter la ligne glEnable(GL_LIGHTING) dans la faonction initGL
 
-        glEnable(GL_LIGHT0)
-        glLightfv(GL_LIGHT0, GL_AMBIENT, numpy.array((0.50, 0.50, 0.50, 0.5), 'f'))
-        glLightfv(GL_LIGHT0, GL_DIFFUSE, numpy.array((1., 0., 0., 1.0), 'f'))
+#glEnable(GL_LIGHT0)
+        #glLightfv(GL_LIGHT0, GL_AMBIENT, numpy.array((0.50, 0.50, 0.50, 0.5), 'f'))
+        #      glLightfv(GL_LIGHT0, GL_DIFFUSE, numpy.array((1., 0., 0., 1.0), 'f'))
 
 
-        lightpos = numpy.array((5., 2., 0., 0.), 'f')
-        lightdir = numpy.array((1, 0, 0), 'f')
-        glLightfv(GL_LIGHT0, GL_POSITION, lightpos)
-        glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, lightdir)
-        glLightfv(GL_LIGHT0, GL_SPOT_CUTOFF, 90)
+#lightpos = numpy.array((5., 2., 0., 0.), 'f')
+#       lightdir = numpy.array((1, 0, 0), 'f')
+#       glLightfv(GL_LIGHT0, GL_POSITION, lightpos)
+#       glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, lightdir)
+#       glLightfv(GL_LIGHT0, GL_SPOT_CUTOFF, 90)
 
 
 
@@ -662,38 +666,37 @@ def DrawGLScene():
 
 def keyPressed(*args):
     global transz, teta, alpha, game
-
+    if game == 0:
 #si echape ou q est touche, l'application est fermee
-    if args[0] == ESCAPE or args[0] == 'q':
-        sys.exit()
+        if args[0] == ESCAPE :
+            sys.exit()
 
 #zooms et rotations manuelles
 #le teta fait pivoter la salle sur l'axe z, ce qui est nul, mais utile pour certains tests. C'est pour cela qu'on le fait saturer
-    if args[0] == 'e' and teta<30:
-        teta += 2
-    if args[0] == 'd' and teta>-45:
-        teta += -2
+        if args[0] == 'r' and teta<30:
+            teta += 2
+        if args[0] == 'f' and teta>-45:
+            teta += -2
     
-    if args[0] == 's':
-        transz += -1.
-    if args[0]== 'z':
-        transz += 1.
-
-##la c'est mal fait..
-    if args[0]== 'h':
-        game = 1
-        Line_Runner.stop = 0
-        #only for 3D stuff...
-        glDisable(GL_DEPTH_TEST)
+        if args[0] == 's':
+            transz += -1.
+        if args[0]== 'z':
+            transz += 1.
 
 
     if args[0]== 't':
         game = 0
-
+        tetris.dead = 1
 
 #ici on appelle la fonction de clavier du line runner, en lui envoyant les arguments recus, c'est a dire les entrees du clavier
     if game == 1:
         Line_Runner.LRkeyPressed(args)
+    elif game == 2:
+        tetris.keyPressed(args[0], args[1], args[2])
+    elif game == 3:
+        snake.keyPressed(args[0], args[1], args[2])
+
+
 
 #la fonction qui est appellee si une touche est relachee.
 def keyReleased(*args):
@@ -746,26 +749,41 @@ def myMouseMove (x, y):
 
     glutPostRedisplay()
 
+
+
+
+
+def launcher(id):
+    global game
+    if id == 'LR':
+        game = 1
+        Line_Runner.stop = 0
+        
+    if id == 'tetris':
+        game = 2
+        tetris.dead = 0
+    
+    if id == 'snake':
+        print("rout")
+        game = 3
+        snake.reset()
+
+    glDisable(GL_DEPTH_TEST)
+
+
+
+
+
 #si il y a un clique, on regarde si le bonhomme se trouve dans une porte quelconque...
 def Mouseclick (button, state, x, y):
 
     if GLUT_LEFT_BUTTON == button and state==0: #state == 0 signifie que le bouton de la souris est enfonce.
         for element in gates :
             if element.checkifgate() != 0 :
-                print(element.checkifgate())
+                print (element.checkifgate())
+
+                launcher(element.checkifgate())
                 #si la borne a pour identifiant LR, on lance le Line_runner.
-                if element.checkifgate() == 'LR':
-                    global game
-                    game = 1
-                    Line_Runner.stop = 0
-                    #et il faut enlever ce test, car il ne sert que quand il y a une profondeur.. (c'est a dire de la 3D)
-                    glDisable(GL_DEPTH_TEST)
-
-                if element.checkifgate() == 'tetris':
-
-                    tetris.dead = 0
-                    #et il faut enlever ce test, car il ne sert que quand il y a une profondeur.. (c'est a dire de la 3D)
-                    glDisable(GL_DEPTH_TEST)
 
 
 #notre clique droit ne sert pas a grand chose...

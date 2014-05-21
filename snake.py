@@ -13,6 +13,8 @@ grid=[]
 snake=[]
 coord=[]
 snakeColor=[0.8,0.1,0.1]
+dead = 0
+
 
 i=0
 j=0
@@ -95,12 +97,13 @@ def move():
 	snake.append(carre(i,j,snakeColor))
 
 	if i>15 or i<0 or j>0 or j<(-7):
-                reset()
+            global dead
+            dead = 1
 
 
 def reset() :
-	global direction,i,j,taille,speed,momentum,temps,score
-
+	global direction,i,j,taille,speed,momentum,temps,score, dead
+        dead = 0
 	snake[:]=[]
 	coord[:]=[]
         print 'Score :', score
@@ -148,20 +151,20 @@ def DrawGLScene():                        #La fonction dessin
 	
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 	glLoadIdentity()
-	glTranslatef(-8., 3.069, -10.) 
+	glTranslatef(-8., 3.069, -15.)
         global food
 	
-	
-	for item in snake :
-		item.drawSquare()
-
-	food.drawSquare()
+        
+        
 
 	for item in grid :
 		item.drawSquare()
-
-			     
-	glutSwapBuffers()
+        food.drawSquare()
+        
+        for item in snake :
+                item.drawSquare()
+                
+        glutSwapBuffers()
 	
 
   
@@ -223,5 +226,5 @@ for l in range(0,8) :
 	for c in range(0,16) :
 		grid.append(carre(c,0-l,[0.1,0.15,0.53]))  #random.random()
 
-
-#main()	
+move()
+#main()
