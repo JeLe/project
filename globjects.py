@@ -1,23 +1,7 @@
 from OpenGL.GL import *
 from OpenGL.GLUT import *
 from OpenGL.GLU import *
-import sys, time
-from math import sin,cos,sqrt,pi
-#import numpy
-from random import *
-import Line_Runner, snake, tetris
 
-
-#all global variables
-ESCAPE = '\033'
-game = 0
-
-# Number of the glut window.
-window = 0
-alpha = 0
-transz = 0
-teta = 0
-xold = 600
 
 forward = 0
 direction = 0
@@ -44,8 +28,8 @@ class wall (object):
         self.getPoints(thingToWall)
         self.getPoints(thingToWall)
         walls.append(self)
-
-
+    
+    
     def getPoints(self, thingToWall):
         #oui j'aurais du utiliser les fonctions min et max de python, mais au final la elles sont faites maison...
         xmin = thingToWall.vertexList[0][0]
@@ -61,10 +45,10 @@ class wall (object):
                 xmax = thing[0]
             if thing[2] > zmax:
                 zmax = thing[2]
-
-
+        
+        
         self.vertexList = [[xmin,0, zmax], [xmax, 0, zmax], [xmax, 0, zmin], [xmin,0, zmin]]
-
+    
     def  noneShallPass(self):
         #ici on verifie que le bonhomme n'aissaie pas de passer a travers un mur
         if self.vertexList[0][0]<=myBonhomme.Ax<=self.vertexList[1][0] and self.vertexList[2][2]<=myBonhomme.Az<=self.vertexList[0][2] : #this condition is kinda crappy.. Because we only test one side of the dude
@@ -110,12 +94,12 @@ class quad(object):
         #we get the vertices here in init because it's static
         self.getPoints()
         self.normalList=getNormals(self.vertexList) #le vecteur normal associe au carre... Cela devait servir pour la lumiere, mais nous avons decide d'implementer celle ci ulterieurement.
-
-#la methode qui calcule les 4 points du carre a partir du point et des 2 vecteurs de l'initialisation
+    
+    #la methode qui calcule les 4 points du carre a partir du point et des 2 vecteurs de l'initialisation
     def getPoints(self):
         self.vertexList = [[self.Ax, self.Ay, self.Az], [self.Ax+self.Vx, self.Ay+self.Vy, self.Az+self.Vz],[self.Ax+self.Vx+self.Wx, self.Ay+self.Vy+self.Wy, self.Az+self.Vz+self.Wz], [self.Ax+self.Wx, self.Ay+self.Wy, self.Az+self.Wz]]
-
-#la methode qui dessine le carre a l'ecran, grace a OpenGl. Cette methode ne doit etre appele a partir de DrawGLScene directement ou indirectement
+    
+    #la methode qui dessine le carre a l'ecran, grace a OpenGl. Cette methode ne doit etre appele a partir de DrawGLScene directement ou indirectement
     def draw(self):
         glBegin(GL_QUADS)
         glColor3f(self.red, self.green, self.blue)
@@ -467,7 +451,7 @@ class bonhomme (object):
         
         if forward != 0:
             self.Az += .025*forward
-
+        
         if direction != 0:
             self.Ax += .025*direction
         
@@ -497,62 +481,62 @@ class machine(object):
         self.normalList = getNormals(self.vertexList)
         self.myWall = wall(self)
         self.myGate = gate(self.gateList, self.name)
-
+    
     def getPoints(self):
         global machineUnit
         #pour que la machine puisse etre tournee dans le bon sens ( vers l'interur de la piece) il faut qu'elle soit entierement calculee a partir d'un quad et de ses vecteurs, comme ca on peut la faire tourner avec les vecteurs !
         self.start = quad("machine first", self.Ax, self.Ay, self.Az, 0.5*machineUnit*self.Vx, self.Ay, 0.5*machineUnit*self.Vz, -0.6*machineUnit*self.Vz, self.Ay, -0.6*machineUnit*self.Vx, 1., 1., 0.).vertexList
-
+        
         self.Ax = self.start[0][0]
         self.Ay = self.start[0][1]
         self.Az = self.start[0][2]
-
+        
         self.Bx = self.start[1][0]
         self.By = self.start[1][1]
         self.Bz = self.start[1][2]
-
+        
         self.Cx = self.start[2][0]
         self.Cy = self.start[2][1]
         self.Cz = self.start[2][2]
-
+        
         self.Dx = self.start[3][0]
         self.Dy = self.start[3][1]
         self.Dz = self.start[3][2]
         
-
+        
         self.gateList = [[self.Bx, 1, self.Bz], [self.Bx+0.5*machineUnit*self.Vx, 1, self.Bz+0.5*machineUnit*self.Vz], [self.Cx+0.5*machineUnit*self.Vx, 1, self.Cz+0.5*machineUnit*self.Vz], [self.Cx, 1, self.Cz]]
-
+        
         self.vertexList = [[self.Ax,self.Ay,self.Az],[self.Bx,self.By,self.Bz], [self.Cx,self.Cy,self.Cz], [self.Dx,self.Dy,self.Dz],
-
-          
+                           
+                           
                            [self.Bx, self.By+0, self.Bz+0 ],[self.Cx, self.Cy+0, self.Cz],[self.Cx, self.Cy+0.6*machineUnit, self.Cz],[self.Bx, self.By+0.6*machineUnit, self.Bz],
-
+                           
                            [self.Bx, self.By+0.6*machineUnit, self.Bz],[self.Cx, self.Cy+0.6*machineUnit, self.Cz],[self.Cx+0.1*machineUnit*self.Vx, self.Cy+0.7*machineUnit, self.Cz+0.1*machineUnit*self.Vz],[self.Bx+0.1*machineUnit*self.Vx, self.By+0.7*machineUnit, self.Bz+0.1*machineUnit*self.Vz],
-            
+                           
                            [self.Bx+0.1*machineUnit*self.Vx, self.By+0.7*machineUnit, self.Bz+0.1*machineUnit*self.Vz],[self.Cx+0.1*machineUnit*self.Vx, self.Cy+0.7*machineUnit, self.Cz+0.1*machineUnit*self.Vz],[self.Cx+0.1*machineUnit*self.Vx, self.Cy+0.8*machineUnit, self.Cz+0.1*machineUnit*self.Vz],[self.Bx+0.1*machineUnit*self.Vx, self.By+0.8*machineUnit, self.Bz+0.1*machineUnit*self.Vz],
-           
+                           
                            [self.Bx+0.1*machineUnit*self.Vx, self.By+0.8*machineUnit, self.Bz+0.1*machineUnit*self.Vz],[self.Cx+0.1*machineUnit*self.Vx, self.Cy+0.8*machineUnit, self.Cz+0.1*machineUnit*self.Vz],[self.Cx-0.1*machineUnit*self.Vx, self.Cy+0.9*machineUnit, self.Cz-0.1*machineUnit*self.Vz], [self.Bx-0.1*machineUnit*self.Vx, self.By+0.9*machineUnit, self.Bz-0.1*machineUnit*self.Vz],
-
+                           
                            [self.Bx-0.1*machineUnit*self.Vx, self.By+0.9*machineUnit, self.Bz-0.1*machineUnit*self.Vz],[self.Cx-0.1*machineUnit*self.Vx, self.Cy+0.9*machineUnit, self.Cz-0.1*machineUnit*self.Vz],[self.Cx-0.1*machineUnit*self.Vx, self.Cy+1.3*machineUnit, self.Cz-0.1*machineUnit*self.Vz],[self.Bx-0.1*machineUnit*self.Vx, self.By+1.3*machineUnit, self.Bz-0.1*machineUnit*self.Vz],
-
+                           
                            [self.Bx-0.1*machineUnit*self.Vx, self.By+1.3*machineUnit, self.Bz-0.1*machineUnit*self.Vz],[self.Cx-0.1*machineUnit*self.Vx, self.Cy+1.3*machineUnit, self.Cz-0.1*machineUnit*self.Vz], [self.Cx, self.Cy+1.4*machineUnit, self.Cz],[self.Bx, self.By+1.4*machineUnit, self.Bz],
-
+                           
                            [self.Bx, self.By+1.4*machineUnit, self.Bz],[self.Cx, self.Cy+1.4*machineUnit, self.Cz],[self.Cx, self.Cy+1.6*machineUnit, self.Cz],[self.Bx, self.By+1.6*machineUnit, self.Bz],
-
+                           
                            [self.Ax,self.Ay+1.6*machineUnit,self.Az],[self.Bx,self.By+1.6*machineUnit,self.Bz], [self.Cx,self.Cy+1.6*machineUnit,self.Cz], [self.Dx,self.Dy+1.6*machineUnit,self.Dz],
-
+                           
                            [self.Ax+0 ,self.Ay,self.Az+0 ],[self.Dx+0 ,self.Dy, self.Dz],[self.Dx+0 ,self.Dy+1.6*machineUnit, self.Dz],[self.Ax+0,self.Ay+1.6*machineUnit,self.Az+0],
-         
-                               #les cotes
+                           
+                           #les cotes
                            [self.Ax ,self.Ay,self.Az], [self.Bx-0.1*machineUnit*self.Vx,self.By,self.Bz-0.1*machineUnit*self.Vz], [self.Bx-0.1*machineUnit*self.Vx,self.By+1.6*machineUnit,self.Bz-0.1*machineUnit*self.Vz], [self.Ax, self.Ay+1.6*machineUnit, self.Az],
                            [self.Dx ,self.Dy,self.Dz], [self.Cx-0.1*machineUnit*self.Vx,self.Cy,self.Cz-0.1*machineUnit*self.Vz], [self.Cx-0.1*machineUnit*self.Vx,self.Cy+1.6*machineUnit,self.Cz-0.1*machineUnit*self.Vz], [self.Dx, self.Dy+1.6*machineUnit, self.Dz],
                            
-                       
                            
                            
-                            [self.Bx,self.By,self.Bz],[self.Bx-0.1*machineUnit*self.Vx, self.By, self.Bz-0.1*machineUnit*self.Vz ],[self.Bx-0.1*machineUnit*self.Vx,self.By+0.9*machineUnit,self.Bz-0.1*machineUnit*self.Vz ],[self.Bx,self.By+0.6*machineUnit,self.Bz ],
                            
-                            [self.Cx,self.Cy,self.Cz],[self.Cx-0.1*machineUnit*self.Vx, self.Cy, self.Cz-0.1*machineUnit*self.Vz ],[self.Cx-0.1*machineUnit*self.Vx,self.Cy+0.9*machineUnit,self.Cz-0.1*machineUnit*self.Vz ],[self.Cx,self.Cy+0.6*machineUnit,self.Cz ],
+                           [self.Bx,self.By,self.Bz],[self.Bx-0.1*machineUnit*self.Vx, self.By, self.Bz-0.1*machineUnit*self.Vz ],[self.Bx-0.1*machineUnit*self.Vx,self.By+0.9*machineUnit,self.Bz-0.1*machineUnit*self.Vz ],[self.Bx,self.By+0.6*machineUnit,self.Bz ],
+                           
+                           [self.Cx,self.Cy,self.Cz],[self.Cx-0.1*machineUnit*self.Vx, self.Cy, self.Cz-0.1*machineUnit*self.Vz ],[self.Cx-0.1*machineUnit*self.Vx,self.Cy+0.9*machineUnit,self.Cz-0.1*machineUnit*self.Vz ],[self.Cx,self.Cy+0.6*machineUnit,self.Cz ],
                            
                            
                            [self.Bx,self.By+0.6*machineUnit,self.Bz+0 ],[self.Bx+0.1*machineUnit*self.Vx,self.By+0.7*machineUnit,self.Bz+0.1*machineUnit*self.Vz ],[self.Bx+0.1*machineUnit*self.Vx ,self.By+0.8*machineUnit,self.Bz+0.1*machineUnit*self.Vz ],[self.Bx-0.1*machineUnit*self.Vx,self.By+0.9*machineUnit ,self.Bz-0.1*machineUnit*self.Vz ],
@@ -562,10 +546,10 @@ class machine(object):
                            [self.Cx-0.1*machineUnit*self.Vx, self.Cy+1.3*machineUnit, self.Cz-0.1*machineUnit*self.Vz],[self.Cx, self.Cy+1.4*machineUnit, self.Cz],[self.Cx,self.Cy+1.6*machineUnit,self.Cz], [self.Cx-0.1*machineUnit*self.Vx, self.Cy+1.6*machineUnit, self.Cz-0.1*machineUnit*self.Vz]
                            
                            ]
-
-
-
-
+    
+    
+    
+    
     def draw(self):
         glBegin(GL_QUADS)
         glColor3f(.3, .9, 5.)
@@ -595,269 +579,8 @@ def getNormals(vertexList) :
         N=[Ya*Zb-Za*Yb, Za*Xb-Xa*Zb, Xa*Yb-Ya*Xb]
         normalList.append(N)
         counter+=4
-
+    
     return(normalList)
-
-
-# et maintenat les fonctions qui permettent a open GL de marcher via GLUT
-
-
-
-#La fonction ou on dessine tout a l'ecran
-def DrawGLScene():
-    # Clear The Screen And The Depth Buffer, load the current and only matrix
-    global alpha, transz, teta, game
-
-    if game == 1 and Line_Runner.stop == 0:
-        Line_Runner.LRdrawGLScene()
-    elif game == 2 and tetris.dead == 0:
-        tetris.DrawGLScene()
-    elif game == 3 and snake.dead == 0:
-        snake.DrawGLScene()
-    else :
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
-        glEnable(GL_DEPTH_TEST)
-        glLoadIdentity()
-
-#la premiere translation de la piece vers l'arriere, afin qu'elle entre dans notre champ de vision
-        glTranslatef(0., -3.0, -15.0)
-
-#les rotations et translations de la piece
-        glTranslatef(0,0,transz)
-        glRotatef(alpha, 0, 1, 0)
-        glRotatef(teta, 0, 0, 1)
-
-
-    ######################################
-    #ici sont nos tests de lumiere, ils ne sont pas actifs, car il fallait decommenter la ligne glEnable(GL_LIGHTING) dans la faonction initGL
-
-#glEnable(GL_LIGHT0)
-        #glLightfv(GL_LIGHT0, GL_AMBIENT, numpy.array((0.50, 0.50, 0.50, 0.5), 'f'))
-        #      glLightfv(GL_LIGHT0, GL_DIFFUSE, numpy.array((1., 0., 0., 1.0), 'f'))
-
-
-#lightpos = numpy.array((5., 2., 0., 0.), 'f')
-#       lightdir = numpy.array((1, 0, 0), 'f')
-#       glLightfv(GL_LIGHT0, GL_POSITION, lightpos)
-#       glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, lightdir)
-#       glLightfv(GL_LIGHT0, GL_SPOT_CUTOFF, 90)
-
-
-
-        #Ceci dessine une ligne sur le devant de la piece
-        glBegin(GL_LINES)
-        glColor3f(0,0,1)
-        glVertex3f(-5,.3,5)
-        glVertex3f(5,.3,5)
-        glEnd()
-
-    #drawables est la liste qui contient tout ce qui doit etre dessine a l'exception du bonhomme
-        for thing in drawables :
-            if thing.type == "non static":
-                thing.move()
-            thing.draw() #ceci appelle les methodes de dessin de tous les objets qui doivent etre dessines..
-        myBonhomme.move()
-        myBonhomme.draw()
-
-        glutSwapBuffers()
-
-
-#la fonction qui est appellee si une touche est enfoncee
-
-def keyPressed(*args):
-    global transz, teta, alpha, game
-    if game == 0:
-#si echape ou q est touche, l'application est fermee
-        if args[0] == ESCAPE :
-            sys.exit()
-
-#zooms et rotations manuelles
-#le teta fait pivoter la salle sur l'axe z, ce qui est nul, mais utile pour certains tests. C'est pour cela qu'on le fait saturer
-        if args[0] == 'r' and teta<30:
-            teta += 2
-        if args[0] == 'f' and teta>-45:
-            teta += -2
-    
-        if args[0] == 's':
-            transz += -1.
-        if args[0]== 'z':
-            transz += 1.
-
-
-    if args[0]== 't':
-        game = 0
-        tetris.dead = 1
-
-#ici on appelle la fonction de clavier du line runner, en lui envoyant les arguments recus, c'est a dire les entrees du clavier
-    if game == 1:
-        Line_Runner.LRkeyPressed(args)
-    elif game == 2:
-        tetris.keyPressed(args[0], args[1], args[2])
-    elif game == 3:
-        snake.keyPressed(args[0], args[1], args[2])
-
-
-
-#la fonction qui est appellee si une touche est relachee.
-def keyReleased(*args):
-    global game
-    #meme principe que quand une touche est enfoncee
-    if game ==1 :
-        Line_Runner.LRkeyReleased(args)
-
-
-#les fonctions qui sont appellees lorsqu'une touche dite speciale est enfoncee ou relachee. Ici on ne regarde que les etats des touches directionnelles.
-
-def specialKeyPressed(key, x, y):
-    global direction, forward, game
-#celles ci servent a faire bouger le bonhomme.
-    if key == GLUT_KEY_UP :
-        forward = 1
-    if key == GLUT_KEY_DOWN:
-        forward = -1
-    if key == GLUT_KEY_LEFT:
-        direction = -1
-    if key == GLUT_KEY_RIGHT:
-        direction = 1
-
-
-def specialKeyReleased(key, x, y):
-    global forward, direction
-    if key == GLUT_KEY_UP :
-        forward = 0
-    if key == GLUT_KEY_DOWN:
-        forward = 0
-    if key == GLUT_KEY_LEFT:
-        direction = 0
-    if key == GLUT_KEY_RIGHT:
-        direction = 0
-
-
-#Les fonctions qui regardent quand il se passe quelque chose avec la souris..
-
-#ici le mouvement, sur les axes x et y
-def myMouseMove (x, y):
-    global alpha, xold
-    #un mouvement ici fait tourner la salle.. et plus la difference entre le point de depart et celui d'arrivee est grande, plus on tourne !
-    if xold<x:
-        diff = x-xold
-        alpha = diff
-
-    if xold>x:
-        diff = xold-x
-        alpha = -diff
-
-    glutPostRedisplay()
-
-
-
-
-
-def launcher(id):
-    global game
-    if id == 'LR':
-        game = 1
-        Line_Runner.stop = 0
-        
-    if id == 'tetris':
-        game = 2
-        tetris.dead = 0
-    
-    if id == 'snake':
-        print("rout")
-        game = 3
-        snake.reset()
-
-    glDisable(GL_DEPTH_TEST)
-
-
-
-
-
-#si il y a un clique, on regarde si le bonhomme se trouve dans une porte quelconque...
-def Mouseclick (button, state, x, y):
-
-    if GLUT_LEFT_BUTTON == button and state==0: #state == 0 signifie que le bouton de la souris est enfonce.
-        for element in gates :
-            if element.checkifgate() != 0 :
-                print (element.checkifgate())
-
-                launcher(element.checkifgate())
-                #si la borne a pour identifiant LR, on lance le Line_runner.
-
-
-#notre clique droit ne sert pas a grand chose...
-    if GLUT_RIGHT_BUTTON == button and state == 0 :
-        print ("right_click")
-
-
-#Les fonctions d'initialisation d'OpenGL
-def InitGL(Width, Height):
-    glClearColor(0.0, 0.0, 0.0, 0.0)
-    glClearDepth(1.0)
-    glDepthFunc(GL_LESS)
-    glEnable(GL_DEPTH_TEST)
-    glEnable(GL_COLOR_MATERIAL)
-    glEnable(GL_RESCALE_NORMAL)
-    glShadeModel(GL_SMOOTH)
-    #glEnable(GL_LIGHTING)
-    glLightModelfv(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE)
-
-
-    glMatrixMode(GL_PROJECTION)
-    glLoadIdentity()
-    gluPerspective(45.0, float(Width)/float(Height), 0.1, 100.0)
-
-    glMatrixMode(GL_MODELVIEW)
-
-#fonction appelee lorsque la fenetre est redimensionnee
-def reSizeGLScene(Width, Height):
-    if Height == 0:						        # Prevent A Divide By Zero If The Window Is Too Small
-        Height = 1
-
-    glViewport(0, 0, Width, Height)		               # Reset The Current Viewport And Perspective Transformation
-    glMatrixMode(GL_PROJECTION)
-    glLoadIdentity()
-    gluPerspective(45.0, float(Width)/float(Height), 0.1, 100.0)
-    glMatrixMode(GL_MODELVIEW)
-
-
-#fonction principale.
-def main():
-    global window
-    #sequence d'initialisation
-    glutInit(sys.argv)
-    glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH)
-    glutInitWindowSize(640, 480)
-    glutInitWindowPosition(100, 50)
-    window = glutCreateWindow("ROOTS")
-    InitGL(640, 480)
-
-
-    #declaration des fonctions pour GLUT. Ce sont ces seules fonctions qui sont appellees chaque fois que la boucle infinie recommence.
-
-    glutDisplayFunc(DrawGLScene)
-    glutIdleFunc(DrawGLScene)
-    glutReshapeFunc(reSizeGLScene)
-
-
-    #permet le plein ecran
-    glutFullScreen()
-
-
-    glutIgnoreKeyRepeat(1)
-    glutKeyboardFunc(keyPressed)
-    glutKeyboardUpFunc(keyReleased)
-
-    glutSpecialFunc(specialKeyPressed)
-    #le sprite c'est trop bon !!!!! :)
-    glutSpecialUpFunc(specialKeyReleased)
-
-    glutMouseFunc(Mouseclick)
-    glutPassiveMotionFunc(myMouseMove)
-
-#et on lance la boucle infinie qui fait que la fenetre reste ouverte jusqu'a ce qu'on detruise l'aplication anec sys.exit
-    glutMainLoop()
 
 
 #ici on cree les instances de nos objets avant d'entrer dans la boucle principale.
@@ -865,5 +588,3 @@ drawables = [quad("floor", -5, 0.0, 5, 0., 0.0, -10., 10., 0.0, 0., 1.0, 1., 0.)
 #myBonhomme = bonhomme(-3.0,0.0,0.1, 0.707, 0, -0.707, 0.707, 0, 0.707)
 myBonhomme = bonhomme(-3.0,0.0,0.1, -1, 0, 0, 0, 0, -1)
 
-
-main()
