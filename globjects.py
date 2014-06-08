@@ -1,6 +1,7 @@
 from OpenGL.GL import *
 from OpenGL.GLUT import *
 from OpenGL.GLU import *
+from Image import *
 
 
 forward = 0
@@ -20,6 +21,24 @@ gates = []
 ########################################
 #ALL THE OBJECT CLASSES
 
+class test(object):
+    def __init__(self):
+        self.type = "static"
+        self.type = "static" # ce type est discutable...
+
+        self.testList = [[1.0, -1.0, -1.0], [0.375624, 0.500625], [0.0, -1.0, 0.0], [1.0, -1.0, 1.0], [0.624375, 0.500624], [0.0, -1.0, 0.0], [-1.0, -1.0, -1.0], [0.375625, 0.749375], [0.0, -1.0, 0.0], [1.0, 1.0, -0.999999], [0.375625, 0.251875], [-0.0, 1.0, 0.0], [-1.0, 1.0, -1.0], [0.375624, 0.003126], [-0.0, 1.0, 0.0], [0.999999, 1.0, 1.000001], [0.624374, 0.251874], [-0.0, 1.0, 0.0], [1.0, -1.0, -1.0], [0.375624, 0.500625], [1.0, -0.0, 0.0], [1.0, 1.0, -0.999999], [0.375625, 0.251875], [1.0, -0.0, 0.0], [1.0, -1.0, 1.0], [0.624375, 0.500624], [1.0, -0.0, 0.0], [1.0, -1.0, 1.0], [0.873126, 0.749375], [-0.0, -0.0, 1.0], [0.999999, 1.0, 1.000001], [0.873126, 0.998126], [-0.0, -0.0, 1.0], [-1.0, -1.0, 1.0], [0.624375, 0.749375], [-0.0, -0.0, 1.0], [-1.0, -1.0, 1.0], [0.624375, 0.749375], [-1.0, -0.0, -0.0], [-1.0, 1.0, 1.0], [0.624375, 0.998126], [-1.0, -0.0, -0.0], [-1.0, -1.0, -1.0], [0.375625, 0.749375], [-1.0, -0.0, -0.0], [1.0, 1.0, -0.999999], [0.126874, 0.998126], [0.0, 0.0, -1.0], [1.0, -1.0, -1.0], [0.126874, 0.749375], [0.0, 0.0, -1.0], [-1.0, 1.0, -1.0], [0.375625, 0.998126], [0.0, 0.0, -1.0], [1.0, -1.0, 1.0], [0.624375, 0.500624], [0.0, -1.0, 0.0], [-1.0, -1.0, 1.0], [0.624375, 0.749375], [0.0, -1.0, 0.0], [-1.0, -1.0, -1.0], [0.375625, 0.749375], [0.0, -1.0, 0.0], [-1.0, 1.0, -1.0], [0.375624, 0.003126], [-0.0, 1.0, 0.0], [-1.0, 1.0, 1.0], [0.624373, 0.003126], [-0.0, 1.0, 0.0], [0.999999, 1.0, 1.000001], [0.624374, 0.251874], [-0.0, 1.0, 0.0], [1.0, 1.0, -0.999999], [0.375625, 0.251875], [1.0, 0.0, 1e-06], [0.999999, 1.0, 1.000001], [0.624374, 0.251874], [1.0, 0.0, 1e-06], [1.0, -1.0, 1.0], [0.624375, 0.500624], [1.0, 0.0, 1e-06], [0.999999, 1.0, 1.000001], [0.873126, 0.998126], [-0.0, -0.0, 1.0], [-1.0, 1.0, 1.0], [0.624375, 0.998126], [-0.0, -0.0, 1.0], [-1.0, -1.0, 1.0], [0.624375, 0.749375], [-0.0, -0.0, 1.0], [-1.0, 1.0, 1.0], [0.624375, 0.998126], [-1.0, -0.0, -0.0], [-1.0, 1.0, -1.0], [0.375625, 0.998126], [-1.0, -0.0, -0.0], [-1.0, -1.0, -1.0], [0.375625, 0.749375], [-1.0, -0.0, -0.0], [1.0, -1.0, -1.0], [0.126874, 0.749375], [0.0, 0.0, -1.0], [-1.0, -1.0, -1.0], [0.375625, 0.749375], [0.0, 0.0, -1.0], [-1.0, 1.0, -1.0], [0.375625, 0.998126], [0.0, 0.0, -1.0]]
+
+#self.testList =
+    def draw(self):
+        glBegin(GL_TRIANGLES)
+        glColor3f(1., 1., 1.)
+        counter = 0
+        while counter != len(self.testList):
+            glVertex3f(self.testList[counter][0]-myBonhomme.Ax, self.testList[counter][1], self.testList[counter][2]-myBonhomme.Az)
+            glTexCoord2f(self.testList[counter+1][0], self.testList[counter+1][1])
+            glNormal3f(self.testList[counter+2][0], self.testList[counter+2][1], self.testList[counter+2][2])
+            counter+=3
+        glEnd()
 
 
 
@@ -390,6 +409,7 @@ class bonhomme (object):
         self.Wy = Wy
         self.Wz = Wz
         self.type = "moving"
+        self.getPoints()
     
     
     
@@ -429,7 +449,7 @@ class bonhomme (object):
     
     
     def draw(self):
-        self.getPoints()
+        #self.getPoints()
         glBegin(GL_QUADS)
         counter = 0
         for item in self.vertexList:
@@ -450,10 +470,10 @@ class bonhomme (object):
         oldZ = self.Az
         
         if forward != 0:
-            self.Az += .025*forward
+            self.Az += .05*forward
         
         if direction != 0:
-            self.Ax += .025*direction
+            self.Ax += .05*direction
         
         for item in walls:
             if item.noneShallPass()==1: #one means it's on the wall !!!
@@ -556,7 +576,7 @@ class machine(object):
         counter = 0
         for item in self.vertexList:
             glNormal3f(self.normalList[counter][0],self.normalList[++counter][1],self.normalList[++counter][2])
-            glVertex3f(item[0], item[1], item[2])
+            glVertex3f(item[0]-myBonhomme.Ax, item[1], item[2]-myBonhomme.Az)
         glEnd()
         glBegin(GL_LINES)
         glColor3f(1., 0., 0.)
@@ -584,7 +604,10 @@ def getNormals(vertexList) :
 
 
 #ici on cree les instances de nos objets avant d'entrer dans la boucle principale.
-drawables = [quad("floor", -5, 0.0, 5, 0., 0.0, -10., 10., 0.0, 0., 1.0, 1., 0.), machine("LR", 0, 0, 0, 1, 0, 0), machine("snake", -3, 0, -3, 0, 0, 1), machine("tetris", 0, 0, -5, 0, 0, 1)]
-#myBonhomme = bonhomme(-3.0,0.0,0.1, 0.707, 0, -0.707, 0.707, 0, 0.707)
-myBonhomme = bonhomme(-3.0,0.0,0.1, -1, 0, 0, 0, 0, -1)
+myBonhomme = bonhomme(0,0.,0., 1, 0, 0, 0, 0, 1)
 
+drawables = [quad("floor", -50, 0.0, 50, 0., 0.0, -100., 100., 0.0, 0., 1.0, 1., 0.),
+             machine("LR", 5, 0, 0, 1, 0, 0), machine("snake", -3, 0, -3, 0, 0, 1), machine("tetris", 0, 0, -5, 0, 0, 1), test()]
+#myBonhomme = bonhomme(-3.0,0.0,0.1, 0.707, 0, -0.707, 0.707, 0, 0.707)
+
+ 

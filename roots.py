@@ -2,8 +2,10 @@ from OpenGL.GL import *
 from OpenGL.GLUT import *
 from OpenGL.GLU import *
 import sys, time
+from Image import *
+
 from math import sin,cos,sqrt,pi
-#import numpy
+import numpy
 from random import *
 import Line_Runner, snake, tetris
 from globjects import *
@@ -24,7 +26,24 @@ xold = 600
 
 # et maintenat les fonctions qui permettent a open GL de marcher via GLUT
 
+texture = 0
 
+def LoadTextures():
+    #global texture
+    image = open("graal.bmp")
+	
+    ix = image.size[0]
+    iy = image.size[1]
+    image = image.tostring("raw", "RGBX", 0, -1)
+	
+    # Create Texture
+    glBindTexture(GL_TEXTURE_2D, glGenTextures(1))   # 2d texture (x and y size)
+	
+    glPixelStorei(GL_UNPACK_ALIGNMENT,1)
+    glTexImage2D(GL_TEXTURE_2D, 0, 3, ix, iy, 0, GL_RGBA, GL_UNSIGNED_BYTE, image)
+    
+    
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
 
 #La fonction ou on dessine tout a l'ecran
 def DrawGLScene():
@@ -43,27 +62,31 @@ def DrawGLScene():
         glLoadIdentity()
 
 #la premiere translation de la piece vers l'arriere, afin qu'elle entre dans notre champ de vision
-        glTranslatef(0., -3.0, -15.0)
+        glTranslatef(0., -3.0, -10.0)
+        #glTranslatef(-myBonhomme.Ax, 0.0, -myBonhomme.Az)
+        
 
 #les rotations et translations de la piece
         glTranslatef(0,0,transz)
-        glRotatef(alpha, 0, 1, 0)
-        glRotatef(teta, 0, 0, 1)
+#       glRotatef(alpha, 0, 1, 0)
+
+        gluLookAt(0, 3, 5, 0, 0, 0, 0, 1, 0)
+        #        glRotatef(5, 1, 0, 0)#used to be teta..
 
 
     ######################################
     #ici sont nos tests de lumiere, ils ne sont pas actifs, car il fallait decommenter la ligne glEnable(GL_LIGHTING) dans la faonction initGL
 
-#glEnable(GL_LIGHT0)
-        #glLightfv(GL_LIGHT0, GL_AMBIENT, numpy.array((0.50, 0.50, 0.50, 0.5), 'f'))
-        #      glLightfv(GL_LIGHT0, GL_DIFFUSE, numpy.array((1., 0., 0., 1.0), 'f'))
+        glEnable(GL_LIGHT0)
+        glLightfv(GL_LIGHT0, GL_AMBIENT, numpy.array((0.01, 0.01, 0.01, 0.5), 'f'))
+        glLightfv(GL_LIGHT0, GL_DIFFUSE, numpy.array((1., 1., 1., 1.0), 'f'))
 
 
-#lightpos = numpy.array((5., 2., 0., 0.), 'f')
-#       lightdir = numpy.array((1, 0, 0), 'f')
-#       glLightfv(GL_LIGHT0, GL_POSITION, lightpos)
-#       glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, lightdir)
-#       glLightfv(GL_LIGHT0, GL_SPOT_CUTOFF, 90)
+        lightpos = numpy.array((5., 2., 0., 0.), 'f')
+        lightdir = numpy.array((1, 0, 0), 'f')
+        glLightfv(GL_LIGHT0, GL_POSITION, lightpos)
+        glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, lightdir)
+        glLightfv(GL_LIGHT0, GL_SPOT_CUTOFF, 90)
 
 
 
@@ -135,9 +158,9 @@ def specialKeyPressed(key, x, y):
     global game
 #celles ci servent a faire bouger le bonhomme.
     if key == GLUT_KEY_UP :
-        globjects.forward = 1
-    if key == GLUT_KEY_DOWN:
         globjects.forward = -1
+    if key == GLUT_KEY_DOWN:
+        globjects.forward = 1
     if key == GLUT_KEY_LEFT:
         globjects.direction = -1
     if key == GLUT_KEY_RIGHT:
@@ -222,7 +245,9 @@ def InitGL(Width, Height):
     glEnable(GL_COLOR_MATERIAL)
     glEnable(GL_RESCALE_NORMAL)
     glShadeModel(GL_SMOOTH)
-    #glEnable(GL_LIGHTING)
+    
+    glEnable(GL_TEXTURE_2D)
+    #    glEnable(GL_LIGHTING)
     glLightModelfv(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE)
 
 
@@ -231,6 +256,8 @@ def InitGL(Width, Height):
     gluPerspective(45.0, float(Width)/float(Height), 0.1, 100.0)
 
     glMatrixMode(GL_MODELVIEW)
+    LoadTextures()
+
 
 #fonction appelee lorsque la fenetre est redimensionnee
 def reSizeGLScene(Width, Height):
